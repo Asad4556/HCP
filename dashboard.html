@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard – Save HCP</title>
+  <title>Super Admin Dashboard – Save HCP</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     .dashboard-container {
@@ -13,12 +13,10 @@
       padding: 30px;
       text-align: center;
     }
-
     .dashboard-container h1,
     .dashboard-container h2 {
       font-weight: bold;
     }
-
     .dashboard-buttons {
       margin-top: 30px;
       display: flex;
@@ -26,7 +24,6 @@
       gap: 15px;
       justify-content: center;
     }
-
     .dashboard-buttons a {
       background: #007bff;
       color: white;
@@ -37,26 +34,16 @@
       min-width: 220px;
       transition: background 0.3s;
     }
-
     .dashboard-buttons a:hover {
       background: #0056b3;
     }
-  </style>
-</head>
-<body>
-  <div class="dashboard-container">
-    <h1>HEPATITIS & INFECTION CONTROL PROGRAM</h1>
-    <h2>Super Admin Panel</h2>
-
-    <div class="dashboard-buttons">
-      <a href="store.html">🧾 Store Management</a>
-      <a href="voucher_format.html">📋 Create Voucher Format</a>
-      <a href="voucher_generate.html">📝 Generate Voucher</a>
-      <a href="document_settings.html">📤 Upload Signatures & Stamp</a>
-      <a href="user_management.html">👤 Manage Users</a>
-      <a href="report.html">📊 View Reports</a>
-      <a href="index.html">🔓 Logout</a>
-    </div>
-  </div>
-</body>
-</html>
+    .logout {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #dc3545;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
