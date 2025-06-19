@@ -4,21 +4,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Save HCP – Super Admin Dashboard</title>
+  <title>Dashboard – Save HCP</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .dashboard-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .dashboard-container h1,
+    .dashboard-container h2 {
+      font-weight: bold;
+    }
+
+    .dashboard-buttons {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .dashboard-buttons a {
+      background: #007bff;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      min-width: 220px;
+      transition: background 0.3s;
+    }
+
+    .dashboard-buttons a:hover {
+      background: #0056b3;
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard-container">
-    <h1>👨‍⚕️ Save HCP – Super Admin Panel</h1>
+    <h1>HEPATITIS & INFECTION CONTROL PROGRAM</h1>
+    <h2>Super Admin Panel</h2>
 
-    <div class="dashboard-menu">
-      <a href="store.html">📦 Store Management</a>
-      <a href="voucher_format.html">🧾 Voucher Format Builder</a>
-      <a href="voucher_generate.html">📄 Generate Voucher</a>
-      <a href="document_settings.html">⚙️ Upload Signature / Stamp</a>
-      <a href="user_management.html">👤 User Management</a>
+    <div class="dashboard-buttons">
+      <a href="store.html">🧾 Store Management</a>
+      <a href="voucher_format.html">📋 Create Voucher Format</a>
+      <a href="voucher_generate.html">📝 Generate Voucher</a>
+      <a href="document_settings.html">📤 Upload Signatures & Stamp</a>
+      <a href="user_management.html">👤 Manage Users</a>
       <a href="report.html">📊 View Reports</a>
-      <a href="index.html">🔒 Logout</a>
+      <a href="index.html">🔓 Logout</a>
     </div>
   </div>
 </body>
