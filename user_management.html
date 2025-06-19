@@ -1,0 +1,60 @@
+<!-- File: user_management.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Management – Save HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>👤 User Management</h1>
+
+    <form id="userForm">
+      <input type="text" placeholder="CNIC (xxxxx-xxxxxxx-x)" id="userCnic" required />
+      <input type="password" placeholder="Password" id="userPassword" required />
+      <select id="userRole">
+        <option value="store">Store Incharge</option>
+        <option value="voucher">Voucher Maker</option>
+        <option value="transfer">Transfer Officer</option>
+      </select>
+      <button type="submit">Add User</button>
+    </form>
+
+    <h3>👥 Current Users</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>CNIC</th>
+          <th>Role</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    function renderUsers() {
+      const table = document.getElementById("userTable");
+      table.innerHTML = "";
+      users.forEach((user, index) => {
+        table.innerHTML += `
+          <tr>
+            <td>${user.cnic}</td>
+            <td>${user.role}</td>
+            <td><button onclick="deleteUser(${index})">❌</button></td>
+          </tr>`;
+      });
+    }
+
+    function deleteUser(index) {
+      users.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(users));
+      renderUsers();
+    }
+
+    document.getElementByI
