@@ -6,28 +6,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Store Management – Save HCP</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-weight: bold;
+    }
+    button.logout {
+      float: right;
+      background: #dc3545;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <h1>📦 Store Management</h1>
+  <div class="container">
+    <button class="logout" onclick="logout()">Logout</button>
+    <h1>HEPATITIS & INFECTION CONTROL PROGRAM</h1>
+    <h2 style="text-align:center;">Store Management Panel</h2>
 
-    <!-- Add Item Form -->
-    <form id="addItemForm">
-      <h3>➕ Add New Item</h3>
-      <input type="text" placeholder="Item Name" id="itemName" required />
-      <input type="text" placeholder="Category" id="itemCategory" required />
-      <input type="number" placeholder="Quantity" id="itemQty" required />
-      <input type="number" placeholder="Price" id="itemPrice" required />
-      <input type="date" id="itemPurchaseDate" required />
-      <input type="date" id="itemExpiryDate" />
-      <textarea id="itemDesc" placeholder="Description"></textarea>
-      <button type="submit">Save Item</button>
-    </form>
+    <!-- Your existing store form and table goes here -->
 
-    <!-- In/Out/Transfer -->
-    <form id="stockActionForm">
-      <h3>🔄 Stock Movement</h3>
-      <select id="actionType">
-        <option value="in">Item In</option>
-        <option value="out">Item Out</option>
-        <option value
+  </div>
+
+  <script>
+    const loginUser = JSON.parse(localStorage.getItem("loginUser"));
+    if (!loginUser || !loginUser.roles.includes("store")) {
+      alert("Access denied! You are not authorized for this section.");
+      window.location.href = "index.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("loginUser");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
