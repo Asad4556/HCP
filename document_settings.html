@@ -1,0 +1,72 @@
+<!-- File: document_settings.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Document Settings – Save HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>⚙️ Document Settings</h1>
+
+    <form id="uploadForm">
+      <label>Upload Super Admin Signature:</label>
+      <input type="file" id="superSig" accept="image/*" />
+
+      <label>Upload Store Incharge Signature:</label>
+      <input type="file" id="storeSig" accept="image/*" />
+
+      <label>Upload Company Stamp:</label>
+      <input type="file" id="stamp" accept="image/*" />
+
+      <label>Upload Header Image (Top of Document):</label>
+      <input type="file" id="header" accept="image/*" />
+
+      <button type="submit">💾 Save Images</button>
+    </form>
+
+    <h3>📸 Current Previews:</h3>
+    <div id="preview"></div>
+  </div>
+
+  <script>
+    function readAndSave(id, key) {
+      const file = document.getElementById(id).files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem(key, reader.result);
+        renderPreview();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderPreview() {
+      const keys = ["superSig", "storeSig", "stamp", "header"];
+      const names = ["Super Admin Signature", "Store Incharge Signature", "Stamp", "Header Image"];
+      const preview = document.getElementById("preview");
+      preview.innerHTML = "";
+      keys.forEach((k, i) => {
+        const url = localStorage.getItem(k);
+        if (url) {
+          preview.innerHTML += `<p><strong>${names[i]}</strong><br/><img src="${url}" style="max-height:80px"/></p>`;
+        }
+      });
+    }
+
+    document.getElementById("uploadForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      readAndSave("superSig", "superSig");
+      readAndSave("storeSig", "storeSig");
+      readAndSave("stamp", "stamp");
+      readAndSave("header", "header");
+      alert("Images saved successfully!");
+    });
+
+    renderPreview();
+  </script>
+</body>
+</html>
