@@ -1,0 +1,45 @@
+<!-- File: voucher_generate.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generate Voucher – Save HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <h1>📄 Generate Voucher</h1>
+    <form id="voucherForm"></form>
+    <button onclick="generateVoucher()">✅ Generate Voucher</button>
+
+    <h3>📋 Preview:</h3>
+    <div id="voucherPreview" class="voucher-preview"></div>
+  </div>
+
+  <script>
+    const voucherForm = document.getElementById("voucherForm");
+    const voucherPreview = document.getElementById("voucherPreview");
+    const formatFields = JSON.parse(localStorage.getItem("voucherFormat")) || [];
+    let voucherCounter = 1;
+
+    formatFields.forEach(field => {
+      const label = document.createElement("label");
+      label.innerText = field;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.name = field;
+      input.required = true;
+      voucherForm.appendChild(label);
+      voucherForm.appendChild(input);
+    });
+
+    function generateVoucher() {
+      const data = {};
+      const inputs = voucherForm.querySelectorAll("input");
+      inputs.forEach(input => {
+        data[input.name] = input.value;
+      });
+
+      const voucherHTML = `
+        <div class="voucher-box"
