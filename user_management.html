@@ -9,7 +9,8 @@
 </head>
 <body>
   <div class="dashboard-container">
-    <h1>👤 User Management</h1>
+    <h1 style="text-align:center; font-weight:bold;">HEPATITIS & INFECTION CONTROL PROGRAM</h1>
+    <h2 style="text-align:center; font-weight:bold; margin-top:10px;">Super Admin Panel</h2>
 
     <form id="userForm">
       <input type="text" placeholder="CNIC (xxxxx-xxxxxxx-x)" id="userCnic" required />
@@ -19,10 +20,10 @@
         <option value="voucher">Voucher Maker</option>
         <option value="transfer">Transfer Officer</option>
       </select>
-      <button type="submit">Add User</button>
+      <button type="submit"><strong>Add User</strong></button>
     </form>
 
-    <h3>👥 Current Users</h3>
+    <h3><strong>👥 Current Users</strong></h3>
     <table>
       <thead>
         <tr>
@@ -46,7 +47,7 @@
           <tr>
             <td>${user.cnic}</td>
             <td>${user.role}</td>
-            <td><button onclick="deleteUser(${index})">❌</button></td>
+            <td><button onclick="deleteUser(${index})">❌ Delete</button></td>
           </tr>`;
       });
     }
@@ -57,4 +58,23 @@
       renderUsers();
     }
 
-    document.getElementByI
+    document.getElementById("userForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const cnic = document.getElementById("userCnic").value;
+      const password = document.getElementById("userPassword").value;
+      const role = document.getElementById("userRole").value;
+
+      // Prevent duplicate CNICs
+      const existing = users.findIndex(u => u.cnic === cnic);
+      if (existing !== -1) users.splice(existing, 1); // replace if exists
+
+      users.push({ cnic, password, role });
+      localStorage.setItem("users", JSON.stringify(users));
+      renderUsers();
+      this.reset();
+    });
+
+    renderUsers();
+  </script>
+</body>
+</html>
