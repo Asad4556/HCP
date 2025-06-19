@@ -6,40 +6,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Generate Voucher – Save HCP</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-weight: bold;
+    }
+    button.logout {
+      float: right;
+      background: #dc3545;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <h1>📄 Generate Voucher</h1>
-    <form id="voucherForm"></form>
-    <button onclick="generateVoucher()">✅ Generate Voucher</button>
+  <div class="container">
+    <button class="logout" onclick="logout()">Logout</button>
+    <h1>HEPATITIS & INFECTION CONTROL PROGRAM</h1>
+    <h2 style="text-align:center;">Voucher Maker Panel</h2>
 
-    <h3>📋 Preview:</h3>
-    <div id="voucherPreview" class="voucher-preview"></div>
+    <!-- Your voucher generation form goes here -->
+
   </div>
 
   <script>
-    const voucherForm = document.getElementById("voucherForm");
-    const voucherPreview = document.getElementById("voucherPreview");
-    const formatFields = JSON.parse(localStorage.getItem("voucherFormat")) || [];
-    let voucherCounter = 1;
+    const loginUser = JSON.parse(localStorage.getItem("loginUser"));
+    if (!loginUser || !loginUser.roles.includes("voucher")) {
+      alert("Access denied! You are not authorized for this section.");
+      window.location.href = "index.html";
+    }
 
-    formatFields.forEach(field => {
-      const label = document.createElement("label");
-      label.innerText = field;
-      const input = document.createElement("input");
-      input.type = "text";
-      input.name = field;
-      input.required = true;
-      voucherForm.appendChild(label);
-      voucherForm.appendChild(input);
-    });
-
-    function generateVoucher() {
-      const data = {};
-      const inputs = voucherForm.querySelectorAll("input");
-      inputs.forEach(input => {
-        data[input.name] = input.value;
-      });
-
-      const voucherHTML = `
-        <div class="voucher-box"
+    function logout() {
+      localStorage.removeItem("loginUser");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
