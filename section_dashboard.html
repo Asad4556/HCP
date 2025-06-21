@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard – HCP</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #eef5f9;
+    }
+    .box {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    label, input, button {
+      display: block;
+      margin: 10px auto;
+      width: 100%;
+      font-size: 16px;
+    }
+    input, button {
+      padding: 10px;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>👋 Welcome, <span id="usernameDisplay"></span></h2>
+    <h3>📂 Section: <span id="sectionName"></span></h3>
+
+    <hr>
+
+    <label>📌 Add Data to Your Section:</label>
+    <input type="text" id="dataInput" placeholder="Enter something..." />
+    <button onclick="saveData()">💾 Save</button>
+
+    <h3>📋 Your Section Entries:</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Sr#</th>
+          <th>Data</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="dataList"></tbody>
+    </table>
+
+    <br>
+    <button onclick="logout()">🔓 Logout</button>
+  </div>
+
+  <script>
+    const username = localStorage.getItem("username") || "User";
+    const section = localStorage.getItem("section") || "Unknown";
+
+    document.getElementById("usernameDisplay").innerText = username;
+    document.getElementById("sectionName").innerText = section;
+
+    const storageKey = `section_${section}_data`;
+    let sectionData = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+    function saveData() {
+      const input = document.getElementById("dataInput").value.trim();
+      if (!input) return alert("Please enter some data.");
+
+      const entry = {
+        text: input,
+        date: new Date().toLocaleDateString()
+      };
+
+      sectionData.push(entry);
+      localStorage.setItem(storageKey, JSON.stringify(sectionData));
+      showData();
+      document.getElementById("dataInput").value = "";
+    }
+
+    function showData() {
+      const tbody = document.getElementById("dataList");
+      tbody.innerHTML = "";
+      sectionData.forEach((item, i) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${item.text}</td>
+            <td>${item.date}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem("role");
+      localStorage.removeItem("section");
+      localStorage.removeItem("username");
+      window.location.href = "login.html";
+    }
+
+    showData();
+  </script>
+
+</body>
+</html>
