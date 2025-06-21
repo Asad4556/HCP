@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Export Backup – HCP</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    button {
+      padding: 15px 25px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📦 Export Full System Backup</h2>
+  <button onclick="exportBackup()">Download Backup</button>
+
+  <script>
+    function exportBackup() {
+      const data = {
+        users: JSON.parse(localStorage.getItem("users")),
+        sections: JSON.parse(localStorage.getItem("sections")),
+        formats: JSON.parse(localStorage.getItem("voucherFormats")),
+        stamp: localStorage.getItem("hcp_stamp"),
+        signature: localStorage.getItem("hcp_signature")
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "HCP_Backup.json";
+      link.click();
+    }
+  </script>
+
+</body>
+</html>
