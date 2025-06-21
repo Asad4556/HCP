@@ -1,1 +1,98 @@
-<!-- Create User -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create New User – HCP</title>
+  <style>
+    body { font-family: sans-serif; background: #f3faff; padding: 30px; }
+    .box { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; }
+    input, select, button {
+      width: 100%; margin: 10px 0; padding: 10px; font-size: 15px;
+    }
+    table { width: 100%; margin-top: 20px; background: #fff; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    .delete-btn { background: red; color: white; border: none; padding: 5px 10px; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>➕ Add New User</h2>
+
+  <input type="text" id="name" placeholder="Name" />
+  <input type="text" id="cnic" placeholder="CNIC" />
+  <input type="password" id="password" placeholder="Password" />
+  <select id="role">
+    <option>Store Incharge</option>
+    <option>Finance Officer</option>
+    <option>HR Officer</option>
+    <option>Section Head</option>
+  </select>
+  <input type="text" id="section" placeholder="Section Name" />
+  <button onclick="addUser()">➕ Add User</button>
+
+  <h3>👥 Current Users</h3>
+  <table>
+    <thead>
+      <tr><th>Sr#</th><th>Name</th><th>CNIC</th><th>Role</th><th>Section</th><th>Delete</th></tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
+</div>
+
+<script>
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  function addUser() {
+    const name = document.getElementById("name").value.trim();
+    const cnic = document.getElementById("cnic").value.trim();
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("role").value;
+    const section = document.getElementById("section").value.trim();
+
+    if (!name || !cnic || !password || !section) {
+      alert("Please fill all fields!");
+      return;
+    }
+
+    const newUser = { name, cnic, password, role, section };
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+    showUsers();
+
+    document.getElementById("name").value = "";
+    document.getElementById("cnic").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("section").value = "";
+  }
+
+  function showUsers() {
+    const tbody = document.getElementById("userTable");
+    tbody.innerHTML = "";
+    users.forEach((u, i) => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${u.name}</td>
+          <td>${u.cnic}</td>
+          <td>${u.role}</td>
+          <td>${u.section}</td>
+          <td><button class="delete-btn" onclick="deleteUser(${i})">Delete</button></td>
+        </tr>
+      `;
+    });
+  }
+
+  function deleteUser(index) {
+    if (confirm("Delete this user?")) {
+      users.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(users));
+      showUsers();
+    }
+  }
+
+  showUsers();
+</script>
+
+</body>
+</html>
