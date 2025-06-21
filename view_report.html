@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reports – HCP</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <script>
+    const allowedRoles = ["Super Admin", "Store Incharge", "Reception Incharge", "Finance Incharge"];
+    const role = localStorage.getItem("role");
+    if (!allowedRoles.includes(role)) {
+      alert("Access Denied ❌ – Only authorized users can view reports.");
+      window.location.href = "login.html";
+    }
+  </script>
+
+  <h2>📊 Report View</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Sr#</th>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Example -->
+      <tr>
+        <td>1</td>
+        <td>Syringe</td>
+        <td>200</td>
+        <td>2025-06-19</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>
