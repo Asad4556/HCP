@@ -2,52 +2,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Store Management – Save HCP</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Store Section – Save HCP</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      font-weight: bold;
-    }
-    button.logout {
-      float: right;
-      background: #dc3545;
-      color: white;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2 { text-align: center; font-weight: bold; }
+    .form-section { max-width: 800px; margin: auto; }
+    .form-section input { width: 100%; margin-bottom: 10px; padding: 10px; }
+    .field-container { display: flex; gap: 10px; margin-bottom: 10px; }
+    .field-container input { flex: 1; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background: #007bff; color: white; }
+    .logout { position: absolute; top: 20px; right: 20px; background: #dc3545; color: white; padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <button class="logout" onclick="logout()">Logout</button>
-    <h1>HEPATITIS & INFECTION CONTROL PROGRAM</h1>
-    <h2 style="text-align:center;">Store Management Panel</h2>
+  <button class="logout" onclick="logout()">Logout</button>
+  <h1>HEPATITIS & INFECTION CONTROL PROGRAM</h1>
+  <h2>Store Section Panel</h2>
 
-    <!-- Your existing store form and table goes here -->
-
-  </div>
-
-  <script>
-    const loginUser = JSON.parse(localStorage.getItem("loginUser"));
-    if (!loginUser || !loginUser.roles.includes("store")) {
-      alert("Access denied! You are not authorized for this section.");
-      window.location.href = "index.html";
-    }
-
-    function logout() {
-      localStorage.removeItem("loginUser");
-      window.location.href = "index.html";
-    }
-  </script>
-</body>
-</html>
+  <div class="form-section">
+    <div id="formatArea">
+      <h3>🧾 Define Store Format (e.g. Item, Quantity, Supplier)</h3>
+      <div id="fieldList">
+        <input type="text" placeholder="Field Name (e.g., Item Name)" />
+      </div>
+      <button onclick="addF
