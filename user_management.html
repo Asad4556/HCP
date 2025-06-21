@@ -1,8 +1,134 @@
-[
-  {
-    "cnic": "12345-6789012-3",
-    "name": "Ali",
-    "password": "abc123",
-    "roles": ["store", "voucher"]
-  }
-]
+<!-- File: user_management.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management – Save HCP</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+    }
+    .roles label {
+      margin-right: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    .logout {
+      float: right;
+      background: #dc3545;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="logout" onclick="logout()">Logout</button>
+    <h1>HEPATITIS & INFECTION CONTROL PROGRAM</h1>
+    <h2>User Management (Super Admin)</h2>
+
+    <form id="userForm">
+      <input type="text" id="cnic" placeholder="CNIC (xxxxx-xxxxxxx-x)" required>
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <div class="roles">
+        <label><input type="checkbox" value="store"> Store</label>
+        <label><input type="checkbox" value="voucher"> Voucher</label>
+        <label><input type="checkbox" value="transfer"> Transfer</label>
+      </div>
+      <button type="submit">Add User</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>CNIC</th>
+          <th>Name</th>
+          <th>Roles</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const loginUser = JSON.parse(localStorage.getItem("loginUser"));
+    if (!loginUser || loginUser.cnic !== "34501-8971113-7") {
+      alert("Only Super Admin can access this page.");
+      window.location.href = "index.html";
+    }
+
+    const userForm = document.getElementById("userForm");
+    const userTable = document.getElementById("userTable");
+
+    function loadUsers() {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      userTable.innerHTML = "";
+      users.forEach((user, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${user.cnic}</td>
+          <td>${user.name}</td>
+          <td>${user.roles.join(", ")}</td>
+          <td><button onclick="deleteUser(${index})">🗑️ Delete</button></td>
+        `;
+        userTable.appendChild(row);
+      });
+    }
+
+    function deleteUser(index) {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      users.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(users));
+      loadUsers();
+    }
+
+    userForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const cnic = document.getElementById("cnic").value.trim();
+      const name = document.getElementById("name").value.trim();
+      const password = document.getElementById("password").value;
+      const roles = Array.from(document.querySelectorAll(".roles input:checked")).map(r => r.value);
+
+      if (!roles.length) return alert("Select at least one role!");
+
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      users.push({ cnic, name, password, roles });
+      localStorage.setItem("users", JSON.stringify(users));
+      userForm.reset();
+      loadUsers();
+    });
+
+    function logout() {
+      localStorage.removeItem("loginUser");
+      window.location.href = "index.html";
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>
