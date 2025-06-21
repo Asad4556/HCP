@@ -1,0 +1,57 @@
+<!-- File: upload_stamp_signature.html -->
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Stamp & Signature – HCP</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; text-align: center; background-color: #f7f7f7; }
+    h2 { font-weight: bold; margin-bottom: 20px; }
+    input[type="file"] { margin: 10px 0; }
+    img.preview { width: 120px; height: auto; margin: 10px; border: 1px solid #aaa; }
+    button { padding: 10px 20px; margin-top: 20px; font-weight: bold; }
+    .section { background: white; padding: 20px; margin: 20px auto; max-width: 500px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <h2>🖼️ Upload Stamp, Signature & Watermark</h2>
+
+  <div class="section">
+    <h3>🔹 Upload Stamp</h3>
+    <input type="file" accept="image/*" onchange="previewImage(event, 'stamp')" />
+    <br />
+    <img id="preview-stamp" class="preview" />
+  </div>
+
+  <div class="section">
+    <h3>✍️ Upload Signature</h3>
+    <input type="file" accept="image/*" onchange="previewImage(event, 'signature')" />
+    <br />
+    <img id="preview-signature" class="preview" />
+  </div>
+
+  <div class="section">
+    <h3>🌊 Upload Watermark Logo</h3>
+    <input type="file" accept="image/*" onchange="previewImage(event, 'watermark')" />
+    <br />
+    <img id="preview-watermark" class="preview" />
+  </div>
+
+  <button onclick="saveImages()">💾 Save All</button>
+
+  <script>
+    function previewImage(event, type) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        document.getElementById('preview-' + type).src = reader.result;
+        localStorage.setItem(type + '_image', reader.result); // Save image as base64
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function saveImages() {
+      alert("تمام تصاویر کامیابی سے محفوظ ہو گئیں ✅");
+    }
+  </script>
+</body>
+</html>
