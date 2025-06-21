@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Create New User – HCP</title>
+  <meta charset="UTF-8" />
+  <title>Add New User – HCP System</title>
   <style>
-    body { font-family: sans-serif; background: #f3faff; padding: 30px; }
-    .box { background: white; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto; }
-    input, select, button {
-      width: 100%; margin: 10px 0; padding: 10px; font-size: 15px;
+    body { font-family: sans-serif; background: #f2faff; padding: 30px; }
+    .box {
+      background: white; padding: 20px; max-width: 600px;
+      margin: auto; border-radius: 10px; box-shadow: 0 0 10px #ccc;
     }
-    table { width: 100%; margin-top: 20px; background: #fff; border-collapse: collapse; }
-    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-    .delete-btn { background: red; color: white; border: none; padding: 5px 10px; }
+    input, select, button {
+      width: 100%; padding: 10px; margin: 8px 0;
+      font-size: 15px; border-radius: 5px; border: 1px solid #ccc;
+    }
+    table {
+      width: 100%; border-collapse: collapse;
+      margin-top: 20px; background: #fff;
+    }
+    th, td {
+      border: 1px solid #ccc; padding: 10px; text-align: center;
+    }
+    .delete-btn {
+      background: red; color: white; border: none;
+      padding: 5px 10px; cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -19,16 +31,20 @@
 <div class="box">
   <h2>➕ Add New User</h2>
 
-  <input type="text" id="name" placeholder="Name" />
-  <input type="text" id="cnic" placeholder="CNIC" />
-  <input type="password" id="password" placeholder="Password" />
+  <input type="text" id="name" placeholder="Name" required />
+  <input type="text" id="cnic" placeholder="CNIC (xxxxx-xxxxxxx-x)" required />
+  <input type="password" id="password" placeholder="Password" required />
+  <label><input type="checkbox" onclick="togglePassword()"> Show Password</label>
+
   <select id="role">
-    <option>Store Incharge</option>
-    <option>Finance Officer</option>
-    <option>HR Officer</option>
-    <option>Section Head</option>
+    <option value="Store Incharge">Store Incharge</option>
+    <option value="Finance Officer">Finance Officer</option>
+    <option value="HR Officer">HR Officer</option>
+    <option value="Section Head">Section Head</option>
+    <option value="Employee">Employee</option>
   </select>
-  <input type="text" id="section" placeholder="Section Name" />
+
+  <input type="text" id="section" placeholder="Section Name" required />
   <button onclick="addUser()">➕ Add User</button>
 
   <h3>👥 Current Users</h3>
@@ -46,12 +62,18 @@
   function addUser() {
     const name = document.getElementById("name").value.trim();
     const cnic = document.getElementById("cnic").value.trim();
-    const password = document.getElementById("password").value;
+    const password = document.getElementById("password").value.trim();
     const role = document.getElementById("role").value;
     const section = document.getElementById("section").value.trim();
 
     if (!name || !cnic || !password || !section) {
-      alert("Please fill all fields!");
+      alert("All fields are required!");
+      return;
+    }
+
+    const exists = users.find(u => u.cnic === cnic);
+    if (exists) {
+      alert("User with this CNIC already exists!");
       return;
     }
 
@@ -60,6 +82,7 @@
     localStorage.setItem("users", JSON.stringify(users));
     showUsers();
 
+    // Clear fields
     document.getElementById("name").value = "";
     document.getElementById("cnic").value = "";
     document.getElementById("password").value = "";
@@ -84,13 +107,19 @@
   }
 
   function deleteUser(index) {
-    if (confirm("Delete this user?")) {
+    if (confirm("Are you sure to delete this user?")) {
       users.splice(index, 1);
       localStorage.setItem("users", JSON.stringify(users));
       showUsers();
     }
   }
 
+  function togglePassword() {
+    const pass = document.getElementById("password");
+    pass.type = pass.type === "password" ? "text" : "password";
+  }
+
+  // Initialize
   showUsers();
 </script>
 
