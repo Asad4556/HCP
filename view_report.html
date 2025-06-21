@@ -2,45 +2,64 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Reports – HCP</title>
+  <title>📊 Section-Wise Report – HCP</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #eef5f9;
+    }
+    h2 {
+      text-align: center;
+    }
+    select, button {
+      padding: 10px;
+      margin: 10px 5px;
+      font-size: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
 
-  <script>
-    const allowedRoles = ["Super Admin", "Store Incharge", "Reception Incharge", "Finance Incharge"];
-    const role = localStorage.getItem("role");
-    if (!allowedRoles.includes(role)) {
-      alert("Access Denied ❌ – Only authorized users can view reports.");
-      window.location.href = "login.html";
-    }
-  </script>
+  <h2>📊 Section-Wise Report Viewer</h2>
 
-  <h2>📊 Report View</h2>
+  <label for="sectionSelect">🔍 Select Section:</label>
+  <select id="sectionSelect" onchange="loadData()">
+    <option value="">-- Select Section --</option>
+    <option value="Store">Store</option>
+    <option value="Finance">Finance</option>
+    <option value="Reception">Reception</option>
+    <option value="Logistics">Logistics</option>
+  </select>
 
-  <table>
+  <button onclick="exportToExcel()">📥 Export Excel</button>
+  <button onclick="exportToPDF()">📄 Export PDF</button>
+
+  <table id="reportTable">
     <thead>
       <tr>
         <th>Sr#</th>
-        <th>Item</th>
-        <th>Quantity</th>
+        <th>Data</th>
         <th>Date</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Example -->
-      <tr>
-        <td>1</td>
-        <td>Syringe</td>
-        <td>200</td>
-        <td>2025-06-19</td>
-      </tr>
-    </tbody>
+    <tbody id="reportBody"></tbody>
   </table>
 
-</body>
-</html>
+  <script>
+    // 🔐 Access Control
+    const role = localStorage.getItem("role");
+    if (role !== "S
