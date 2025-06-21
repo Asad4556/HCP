@@ -1,151 +1,93 @@
-<!-- File: user_management.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Management – Save HCP</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Manage Users – HCP</title>
   <style>
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-    }
-    input, button {
-      padding: 10px;
-      margin: 5px 0;
-      width: 100%;
-    }
-    .roles label {
-      margin-right: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-    }
-    th {
-      background: #007bff;
-      color: white;
-    }
-    .logout {
-      float: right;
-      background: #dc3545;
-      color: white;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+    body { font-family: sans-serif; padding: 20px; }
+    input, select, button { margin: 6px 0; padding: 8px; width: 100%; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <button class="logout" onclick="logout()">Logout</button>
-    <h1>HEPATITIS & INFECTION CONTROL PROGRAM</h1>
-    <h2>Super Admin – User Management</h2>
 
-    <form id="userForm">
-      <input type="text" id="cnic" placeholder="CNIC (xxxxx-xxxxxxx-x)" required />
-      <input type="text" id="name" placeholder="Full Name" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <div class="roles">
-        <label><input type="checkbox" value="store" /> Store</label>
-        <label><input type="checkbox" value="voucher" /> Voucher</label>
-        <label><input type="checkbox" value="transfer" /> Transfer</label>
-      </div>
-      <button type="submit">Add User</button>
-    </form>
+  <h2>👤 Add New User</h2>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Sr #</th>
-          <th>CNIC</th>
-          <th>Name</th>
-          <th>Roles</th>
-          <th>Date Added</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="userTable"></tbody>
-    </table>
-  </div>
+  <input type="text" id="name" placeholder="Name" />
+  <input type="text" id="cnic" placeholder="CNIC" />
+  <select id="role">
+    <option value="Store Incharge">Store Incharge</option>
+    <option value="Finance Incharge">Finance Incharge</option>
+    <option value="Reception Incharge">Reception Incharge</option>
+    <option value="Section Holder">Section Holder</option>
+  </select>
+  <input type="text" id="section" placeholder="Section Name" />
+
+  <button onclick="addUser()">➕ Add User</button>
+
+  <h3>👥 Current Users</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Sr#</th>
+        <th>Name</th>
+        <th>CNIC</th>
+        <th>Role</th>
+        <th>Section</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody id="user-list"></tbody>
+  </table>
 
   <script>
-    const loginUser = JSON.parse(localStorage.getItem("loginUser"));
-    if (!loginUser || loginUser.cnic !== "34501-8971113-7") {
-      alert("Only Super Admin can access this page.");
-      window.location.href = "index.html";
-    }
+    let users = JSON.parse(localStorage.getItem("users")) || [];
 
-    const userForm = document.getElementById("userForm");
-    const userTable = document.getElementById("userTable");
-
-    function formatDate(d) {
-      const date = new Date(d);
-      return date.toLocaleDateString() + " " + date.toLocaleTimeString();
-    }
-
-    function loadUsers() {
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      userTable.innerHTML = "";
-      // Sort users: latest on top
-      users.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    function showUsers() {
+      const tbody = document.getElementById("user-list");
+      tbody.innerHTML = "";
       users.forEach((user, index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${user.cnic}</td>
-          <td>${user.name}</td>
-          <td>${user.roles.join(", ")}</td>
-          <td>${formatDate(user.createdAt)}</td>
-          <td><button onclick="deleteUser(${index})">🗑️ Delete</button></td>
+        tbody.innerHTML += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${user.name}</td>
+            <td>${user.cnic}</td>
+            <td>${user.role}</td>
+            <td>${user.section}</td>
+            <td><button onclick="deleteUser(${index})">🗑️</button></td>
+          </tr>
         `;
-        userTable.appendChild(row);
       });
+    }
+
+    function addUser() {
+      const name = document.getElementById("name").value;
+      const cnic = document.getElementById("cnic").value;
+      const role = document.getElementById("role").value;
+      const section = document.getElementById("section").value;
+
+      if (!name || !cnic || !section) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      users.push({ name, cnic, role, section });
+      localStorage.setItem("users", JSON.stringify(users));
+      showUsers();
+      alert("User added successfully ✅");
     }
 
     function deleteUser(index) {
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      users.splice(index, 1);
-      localStorage.setItem("users", JSON.stringify(users));
-      loadUsers();
+      if (confirm("Delete this user?")) {
+        users.splice(index, 1);
+        localStorage.setItem("users", JSON.stringify(users));
+        showUsers();
+      }
     }
 
-    userForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const cnic = document.getElementById("cnic").value.trim();
-      const name = document.getElementById("name").value.trim();
-      const password = document.getElementById("password").value;
-      const roles = Array.from(document.querySelectorAll(".roles input:checked")).map(r => r.value);
-
-      if (!roles.length) return alert("❌ Select at least one role!");
-
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      users.push({
-        cnic,
-        name,
-        password,
-        roles,
-        createdAt: new Date().toISOString()
-      });
-      localStorage.setItem("users", JSON.stringify(users));
-      userForm.reset();
-      loadUsers();
-    });
-
-    function logout() {
-      localStorage.removeItem("loginUser");
-      window.location.href = "index.html";
-    }
-
-    loadUsers();
+    showUsers();
   </script>
+
 </body>
 </html>
