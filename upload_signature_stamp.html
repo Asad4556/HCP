@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Signature & Stamp – HCP</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f3faff;
+      padding: 30px;
+    }
+    .container {
+      background: #fff;
+      padding: 25px;
+      max-width: 600px;
+      margin: auto;
+      border-radius: 10px;
+    }
+    input, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 15px;
+    }
+    img {
+      max-height: 100px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📤 Upload Signature & Stamp</h2>
+    <label>Upload Signature:</label>
+    <input type="file" id="signatureInput" accept="image/*" />
+    <img id="signaturePreview" />
+
+    <label>Upload Stamp:</label>
+    <input type="file" id="stampInput" accept="image/*" />
+    <img id="stampPreview" />
+
+    <button onclick="saveImages()">💾 Save</button>
+  </div>
+
+  <script>
+    function saveImages() {
+      const sigFile = document.getElementById("signatureInput").files[0];
+      const stampFile = document.getElementById("stampInput").files[0];
+
+      const reader1 = new FileReader();
+      const reader2 = new FileReader();
+
+      reader1.onload = () => {
+        localStorage.setItem("hcp_signature", reader1.result);
+        document.getElementById("signaturePreview").src = reader1.result;
+      };
+      reader2.onload = () => {
+        localStorage.setItem("hcp_stamp", reader2.result);
+        document.getElementById("stampPreview").src = reader2.result;
+      };
+
+      if (sigFile) reader1.readAsDataURL(sigFile);
+      if (stampFile) reader2.readAsDataURL(stampFile);
+
+      alert("Images Saved Successfully ✅");
+    }
+
+    // Preview if already saved
+    window.onload = () => {
+      document.getElementById("signaturePreview").src = localStorage.getItem("hcp_signature");
+      document.getElementById("stampPreview").src = localStorage.getItem("hcp_stamp");
+    };
+  </script>
+</body>
+</html>
