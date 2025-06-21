@@ -2,52 +2,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Generate Voucher – Save HCP</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Voucher Section – Save HCP</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      font-weight: bold;
-    }
-    button.logout {
-      float: right;
-      background: #dc3545;
-      color: white;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2 { text-align: center; font-weight: bold; }
+    .form-section { max-width: 800px; margin: auto; }
+    .form-section input { width: 100%; margin-bottom: 10px; padding: 10px; }
+    .field-container { display: flex; gap: 10px; margin-bottom: 10px; }
+    .field-container input { flex: 1; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background: #007bff; color: white; }
+    .logout { position: absolute; top: 20px; right: 20px; background: #dc3545; color: white; padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <button class="logout" onclick="logout()">Logout</button>
-    <h1>HEPATITIS & INFECTION CONTROL PROGRAM</h1>
-    <h2 style="text-align:center;">Voucher Maker Panel</h2>
+  <button class="logout" onclick="logout()">Logout</button>
+  <h1>HEPATITIS & INFECTION CONTROL PROGRAM</h1>
+  <h2>Voucher Section Panel</h2>
 
-    <!-- Your voucher generation form goes here -->
+  <div class="form-section">
+    <div id="formatArea">
+      <h3>📋 Define Voucher Format</h3>
+      <div id="fieldList">
+        <input type="text" placeholder="Field Name (e.g., Name)" />
+      </div>
+      <button onclick="addField()">+ Add Another Field</button>
+      <button onclick="saveFormat()">💾 Save Format</button>
+    </div>
 
+    <div id="entryArea" style="display:none;">
+      <h3>🧾 Create New Voucher</h3>
+      <form id="entryForm"></form>
+      <button onclick="saveEntry()">Save Voucher</button>
+      <button onclick="resetFormat()" style="background:#dc3545;color:white;">Reset Format</button>
+
+      <table id="dataTable">
+        <thead><tr id="tableHead"></tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
   </div>
 
   <script>
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
     if (!loginUser || !loginUser.roles.includes("voucher")) {
-      alert("Access denied! You are not authorized for this section.");
+      alert("Access denied!");
       window.location.href = "index.html";
     }
 
-    function logout() {
-      localStorage.removeItem("loginUser");
-      window.location.href = "index.html";
+    const formatKey = "voucherFormat";
+    const dataKey = "voucherData";
+
+    let voucherFormat = JSON.parse(localStorage.getItem(formatKey)) || [];
+    let voucherData = JSON.parse(localStorage.getItem(dataKey)) || [];
+
+    const fieldList = document.getElementById("fieldList");
+    const entryForm = document.getElementById("entryForm");
+    const tableHead = document.getElementById("tableHead");
+    const tableBody = document.getElementById("tableBody");
+
+    function addField() {
+      const input = document.createElement("input");
+      input.placeholder = "Field Name (e.g., Amount)";
+      fieldList.appendChild(input);
     }
-  </script>
-</body>
-</html>
+
+    function saveFormat() {
+      const inputs = fieldList.querySelectorAll("input");
+      const fields = Array.from(inputs).map(input => input.value.trim()).filter(Boolean);
+      if (fields.length === 0) return alert("Enter at least one field!");
+      voucherFormat = fields;
+      localStorage.setItem(formatKey, JSON.stringify(voucherFormat));
+      renderEntryForm();
+    }
+
+    function renderEntryForm() {
+      document.getElementById("formatArea").style.display = "none";
+      document.getElementById("entryArea").style.display = "block";
+      entryForm.innerHTML = "";
+      tableHead.innerHTML = "<th>Sr#</th>";
+      voucherFormat.forEach(field => {
+        const input = document.createElement("input");
+        input.placeholder = field;
+        input.name = field;
+        entryForm.appendChild(input);
+        const th = document.createElement("th");
+        th.textContent = field;
+        tableHead.appendChild(th);
+      });
+      const thDate = document.createElement("th");
+      thDate.textContent = "Date";
+      tableHead.appendChild(thDate);
+      renderTable();
+    }
+
+    function saveEntry() {
+      const inputs = entryForm.querySelectorAll("input");
+      const entry = {};
+      inputs.forEach(input => {
+        entry[input.name] = input.value.trim();
+      });
+      entry.date = new Date().toLocaleString();
+      voucherData.push(entry);
+      localStorage.setItem(dataKey, JSON.stringify(voucherData));
+      renderTable();
+      entryForm.reset();
+    }
+
+    function renderTable() {
+      tableBody.innerHTML = "";
+      voucherData.forEach((entry, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${index + 1}</td>`;
+        voucherFormat.forEach(field => {
+          row.innerHTML += `<td>${entry[field] || ""}</td>`;
+        });
+        row.innerHTML += `<td>${entry.date}</td>`;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function resetFormat() {
+      if (confirm("This will erase all data and format. Are you sure?")) {
+        localStorage.removeItem(formatKey);
+        localStorage.removeItem(dataKey);
+        window.location.reload();
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("loginUser"
