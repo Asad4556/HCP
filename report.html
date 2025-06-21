@@ -61,4 +61,86 @@
     const fieldList = document.getElementById("fieldList");
     const entryForm = document.getElementById("entryForm");
     const tableHead = document.getElementById("tableHead");
-    const tableBody = document.getElementById(
+    const tableBody = document.getElementById("tableBody");
+
+    function addField() {
+      const input = document.createElement("input");
+      input.placeholder = "Field Name (e.g., Quantity)";
+      fieldList.appendChild(input);
+    }
+
+    function saveFormat() {
+      const inputs = fieldList.querySelectorAll("input");
+      const fields = Array.from(inputs).map(input => input.value.trim()).filter(Boolean);
+      if (fields.length === 0) return alert("Enter at least one field!");
+      transferFormat = fields;
+      localStorage.setItem(formatKey, JSON.stringify(transferFormat));
+      renderEntryForm();
+    }
+
+    function renderEntryForm() {
+      document.getElementById("formatArea").style.display = "none";
+      document.getElementById("entryArea").style.display = "block";
+      entryForm.innerHTML = "";
+      tableHead.innerHTML = "<th>Sr#</th>";
+      transferFormat.forEach(field => {
+        const input = document.createElement("input");
+        input.placeholder = field;
+        input.name = field;
+        entryForm.appendChild(input);
+        const th = document.createElement("th");
+        th.textContent = field;
+        tableHead.appendChild(th);
+      });
+      const thDate = document.createElement("th");
+      thDate.textContent = "Date";
+      tableHead.appendChild(thDate);
+      renderTable();
+    }
+
+    function saveEntry() {
+      const inputs = entryForm.querySelectorAll("input");
+      const entry = {};
+      inputs.forEach(input => {
+        entry[input.name] = input.value.trim();
+      });
+      entry.date = new Date().toLocaleString();
+      transferData.push(entry);
+      localStorage.setItem(dataKey, JSON.stringify(transferData));
+      renderTable();
+      entryForm.reset();
+    }
+
+    function renderTable() {
+      tableBody.innerHTML = "";
+      transferData.forEach((entry, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${index + 1}</td>`;
+        transferFormat.forEach(field => {
+          row.innerHTML += `<td>${entry[field] || ""}</td>`;
+        });
+        row.innerHTML += `<td>${entry.date}</td>`;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function resetFormat() {
+      if (confirm("This will erase all data and format. Are you sure?")) {
+        localStorage.removeItem(formatKey);
+        localStorage.removeItem(dataKey);
+        window.location.reload();
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("loginUser");
+      window.location.href = "index.html";
+    }
+
+    // Auto render if format exists
+    if (transferFormat.length > 0) {
+      renderEntryForm();
+    }
+  </script>
+</body>
+</html>
