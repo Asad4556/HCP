@@ -1,23 +1,29 @@
-<!-- File: manage_users.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
-  <meta charset="UTF-8" />
-  <title>Manage Store Incharges – HCP</title>
+  <meta charset="UTF-8">
+  <title>👤 Store Incharge Users – HCP</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
+      background-color: #1e1e2f;
+      color: #fff;
       padding: 20px;
-      background: #1e1e2f;
-      color: white;
+      direction: rtl;
     }
+    h2, h3 { text-align: center; }
     input, button {
-      margin: 6px 0;
-      padding: 10px;
       width: 100%;
+      padding: 10px;
+      margin: 8px 0;
       border-radius: 5px;
       border: none;
+    }
+    button {
+      background-color: #00bfff;
+      color: white;
+      font-weight: bold;
     }
     table {
       width: 100%;
@@ -26,7 +32,7 @@
     }
     th, td {
       border: 1px solid #555;
-      padding: 10px;
+      padding: 8px;
       text-align: center;
       background-color: #2e2e3f;
     }
@@ -37,22 +43,24 @@
 </head>
 <body>
 
-  <h2>👤 Add Store Incharge</h2>
+  <h2>➕ نیا اسٹور انچارج شامل کریں</h2>
 
-  <input type="text" id="name" placeholder="Name" />
-  <input type="text" id="cnic" placeholder="CNIC" />
-  <input type="password" id="password" placeholder="Password" />
-  <button onclick="addUser()">➕ Add Incharge</button>
+  <input type="text" id="name" placeholder="نام" />
+  <input type="text" id="cnic" placeholder="شناختی کارڈ نمبر" />
+  <input type="text" id="section" placeholder="اسٹور کا نام" />
+  <input type="password" id="password" placeholder="پاسورڈ" />
+  <button onclick="addUser()">یوزر شامل کریں</button>
 
-  <h3>👥 Current Store Incharges</h3>
+  <h3>👥 موجودہ اسٹور انچارج</h3>
   <table>
     <thead>
       <tr>
-        <th>Sr#</th>
-        <th>Name</th>
-        <th>CNIC</th>
-        <th>Password</th>
-        <th>Delete</th>
+        <th>نمبر</th>
+        <th>نام</th>
+        <th>شناختی کارڈ</th>
+        <th>اسٹور</th>
+        <th>پاسورڈ</th>
+        <th>ڈیلیٹ</th>
       </tr>
     </thead>
     <tbody id="user-list"></tbody>
@@ -65,36 +73,40 @@
       const tbody = document.getElementById("user-list");
       tbody.innerHTML = "";
       users.forEach((user, index) => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${user.name}</td>
-            <td>${user.cnic}</td>
-            <td>${user.password}</td>
-            <td><button onclick="deleteUser(${index})">🗑️</button></td>
-          </tr>
-        `;
+        if (user.role === "store incharge") {
+          tbody.innerHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${user.name}</td>
+              <td>${user.cnic}</td>
+              <td>${user.section}</td>
+              <td>${user.password}</td>
+              <td><button onclick="deleteUser(${index})">🗑️</button></td>
+            </tr>
+          `;
+        }
       });
     }
 
     function addUser() {
       const name = document.getElementById("name").value;
       const cnic = document.getElementById("cnic").value;
+      const section = document.getElementById("section").value;
       const password = document.getElementById("password").value;
 
-      if (!name || !cnic || !password) {
-        alert("⚠️ Please fill all fields");
+      if (!name || !cnic || !section || !password) {
+        alert("براہ کرم تمام خانے پُر کریں");
         return;
       }
 
-      users.push({ name, cnic, password, role: "store incharge" });
+      users.push({ name, cnic, section, password, role: "store incharge" });
       localStorage.setItem("users", JSON.stringify(users));
       showUsers();
-      alert("✅ Store Incharge added successfully");
+      alert("✅ اسٹور انچارج کامیابی سے شامل ہو گیا");
     }
 
     function deleteUser(index) {
-      if (confirm("❌ Delete this user?")) {
+      if (confirm("کیا آپ اس یوزر کو ڈیلیٹ کرنا چاہتے ہیں؟")) {
         users.splice(index, 1);
         localStorage.setItem("users", JSON.stringify(users));
         showUsers();
