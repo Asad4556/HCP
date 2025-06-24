@@ -13,56 +13,64 @@
 
   <section>
     <form id="uploadForm">
-      <label>Upload Signature:
-        <input type="file" id="signatureFile" accept="image/*" />
-      </label><br />
-      <label>Upload Stamp:
-        <input type="file" id="stampFile" accept="image/*" />
-      </label><br />
-      <button type="submit">📥 Save</button>
+      <label>Upload Signature:</label>
+      <input type="file" id="signatureInput" accept="image/*" required />
+
+      <label>Upload Company Stamp:</label>
+      <input type="file" id="stampInput" accept="image/*" required />
+
+      <button type="submit">💾 Save</button>
     </form>
 
-    <h3>🔍 Preview</h3>
     <div id="previewArea">
-      <p><strong>Signature:</strong></p>
-      <img id="sigPreview" width="150" />
-      <p><strong>Stamp:</strong></p>
-      <img id="stampPreview" width="150" />
+      <h3>Preview</h3>
+      <div style="display: flex; justify-content: space-around;">
+        <div>
+          <p>Signature</p>
+          <img id="signaturePreview" src="" width="150" />
+        </div>
+        <div>
+          <p>Stamp</p>
+          <img id="stampPreview" src="" width="150" />
+        </div>
+      </div>
     </div>
   </section>
 
   <script>
+    const signatureInput = document.getElementById('signatureInput');
+    const stampInput = document.getElementById('stampInput');
+    const sigPreview = document.getElementById('signaturePreview');
+    const stampPreview = document.getElementById('stampPreview');
+
     document.getElementById('uploadForm').addEventListener('submit', function (e) {
       e.preventDefault();
 
-      const signatureFile = document.getElementById('signatureFile').files[0];
-      const stampFile = document.getElementById('stampFile').files[0];
-
-      if (signatureFile) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          localStorage.setItem('signatureImage', reader.result);
-          document.getElementById('sigPreview').src = reader.result;
+      if (signatureInput.files[0]) {
+        const reader1 = new FileReader();
+        reader1.onload = () => {
+          localStorage.setItem('signatureImage', reader1.result);
+          sigPreview.src = reader1.result;
         };
-        reader.readAsDataURL(signatureFile);
+        reader1.readAsDataURL(signatureInput.files[0]);
       }
 
-      if (stampFile) {
+      if (stampInput.files[0]) {
         const reader2 = new FileReader();
         reader2.onload = () => {
           localStorage.setItem('stampImage', reader2.result);
-          document.getElementById('stampPreview').src = reader2.result;
+          stampPreview.src = reader2.result;
         };
-        reader2.readAsDataURL(stampFile);
+        reader2.readAsDataURL(stampInput.files[0]);
       }
     });
 
-    // Load previews if available
-    window.onload = function () {
+    // Load existing previews on page load
+    window.onload = () => {
       const sig = localStorage.getItem('signatureImage');
       const stamp = localStorage.getItem('stampImage');
-      if (sig) document.getElementById('sigPreview').src = sig;
-      if (stamp) document.getElementById('stampPreview').src = stamp;
+      if (sig) sigPreview.src = sig;
+      if (stamp) stampPreview.src = stamp;
     };
   </script>
 </body>
