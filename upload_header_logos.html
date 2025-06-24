@@ -13,58 +13,65 @@
 
   <section>
     <form id="logoForm">
-      <label>Govt. of Punjab Logo (Left):</label>
-      <input type="file" id="govtLogo" accept="image/*" />
+      <label>Left Logo (Govt. of Punjab)</label>
+      <input type="file" id="leftLogo" accept="image/*" required />
 
-      <label>HCP Logo (Right):</label>
-      <input type="file" id="hcpLogo" accept="image/*" />
+      <label>Right Logo (HCP Logo)</label>
+      <input type="file" id="rightLogo" accept="image/*" required />
 
       <button type="submit">💾 Save Logos</button>
     </form>
 
-    <h3>🖼️ Preview</h3>
-    <div id="logoPreview" style="display: flex; justify-content: space-between; align-items: center;">
-      <img id="leftLogo" src="" width="120" />
-      <h2 style="text-align: center;">HEPATITIS & INFECTION CONTROL PROGRAM</h2>
-      <img id="rightLogo" src="" width="120" />
+    <hr />
+    <h3>Current Logos</h3>
+    <div style="display: flex; justify-content: space-around;">
+      <div>
+        <p>Left (Govt)</p>
+        <img id="leftPreview" width="100" />
+      </div>
+      <div>
+        <p>Right (HCP)</p>
+        <img id="rightPreview" width="100" />
+      </div>
     </div>
   </section>
 
   <script>
-    const govtLogoInput = document.getElementById('govtLogo');
-    const hcpLogoInput = document.getElementById('hcpLogo');
+    const form = document.getElementById('logoForm');
+    const leftPreview = document.getElementById('leftPreview');
+    const rightPreview = document.getElementById('rightPreview');
 
-    const leftLogo = document.getElementById('leftLogo');
-    const rightLogo = document.getElementById('rightLogo');
-
-    document.getElementById('logoForm').addEventListener('submit', function (e) {
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      if (govtLogoInput.files[0]) {
-        const reader1 = new FileReader();
-        reader1.onload = () => {
-          localStorage.setItem('govtLogo', reader1.result);
-          leftLogo.src = reader1.result;
+      const leftFile = document.getElementById('leftLogo').files[0];
+      const rightFile = document.getElementById('rightLogo').files[0];
+
+      if (leftFile) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          localStorage.setItem('govtLogo', reader.result);
+          leftPreview.src = reader.result;
         };
-        reader1.readAsDataURL(govtLogoInput.files[0]);
+        reader.readAsDataURL(leftFile);
       }
 
-      if (hcpLogoInput.files[0]) {
+      if (rightFile) {
         const reader2 = new FileReader();
         reader2.onload = () => {
           localStorage.setItem('hcpLogo', reader2.result);
-          rightLogo.src = reader2.result;
+          rightPreview.src = reader2.result;
         };
-        reader2.readAsDataURL(hcpLogoInput.files[0]);
+        reader2.readAsDataURL(rightFile);
       }
     });
 
-    window.onload = function () {
-      const storedGovtLogo = localStorage.getItem('govtLogo');
-      const storedHcpLogo = localStorage.getItem('hcpLogo');
-
-      if (storedGovtLogo) leftLogo.src = storedGovtLogo;
-      if (storedHcpLogo) rightLogo.src = storedHcpLogo;
+    // Load existing logos if already saved
+    window.onload = () => {
+      const govt = localStorage.getItem('govtLogo');
+      const hcp = localStorage.getItem('hcpLogo');
+      if (govt) leftPreview.src = govt;
+      if (hcp) rightPreview.src = hcp;
     };
   </script>
 </body>
