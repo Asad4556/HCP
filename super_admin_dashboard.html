@@ -3,54 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <title>Super Admin Dashboard - HCP</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      background: #121212;
+    body { font-family: 'Segoe UI', sans-serif; background: #1e1e2f; color: white; text-align: center; padding: 40px; }
+    h2 { margin-bottom: 30px; }
+    .btn-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 500px; margin: 0 auto; }
+    button {
+      padding: 15px;
+      background: linear-gradient(to right, #007bff, #00ffcc);
       color: white;
-      font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
-    }
-    h1 {
-      font-size: 2.5rem;
-      background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88, #ffcc00, #ff6699);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 20px;
-    }
-    nav a {
-      display: inline-block;
-      margin: 10px 15px;
-      padding: 15px 25px;
-      background: #222;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
       font-weight: bold;
-      transition: background 0.3s ease;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
-    nav a:hover {
-      background: #00ff88;
-      color: #121212;
+    button:hover {
+      background: linear-gradient(to left, #00ffcc, #007bff);
     }
   </style>
 </head>
 <body>
-  <h1>Welcome Super Admin! 🎉</h1>
-  <nav>
-    <a href="hr.html">HR Section</a>
-    <a href="finance.html">Finance Section</a>
-    <a href="store.html">Store Section</a>
-    <a href="reception.html">Reception Section</a>
-    <a href="admin.html">Admin Section</a>
-    <a href="logout.html" onclick="logout()">Logout</a>
-  </nav>
-
-  <script>
-    function logout() {
-      localStorage.removeItem('currentUser');
-      alert('Logged out successfully');
-      window.location.href = 'login.html';
-    }
-  </script>
+  <h2>Welcome Super Admin 🎩 – HEPATITIS & INFECTION CONTROL PROGRAM</h2>
+  
+  <div class="btn-group">
+    <a href="manage_users.html"><button>👥 Manage Users</button></a>
+    <a href="upload_header_logos.html"><button>🖼️ Upload Header Logos</button></a>
+    <a href="upload_signature_stamp.html"><button>✍️ Upload Signature & Stamp</button></a>
+    <a href="voucher_format.html"><button>📋 Create Voucher Format</button></a>
+    <a href="voucher_generate.html"><button>🧾 Generate Voucher</button></a>
+    <a href="view_report.html"><button>📊 View Reports</button></a>
+    <a href="hr.html"><button>👨‍💼 HR Section</button></a>
+    <a href="finance.html"><button>💰 Finance Section</button></a>
+    <a href="store.html"><button>📦 Store Section</button></a>
+    <a href="reception.html"><button>🛎️ Reception Section</button></a>
+    <a href="admin.html"><button>📁 Admin Section</button></a>
+    <a href="login.html"><button>🚪 Logout</button></a>
+  </div>
 </body>
 </html>
