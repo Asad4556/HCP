@@ -1,1 +1,71 @@
-<h2>Upload Header Logos</h2>
+<!-- upload_header_logos.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Header Logos - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h2>🖼️ Upload Header Logos</h2>
+  </header>
+
+  <section>
+    <form id="logoForm">
+      <label>Govt. of Punjab Logo (Left):</label>
+      <input type="file" id="govtLogo" accept="image/*" />
+
+      <label>HCP Logo (Right):</label>
+      <input type="file" id="hcpLogo" accept="image/*" />
+
+      <button type="submit">💾 Save Logos</button>
+    </form>
+
+    <h3>🖼️ Preview</h3>
+    <div id="logoPreview" style="display: flex; justify-content: space-between; align-items: center;">
+      <img id="leftLogo" src="" width="120" />
+      <h2 style="text-align: center;">HEPATITIS & INFECTION CONTROL PROGRAM</h2>
+      <img id="rightLogo" src="" width="120" />
+    </div>
+  </section>
+
+  <script>
+    const govtLogoInput = document.getElementById('govtLogo');
+    const hcpLogoInput = document.getElementById('hcpLogo');
+
+    const leftLogo = document.getElementById('leftLogo');
+    const rightLogo = document.getElementById('rightLogo');
+
+    document.getElementById('logoForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      if (govtLogoInput.files[0]) {
+        const reader1 = new FileReader();
+        reader1.onload = () => {
+          localStorage.setItem('govtLogo', reader1.result);
+          leftLogo.src = reader1.result;
+        };
+        reader1.readAsDataURL(govtLogoInput.files[0]);
+      }
+
+      if (hcpLogoInput.files[0]) {
+        const reader2 = new FileReader();
+        reader2.onload = () => {
+          localStorage.setItem('hcpLogo', reader2.result);
+          rightLogo.src = reader2.result;
+        };
+        reader2.readAsDataURL(hcpLogoInput.files[0]);
+      }
+    });
+
+    window.onload = function () {
+      const storedGovtLogo = localStorage.getItem('govtLogo');
+      const storedHcpLogo = localStorage.getItem('hcpLogo');
+
+      if (storedGovtLogo) leftLogo.src = storedGovtLogo;
+      if (storedHcpLogo) rightLogo.src = storedHcpLogo;
+    };
+  </script>
+</body>
+</html>
