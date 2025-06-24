@@ -1,1 +1,48 @@
-<!-- User List -->
+<!-- user_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>👥 User List - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h2>👥 Current User List</h2>
+  </header>
+
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <th>Sr#</th>
+          <th>Name</th>
+          <th>CNIC</th>
+          <th>Role</th>
+          <th>Section</th>
+          <th>Password</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
+  </section>
+
+  <script>
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const table = document.getElementById("userTable");
+
+    users.forEach((u, i) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${u.name}</td>
+        <td>${u.cnic}</td>
+        <td>${u.role}</td>
+        <td>${u.section}</td>
+        <td>${u.password}</td>
+      `;
+      table.appendChild(row);
+    });
+  </script>
+</body>
+</html>
