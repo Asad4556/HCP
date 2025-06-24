@@ -2,37 +2,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Super Admin Dashboard - HCP</title>
+  <meta charset="UTF-8">
+  <title>🛠️ Super Admin Panel - HCP</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <img src="" id="leftLogo" width="90" />
-      <h2>HEPATITIS & INFECTION CONTROL PROGRAM<br/>Super Admin Panel</h2>
-      <img src="" id="rightLogo" width="90" />
-    </div>
+    <h2>HEPATITIS & INFECTION CONTROL PROGRAM</h2>
+    <h3>Super Admin Panel</h3>
   </header>
 
-  <section style="text-align: center;">
-    <a href="store.html"><button>🧾 Store Management</button></a>
-    <a href="create_voucher_format.html"><button>📋 Create Voucher Format</button></a>
-    <a href="generate_voucher.html"><button>📝 Generate Voucher</button></a>
-    <a href="upload_signature_stamp.html"><button>📤 Upload Signature & Stamp</button></a>
-    <a href="upload_header_logos.html"><button>🖼️ Upload Header Logos</button></a>
-    <a href="create_user.html"><button>👥 Add New User</button></a>
-    <a href="view_report.html"><button>📊 View Reports</button></a>
-    <a href="change_password.html"><button>🔑 Change Password</button></a>
-    <a href="login.html"><button>🔓 Logout</button></a>
-  </section>
+  <section>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+      <a href="store.html"><button>🧾 Store Management</button></a>
+      <a href="create_voucher_format.html"><button>📋 Create Voucher Format</button></a>
+      <a href="generate_voucher.html"><button>📝 Generate Voucher</button></a>
+      <a href="upload_signature_stamp.html"><button>📤 Upload Signatures & Stamp</button></a>
+      <a href="user_management.html"><button>👤 Manage Users</button></a>
+      <a href="view_report.html"><button>📊 View Reports</button></a>
+      <a href="upload_header_logos.html"><button>📌 Upload Header Logos</button></a>
+      <a href="export_backup.html"><button>💾 Export Backup</button></a>
+      <a href="add_section.html"><button>➕ Add New Section</button></a>
+    </div>
 
-  <script>
-    // Load saved header logos
-    const leftLogo = localStorage.getItem('govtLogo');
-    const rightLogo = localStorage.getItem('hcpLogo');
-    if (leftLogo) document.getElementById('leftLogo').src = leftLogo;
-    if (rightLogo) document.getElementById('rightLogo').src = rightLogo;
-  </script>
+    <p style="text-align:center; margin-top: 30px;"><a href="login.html">🔓 Logout</a></p>
+  </section>
 </body>
 </html>
