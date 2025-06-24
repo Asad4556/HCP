@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Create Voucher Format - HCP</title>
+  <title>📄 Create Voucher Format - HCP</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h2>📋 Create Voucher Format</h2>
+    <h2>📄 Create Voucher Format</h2>
   </header>
 
   <section>
     <form id="formatForm">
-      <input type="text" id="formatName" placeholder="Format Name (e.g. Purchase, Medicine, Asset)" required />
-      <textarea id="formatTemplate" placeholder="Write format layout here..." rows="8" required></textarea>
+      <input type="text" id="formatName" placeholder="Format Name (e.g. Purchase, Medicine)" required />
+      <textarea id="formatTemplate" placeholder="Write format layout or notes here..." rows="8" required></textarea>
       <button type="submit">💾 Save Format</button>
     </form>
 
@@ -22,12 +22,6 @@
   </section>
 
   <script>
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    if (!user || user.role !== 'super admin') {
-      alert("🚫 Unauthorized Access!");
-      window.location.href = "login.html";
-    }
-
     const formatForm = document.getElementById('formatForm');
     const formatList = document.getElementById('formatList');
 
@@ -36,7 +30,7 @@
       formatList.innerHTML = '';
       formats.forEach((f, index) => {
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${index + 1}. ${f.name}</strong> - ${f.template.slice(0, 50)}...`;
+        li.innerHTML = `<strong>${index + 1}. ${f.name}</strong> - ${f.template.slice(0, 60)}...`;
         formatList.appendChild(li);
       });
     }
@@ -51,7 +45,6 @@
       localStorage.setItem('voucherFormats', JSON.stringify(formats));
       formatForm.reset();
       loadFormats();
-      alert("✅ Voucher format saved successfully!");
     });
 
     loadFormats();
