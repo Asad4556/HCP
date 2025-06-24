@@ -1,88 +1,74 @@
-<!-- voucher_format.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Create Voucher Format - HCP</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>📂 Upload Voucher Format - HCP</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #f4f4f4; }
+    .upload-box { background: white; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+    input[type="file"] { margin-bottom: 10px; }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+  </style>
 </head>
 <body>
-  <header>
-    <h2>📋 Create Voucher Format</h2>
-  </header>
-
-  <section>
-    <form id="formatForm">
-      <input type="text" id="formatName" placeholder="Format Name (e.g. Purchase, Medicine)" required />
-      <textarea id="formatTemplate" placeholder="Write format layout here..." rows="8" required></textarea>
-      <button type="submit">💾 Save Text Format</button>
-    </form>
-
-    <hr/>
-
+  <div class="upload-box">
+    <h2>📂 Upload Voucher Format (PDF, DOCX, XLSX)</h2>
     <form id="uploadForm">
-      <h3>📤 Upload Voucher Format (Word / PDF / Excel)</h3>
-      <input type="file" id="fileInput" accept=".doc,.docx,.pdf,.xls,.xlsx" required />
-      <input type="text" id="fileFormatName" placeholder="Format Name (e.g. Equipment PDF)" required />
-      <button type="submit">📁 Upload File Format</button>
+      <input type="file" id="voucherFile" accept=".pdf,.doc,.docx,.xls,.xlsx" required>
+      <button type="submit">💾 Save Format</button>
     </form>
 
-    <h3>🗂️ Saved Formats</h3>
-    <ul id="formatList"></ul>
-  </section>
+    <h3>📁 Uploaded Files</h3>
+    <table id="fileTable">
+      <thead>
+        <tr>
+          <th>Sr#</th>
+          <th>File Name</th>
+          <th>Download</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <script>
-    const formatList = document.getElementById('formatList');
+    const uploadForm = document.getElementById('uploadForm');
+    const voucherFile = document.getElementById('voucherFile');
+    const fileTable = document.querySelector('#fileTable tbody');
 
-    function loadFormats() {
-      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
-      const uploads = JSON.parse(localStorage.getItem('voucherFiles')) || [];
-
-      formatList.innerHTML = '';
-
-      formats.forEach((f, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>${index + 1}. ${f.name}</strong> - ${f.template.slice(0, 40)}...`;
-        formatList.appendChild(li);
-      });
-
-      uploads.forEach((f, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>📁 ${f.name}</strong> - <a href="${f.file}" download="${f.name}">Download</a>`;
-        formatList.appendChild(li);
+    function loadFiles() {
+      const files = JSON.parse(localStorage.getItem('uploadedVoucherFiles')) || [];
+      fileTable.innerHTML = '';
+      files.forEach((file, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${file.name}</td>
+          <td><a href="${file.url}" download="${file.name}">⬇️ Download</a></td>
+        `;
+        fileTable.appendChild(tr);
       });
     }
 
-    document.getElementById('formatForm').addEventListener('submit', function (e) {
+    uploadForm.addEventListener('submit', e => {
       e.preventDefault();
-      const name = document.getElementById('formatName').value;
-      const template = document.getElementById('formatTemplate').value;
-
-      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
-      formats.push({ name, template });
-      localStorage.setItem('voucherFormats', JSON.stringify(formats));
-      this.reset();
-      loadFormats();
+      const file = voucherFile.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          let files = JSON.parse(localStorage.getItem('uploadedVoucherFiles')) || [];
+          files.push({ name: file.name, url: reader.result });
+          localStorage.setItem('uploadedVoucherFiles', JSON.stringify(files));
+          loadFiles();
+          alert('✅ File uploaded successfully!');
+        };
+        reader.readAsDataURL(file);
+      }
     });
 
-    document.getElementById('uploadForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const file = document.getElementById('fileInput').files[0];
-      const name = document.getElementById('fileFormatName').value;
-
-      const reader = new FileReader();
-      reader.onload = function () {
-        const uploads = JSON.parse(localStorage.getItem('voucherFiles')) || [];
-        uploads.push({ name, file: reader.result });
-        localStorage.setItem('voucherFiles', JSON.stringify(uploads));
-        loadFormats();
-      };
-      reader.readAsDataURL(file);
-
-      this.reset();
-    });
-
-    loadFormats();
+    loadFiles();
   </script>
 </body>
 </html>
