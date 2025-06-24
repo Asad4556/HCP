@@ -2,56 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🗂️ Create Voucher Format - HCP</title>
+  <title>📋 Create Voucher Format - HCP</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      background-color: #1e1e2f;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
-    }
-    textarea, input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 6px;
-    }
-    section {
-      background-color: #2e2e3f;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      background: #444;
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 6px;
-    }
-  </style>
 </head>
 <body>
   <header>
-    <h2>🗂️ Create Voucher Format</h2>
+    <h2>📋 Create Voucher Format</h2>
   </header>
 
   <section>
     <form id="formatForm">
-      <input type="text" id="formatName" placeholder="Format Name (e.g. Medicine, Asset, Purchase)" required />
-      <textarea id="formatTemplate" placeholder="Write template layout here..." rows="8" required></textarea>
+      <input type="text" id="formatName" placeholder="Format Name (e.g. Purchase, Medicine, Asset)" required />
+      <textarea id="formatTemplate" placeholder="Write format layout here..." rows="8" required></textarea>
       <button type="submit">💾 Save Format</button>
     </form>
 
-    <h3>📄 Saved Formats</h3>
+    <h3>🗂️ Saved Formats</h3>
     <ul id="formatList"></ul>
   </section>
 
   <script>
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+
+    // Only super admin can access this
+    if (!user || user.role !== 'super admin') {
+      alert("🚫 Unauthorized Access!");
+      window.location.href = "login.html";
+    }
+
     const formatForm = document.getElementById('formatForm');
     const formatList = document.getElementById('formatList');
 
@@ -60,22 +38,21 @@
       formatList.innerHTML = '';
       formats.forEach((f, index) => {
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${index + 1}. ${f.name}</strong><br/><small>${f.template.slice(0, 60)}...</small>`;
+        li.innerHTML = `<strong>${index + 1}. ${f.name}</strong> - ${f.template.slice(0, 50)}...`;
         formatList.appendChild(li);
       });
     }
 
     formatForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      const name = document.getElementById('formatName').value.trim();
-      const template = document.getElementById('formatTemplate').value.trim();
+      const name = document.getElementById('formatName').value;
+      const template = document.getElementById('formatTemplate').value;
 
       const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
       formats.push({ name, template });
       localStorage.setItem('voucherFormats', JSON.stringify(formats));
       formatForm.reset();
       loadFormats();
-      alert("✅ Format Saved Successfully");
     });
 
     loadFormats();
