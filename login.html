@@ -1,159 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>HCP Login</title>
+  <meta charset="UTF-8">
+  <title>Super Admin Login - HCP</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      background-color: #1e1e2f;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    .login-box {
-      width: 350px;
+    .login-container {
+      max-width: 400px;
       margin: 100px auto;
-      padding: 25px;
-      border-radius: 10px;
-      background: #2e2e3f;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-      text-align: center;
+      padding: 30px;
+      background-color: #2e2e3f;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     }
-    input {
+    .login-container input,
+    .login-container button {
       width: 100%;
       padding: 10px;
-      margin-bottom: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
       border: none;
-      border-radius: 5px;
-      font-size: 16px;
     }
-    button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
+    .toggle-btn {
+      background-color: #555;
       color: white;
-      font-weight: bold;
+      border: none;
+      padding: 5px 10px;
+      margin-left: 10px;
       cursor: pointer;
-      font-size: 16px;
+      border-radius: 5px;
     }
-    button:hover {
-      background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
+    .links {
+      display: flex;
+      justify-content: space-between;
     }
-    .password-container {
-      position: relative;
-      width: 100%;
-      margin-bottom: 12px;
-    }
-    .password-container input {
-      width: 100%;
-      padding-right: 40px;
-      box-sizing: border-box;
-      font-size: 16px;
-    }
-    .toggle-password {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 14px;
-      color: #aaa;
-      user-select: none;
-    }
-    .change-pass-link {
-      display: block;
-      margin-top: 10px;
-      font-size: 14px;
-      color: #00aaff;
-      cursor: pointer;
-      text-decoration: underline;
-      text-align: right;
+    .links a {
+      color: #00d4ff;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <div class="login-box">
-    <h2>HCP Login</h2>
-    <input type="text" id="cnic" placeholder="Enter CNIC (e.g. 34501-8971113-7)" autocomplete="off" />
-    
-    <div class="password-container">
-      <input type="password" id="password" placeholder="Enter Password" autocomplete="off" />
-      <span class="toggle-password" onclick="togglePassword()">Show</span>
+  <div class="login-container">
+    <h2>🔐 Super Admin Login</h2>
+    <input type="text" id="cnic" placeholder="Enter CNIC" required />
+    <div style="position: relative;">
+      <input type="password" id="password" placeholder="Enter Password" required />
+      <button type="button" class="toggle-btn" onclick="togglePasswordVisibility('password')">👁️</button>
     </div>
-
-    <button onclick="loginUser()">Login</button>
-
-    <span class="change-pass-link" onclick="goToChangePassword()">Change Password</span>
+    <button onclick="loginUser()">🔓 Login</button>
+    <div class="links">
+      <a href="change_password.html">Change Password</a>
+      <a href="">Forgot Password?</a>
+    </div>
   </div>
 
   <script>
-    function togglePassword() {
-      const passwordInput = document.getElementById('password');
-      const toggleBtn = document.querySelector('.toggle-password');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        toggleBtn.textContent = 'Hide';
-      } else {
-        passwordInput.type = 'password';
-        toggleBtn.textContent = 'Show';
-      }
-    }
-
-    function goToChangePassword() {
-      window.location.href = 'change_password.html';
+    function togglePasswordVisibility(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === "password" ? "text" : "password";
     }
 
     function loginUser() {
-      const cnic = document.getElementById('cnic').value.trim();
-      const password = document.getElementById('password').value.trim();
+      const cnic = document.getElementById("cnic").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const users = JSON.parse(localStorage.getItem("users")) || [];
 
-      if (!cnic || !password) {
-        alert('Please enter CNIC and Password');
-        return;
-      }
+      const user = users.find(u => u.cnic === cnic && u.password === password && u.role.toLowerCase() === "super admin");
 
-      // Hardcoded Super Admin credentials
-      const superAdmin = {
-        cnic: '34501-8971113-7',
-        password: 'Asad@2723',
-        role: 'Super Admin',
-        section: 'All Sections'
-      };
-
-      // Check if Super Admin login
-      if (cnic === superAdmin.cnic && password === superAdmin.password) {
-        localStorage.setItem('currentUser', JSON.stringify(superAdmin));
-        alert("Welcome Super Admin");
-        window.location.href = 'super_admin_dashboard.html';
-        return;
-      }
-
-      // Check other users stored in localStorage
-      let users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(u => u.cnic === cnic && u.password === password);
-
-      if (!user) {
-        alert('❌ Invalid CNIC or Password');
-        return;
-      }
-
-      localStorage.setItem('currentUser', JSON.stringify(user));
-
-      // Redirect based on role
-      const role = user.role.toLowerCase();
-      if (role === 'super admin') {
-        window.location.href = 'super_admin_dashboard.html';
-      } else if (role === 'section head') {
-        window.location.href = 'section_dashboard.html';
-      } else if (role === 'store incharge') {
-        window.location.href = 'store.html';
-      } else if (role === 'reception incharge') {
-        window.location.href = 'reception.html';
+      if (user) {
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        alert("✅ Login successful!");
+        window.location.href = "super_admin_dashboard.html";
       } else {
-        alert('User role not recognized!');
+        alert("❌ Invalid CNIC or Password for Super Admin");
       }
+    }
+
+    // Save default Super Admin if not exists
+    const defaultAdmin = {
+      name: "Asad",
+      cnic: "34501-8971113-7",
+      password: "Asad@2723",
+      role: "Super Admin",
+      section: "Admin"
+    };
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    if (!users.find(u => u.cnic === defaultAdmin.cnic)) {
+      users.push(defaultAdmin);
+      localStorage.setItem("users", JSON.stringify(users));
     }
   </script>
 </body>
