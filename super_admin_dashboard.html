@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Super Admin Dashboard - HCP</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       background: #121212;
@@ -12,45 +11,46 @@
       padding: 20px;
     }
     h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
       background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88, #ffcc00, #ff6699);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-align: center;
+      margin-bottom: 20px;
     }
-    button {
-      margin-top: 30px;
-      background: #ff5555;
+    nav a {
+      display: inline-block;
+      margin: 10px 15px;
+      padding: 15px 25px;
+      background: #222;
       color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      text-decoration: none;
+      border-radius: 8px;
       font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    nav a:hover {
+      background: #00ff88;
+      color: #121212;
     }
   </style>
 </head>
 <body>
-
   <h1>Welcome Super Admin! 🎉</h1>
-
-  <p style="text-align:center;">Full access to all sections and modules.</p>
-
-  <button onclick="logout()">Logout</button>
+  <nav>
+    <a href="hr.html">HR Section</a>
+    <a href="finance.html">Finance Section</a>
+    <a href="store.html">Store Section</a>
+    <a href="reception.html">Reception Section</a>
+    <a href="admin.html">Admin Section</a>
+    <a href="logout.html" onclick="logout()">Logout</a>
+  </nav>
 
   <script>
-    // Check login
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    if (!user || user.role !== 'Super Admin') {
-      alert('Unauthorized! Please login as Super Admin.');
-      window.location.href = 'login.html';
-    }
-
     function logout() {
       localStorage.removeItem('currentUser');
+      alert('Logged out successfully');
       window.location.href = 'login.html';
     }
   </script>
-
 </body>
 </html>
