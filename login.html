@@ -1,10 +1,67 @@
-<!-- login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>🔐 HCP Login</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1e1e2f;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+    .login-box {
+      width: 350px;
+      background: #2c2c3e;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background: #12131a;
+      color: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #00aaff;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #007acc;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      gap: 8px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    a {
+      color: #00aaff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <div class="login-box">
@@ -12,11 +69,13 @@
     <input type="text" id="cnic" placeholder="Enter CNIC (xxxxx-xxxxxxx-x)" required />
     <input type="password" id="password" placeholder="Enter Password" required />
     <div class="checkbox-row">
-      <input type="checkbox" onclick="togglePassword()"> Show Password
+      <input type="checkbox" id="showPw" onclick="togglePassword()">
+      <label for="showPw">Show Password</label>
     </div>
     <button onclick="loginUser()">🔓 Login</button>
     <p><a href="change_password.html">🔁 Change Password</a></p>
   </div>
+
   <script>
     function togglePassword() {
       const pw = document.getElementById("password");
