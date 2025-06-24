@@ -7,72 +7,76 @@
   <style>
     body {
       background-color: #1e1e2f;
-      color: white;
+      color: #fff;
       font-family: 'Segoe UI', sans-serif;
-      padding: 30px;
-      text-align: center;
+      padding: 20px;
     }
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #2e2e3f;
-      padding: 20px;
-      border-radius: 10px;
+      margin-bottom: 30px;
     }
-    header img { width: 80px; }
-    h2 { margin: 0; font-size: 22px; }
-    section button {
-      padding: 10px 20px;
-      margin: 12px;
+    h2 {
+      text-align: center;
+      flex-grow: 1;
+    }
+    button {
+      background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
       border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88);
-      color: black;
+      color: white;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 7px;
       cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
     }
-    section button:hover {
-      background: linear-gradient(90deg, #00ff88, #00c6ff, #0072ff);
+    button:hover {
+      background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
+    }
+    .buttons-container {
+      text-align: center;
+    }
+    img.logo {
+      width: 90px;
+      height: auto;
     }
   </style>
 </head>
 <body>
-
   <header>
-    <img src="" id="leftLogo" />
-    <h2>HEPATITIS & INFECTION CONTROL PROGRAM<br/>Section Dashboard</h2>
-    <img src="" id="rightLogo" />
+    <img src="" id="leftLogo" alt="Govt Logo" class="logo" />
+    <h2>HEPATITIS & INFECTION CONTROL PROGRAM<br/>Section Panel</h2>
+    <img src="" id="rightLogo" alt="HCP Logo" class="logo" />
   </header>
 
-  <section>
+  <section class="buttons-container">
     <h3 id="welcomeText">Welcome, Section Incharge</h3>
 
-    <a href="store.html"><button>📦 Manage My Section</button></a>
-    <a href="generate_voucher.html"><button>🧾 Generate Voucher</button></a>
-    <a href="change_password.html"><button>🔐 Change Password</button></a>
-    <a href="login.html" onclick="logout()"><button>🚪 Logout</button></a>
+    <button onclick="location.href='store.html'">📦 Manage My Section</button>
+    <button onclick="location.href='generate_voucher.html'">📑 Generate Voucher</button>
+    <button onclick="location.href='change_password.html'">🔑 Change Password</button>
+    <button onclick="logout()">🔓 Logout</button>
   </section>
 
   <script>
-    // Load logos
+    // لوکل اسٹوریج سے لوگوز لوڈ کریں
     const leftLogo = localStorage.getItem('govtLogo');
     const rightLogo = localStorage.getItem('hcpLogo');
-    if (leftLogo) document.getElementById('leftLogo').src = leftLogo;
-    if (rightLogo) document.getElementById('rightLogo').src = rightLogo;
+    if(leftLogo) document.getElementById('leftLogo').src = leftLogo;
+    if(rightLogo) document.getElementById('rightLogo').src = rightLogo;
 
-    // Welcome user by role and section
-    const user = JSON.parse(localStorage.getItem('loggedInUser'));
-    if (user) {
-      document.getElementById('welcomeText').textContent = `Welcome, ${user.role} (${user.section})`;
+    // کرنٹ یوزر کے نام، رول اور سیکشن دکھائیں
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(currentUser){
+      document.getElementById('welcomeText').textContent = `Welcome, ${currentUser.role} - ${currentUser.section}`;
     } else {
-      alert("User not logged in!");
-      window.location.href = "login.html";
+      alert('Access denied! Please login.');
+      window.location.href = 'login.html';
     }
 
-    function logout() {
-      localStorage.removeItem('loggedInUser');
-    }
-  </script>
-</body>
-</html>
+    // لاگ آوٹ فنکشن
+    function logout(){
+      localStorage.removeItem('currentUser');
+      window.
