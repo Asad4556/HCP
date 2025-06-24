@@ -5,93 +5,6 @@
   <title>🧾 Generate Voucher - HCP</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-  <style>
-    body {
-      background-color: #1e1e2f;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
-    }
-    header h2 {
-      margin-bottom: 20px;
-    }
-    section {
-      background: #2e2e3f;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    form label, form select, form textarea, form button {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: none;
-      padding: 10px;
-    }
-    form button {
-      background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-    }
-    form button:hover {
-      background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
-    }
-    #outputArea {
-      display: none;
-      margin-top: 30px;
-      background: #1e1e2f;
-      padding: 20px;
-      border-radius: 12px;
-      position: relative;
-    }
-    #outputArea hr {
-      border-color: #444;
-    }
-    #watermarkLogo {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0.07;
-      width: 300px;
-      pointer-events: none;
-      user-select: none;
-    }
-    #headerArea {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #headerArea img {
-      width: 80px;
-    }
-    #voucherText {
-      margin-top: 20px;
-      white-space: pre-wrap;
-      font-size: 1rem;
-    }
-    #signatureStampQr {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 40px;
-    }
-    #signatureStampQr > div {
-      text-align: center;
-      width: 30%;
-    }
-    #signatureStampQr img {
-      max-width: 100%;
-      border-radius: 8px;
-      border: 1px solid #444;
-    }
-    #qrCodeCanvas {
-      background: white;
-      padding: 10px;
-      border-radius: 10px;
-    }
-  </style>
 </head>
 <body>
   <header>
@@ -100,35 +13,38 @@
 
   <section>
     <form id="voucherForm">
-      <label for="formatDropdown">Choose Format:</label>
+      <label>Choose Format:</label>
       <select id="formatDropdown" required></select>
 
-      <label for="voucherDetails">Enter Details:</label>
+      <label>Enter Details:</label>
       <textarea id="voucherDetails" placeholder="Enter voucher data..." rows="6" required></textarea>
 
       <button type="submit">📥 Generate</button>
     </form>
 
-    <div id="outputArea">
-      <img id="watermarkLogo" src="" alt="Watermark" />
-      <div id="headerArea">
-        <img id="govtLogo" alt="Govt Logo" />
+    <hr />
+    <div id="outputArea" style="display:none; border: 1px solid gray; padding: 20px; background: #f9f9f9; position: relative;">
+      <img id="watermarkLogo" src="" style="position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); opacity:0.07; width:300px;" />
+      
+      <div id="headerArea" style="display: flex; justify-content: space-between; align-items: center;">
+        <img id="govtLogo" width="80" />
         <h3>HEPATITIS & INFECTION CONTROL PROGRAM</h3>
-        <img id="hcpLogo" alt="HCP Logo" />
+        <img id="hcpLogo" width="80" />
       </div>
+
       <hr />
       <h4>Voucher Format: <span id="formatTitle"></span></h4>
       <p><strong>Date:</strong> <span id="todayDate"></span></p>
       <div id="voucherText"></div>
 
-      <div id="signatureStampQr">
+      <div style="display: flex; justify-content: space-between; margin-top: 40px;">
         <div>
           <p>Signature:</p>
-          <img id="sigImage" alt="Signature" />
+          <img id="sigImage" width="150" />
         </div>
         <div>
           <p>Stamp:</p>
-          <img id="stampImage" alt="Stamp" />
+          <img id="stampImage" width="150" />
         </div>
         <div>
           <p>QR Code:</p>
@@ -139,11 +55,16 @@
   </section>
 
   <script>
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user || (user.role !== 'super admin' && user.role !== 'Store Incharge')) {
+      alert("🚫 Unauthorized Access!");
+      window.location.href = "login.html";
+    }
+
     const formatDropdown = document.getElementById('formatDropdown');
     const voucherForm = document.getElementById('voucherForm');
     const outputArea = document.getElementById('outputArea');
 
-    // Load saved voucher formats into dropdown
     function loadFormats() {
       const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
       formatDropdown.innerHTML = '<option value="">--Select Format--</option>';
@@ -155,38 +76,35 @@
       });
     }
 
-    // On form submit: generate voucher
-    voucherForm.addEventListener('submit', e => {
+    voucherForm.addEventListener('submit', function (e) {
       e.preventDefault();
       const format = formatDropdown.value;
-      const details = document.getElementById('voucherDetails').value.trim();
+      const details = document.getElementById('voucherDetails').value;
+
       if (!format || !details) return;
 
-      // Show format and details
       document.getElementById('formatTitle').textContent = format;
       document.getElementById('voucherText').textContent = details;
       document.getElementById('todayDate').textContent = new Date().toLocaleDateString();
 
-      // Set watermark logo with opacity behind content
+      // Watermark + Logos
       document.getElementById('watermarkLogo').src = localStorage.getItem('hcpLogo') || '';
-
-      // Set header logos
       document.getElementById('govtLogo').src = localStorage.getItem('govtLogo') || '';
       document.getElementById('hcpLogo').src = localStorage.getItem('hcpLogo') || '';
 
-      // Set signature and stamp images
+      // Stamp & Signature
       document.getElementById('sigImage').src = localStorage.getItem('signatureImage') || '';
       document.getElementById('stampImage').src = localStorage.getItem('stampImage') || '';
 
-      // Generate QR code with voucher details + format + date
-      QRCode.toCanvas(document.getElementById('qrCodeCanvas'), `${details} | Format: ${format} | Date: ${new Date().toLocaleDateString()}`, error => {
+      // QR Code
+      QRCode.toCanvas(document.getElementById('qrCodeCanvas'), `${details} | Format: ${format} | ${new Date().toLocaleDateString()}`, function (error) {
         if (error) console.error(error);
       });
 
-      // Save report record
-      const reports = JSON.parse(localStorage.getItem('reportData')) || [];
+      // Save to report
+      let reports = JSON.parse(localStorage.getItem('reportData')) || [];
       reports.push({
-        section: 'Voucher',
+        section: 'Store',
         date: new Date().toISOString().slice(0, 10),
         data: `Voucher Created [${format}] – ${details}`
       });
