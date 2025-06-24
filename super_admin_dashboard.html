@@ -1,35 +1,68 @@
-<!-- super_admin_dashboard.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
   <meta charset="UTF-8" />
-  <title>Super Admin Dashboard</title>
+  <title>📋 Super Admin Dashboard – HCP</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: #1e1e2f;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .dash-button {
+      background: linear-gradient(135deg, #007bff, #00d4ff);
+      border: none;
+      color: white;
+      padding: 25px;
+      font-size: 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .dash-button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #00ff88, #00d4ff);
+    }
+
+    .dash-button a {
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <script>
-    const user = JSON.parse(localStorage.getItem("currentUser"));
-    if (!user || user.role !== "Super Admin") {
-      alert("❌ Unauthorized access!");
-      window.location.href = "login.html";
-    }
-  </script>
 
-  <header>
-    <h2>🎛️ Super Admin Panel</h2>
-  </header>
+  <h2>🌟 Super Admin Dashboard – HCP</h2>
 
-  <section>
-    <ul>
-      <li><a href="manage_users.html">👥 Manage Users</a></li>
-      <li><a href="store.html">📦 Store Module</a></li>
-      <li><a href="voucher_generate.html">🧾 Generate Voucher</a></li>
-      <li><a href="voucher_format.html">🗂️ Create Voucher Format</a></li>
-      <li><a href="view_report.html">📊 View Reports</a></li>
-      <li><a href="upload_signature_stamp.html">🖊️ Upload Stamp/Signature</a></li>
-      <li><a href="upload_header_logos.html">🖼️ Upload Header Logos</a></li>
-      <li><a href="login.html">🔓 Logout</a></li>
-    </ul>
-  </section>
+  <div class="button-grid">
+    <button class="dash-button"><a href="upload_voucher_format.html">📤 Upload Voucher Format</a></button>
+    <button class="dash-button"><a href="voucher_generate.html">🧾 Generate Voucher</a></button>
+    <button class="dash-button"><a href="view_report.html">📊 View Reports</a></button>
+    <button class="dash-button"><a href="manage_users.html">👤 Manage Users</a></button>
+    <button class="dash-button"><a href="upload_stamp_signature.html">✍️ Upload Stamp/Signature</a></button>
+    <button class="dash-button"><a href="upload_header_logos.html">🖼️ Header Logos</a></button>
+    <button class="dash-button"><a href="store.html">🏪 Store Section</a></button>
+    <button class="dash-button"><a href="index.html">🚪 Logout</a></button>
+  </div>
+
 </body>
 </html>
