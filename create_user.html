@@ -3,23 +3,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Create User - HCP</title>
+  <title>Add New User - HCP</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h2>Add New User</h2>
+    <h2>👤 Add New User</h2>
   </header>
+
   <section>
     <form id="userForm">
       <input type="text" id="name" placeholder="Name" required />
-      <input type="text" id="cnic" placeholder="CNIC" required />
+      <input type="text" id="cnic" placeholder="CNIC (xxxxx-xxxxxxx-x)" required />
       <input type="text" id="role" placeholder="Role (e.g. Store Incharge)" required />
-      <input type="text" id="section" placeholder="Section Name" required />
+      <input type="text" id="section" placeholder="Section Name (e.g. Store)" required />
       <input type="password" id="password" placeholder="Password" required />
       <button type="submit">➕ Add User</button>
     </form>
 
+    <hr />
     <h3>👥 Current Users</h3>
     <table border="1" id="userTable">
       <thead>
@@ -38,3 +40,58 @@
 
   <script>
     const userForm = document.getElementById('userForm');
+    const userTable = document.querySelector('#userTable tbody');
+
+    function getUsers() {
+      return JSON.parse(localStorage.getItem('users')) || [];
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    function renderUsers() {
+      const users = getUsers();
+      userTable.innerHTML = '';
+      users.forEach((u, i) => {
+        const row = `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${u.name}</td>
+            <td>${u.cnic}</td>
+            <td>${u.role}</td>
+            <td>${u.section}</td>
+            <td><button onclick="deleteUser(${i})">❌</button></td>
+          </tr>`;
+        userTable.innerHTML += row;
+      });
+    }
+
+    function deleteUser(index) {
+      const users = getUsers();
+      users.splice(index, 1);
+      saveUsers(users);
+      renderUsers();
+    }
+
+    userForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const user = {
+        name: document.getElementById('name').value.trim(),
+        cnic: document.getElementById('cnic').value.trim(),
+        role: document.getElementById('role').value.trim(),
+        section: document.getElementById('section').value.trim(),
+        password: document.getElementById('password').value.trim()
+      };
+
+      const users = getUsers();
+      users.push(user);
+      saveUsers(users);
+      userForm.reset();
+      renderUsers();
+    });
+
+    renderUsers();
+  </script>
+</body>
+</html>
