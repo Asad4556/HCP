@@ -2,31 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>📦 Store Management - HCP</title>
+  <title>🧾 HCP Store Management</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h2>📦 Store Management Panel</h2>
+    <h2>📦 HCP Store Management</h2>
   </header>
 
   <section>
     <form id="itemForm">
       <input type="text" id="itemName" placeholder="Item Name" required />
       <input type="number" id="itemQty" placeholder="Initial Quantity" required />
-      <button type="submit">➕ Add Item</button>
+      <button type="submit">➕ Add New Stock</button>
     </form>
 
-    <h3>📋 Store Items</h3>
+    <h3>📋 Stock List</h3>
     <table border="1" id="storeTable">
       <thead>
         <tr>
           <th>Sr#</th>
-          <th>Item</th>
-          <th>Quantity</th>
-          <th>IN</th>
-          <th>OUT</th>
-          <th>Transfer</th>
+          <th>Item Name</th>
+          <th>Qty</th>
+          <th>➕ IN</th>
+          <th>➖ OUT</th>
+          <th>🔁 TRANSFER</th>
+          <th>❌ DELETE</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -34,14 +35,6 @@
   </section>
 
   <script>
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-
-    // Access check
-    if (!user || (user.role !== 'super admin' && user.role !== 'store incharge')) {
-      alert("🚫 Unauthorized Access!");
-      window.location.href = "login.html";
-    }
-
     const itemForm = document.getElementById('itemForm');
     const storeTable = document.getElementById('storeTable').querySelector('tbody');
 
@@ -65,6 +58,7 @@
             <td><button onclick="adjustQty(${index}, 'in')">IN</button></td>
             <td><button onclick="adjustQty(${index}, 'out')">OUT</button></td>
             <td><button onclick="adjustQty(${index}, 'transfer')">TRANSFER</button></td>
+            <td><button onclick="deleteItem(${index})">❌</button></td>
           </tr>
         `;
       });
@@ -76,8 +70,27 @@
         const items = getStore();
         let newQty = parseInt(qty);
         if (type === 'in') items[index].qty += newQty;
-        if (type === 'out' || type === 'transfer') items[index].qty -= newQty;
+        if (type === 'out') items[index].qty -= newQty;
+        if (type === 'transfer') items[index].qty -= newQty;
 
+        // Save to report
+        let reports = JSON.parse(localStorage.getItem('reportData')) || [];
+        reports.push({
+          section: 'Store',
+          date: new Date().toISOString().slice(0, 10),
+          data: `${type.toUpperCase()} - ${items[index].name} (${qty})`
+        });
+        localStorage.setItem('reportData', JSON.stringify(reports));
+
+        saveStore(items);
+        renderStore();
+      }
+    }
+
+    function deleteItem(index) {
+      if (confirm("Are you sure to delete this item?")) {
+        const items = getStore();
+        items.splice(index, 1);
         saveStore(items);
         renderStore();
       }
