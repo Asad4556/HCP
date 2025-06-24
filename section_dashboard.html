@@ -1,26 +1,57 @@
-<!-- section_dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Section Dashboard - HCP</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 30px;
+      text-align: center;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2e2e3f;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    header img { width: 80px; }
+    h2 { margin: 0; font-size: 22px; }
+    section button {
+      padding: 10px 20px;
+      margin: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88);
+      color: black;
+      cursor: pointer;
+    }
+    section button:hover {
+      background: linear-gradient(90deg, #00ff88, #00c6ff, #0072ff);
+    }
+  </style>
 </head>
 <body>
+
   <header>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <img src="" id="leftLogo" width="90" />
-      <h2>HEPATITIS & INFECTION CONTROL PROGRAM<br/>Section Panel</h2>
-      <img src="" id="rightLogo" width="90" />
-    </div>
+    <img src="" id="leftLogo" />
+    <h2>HEPATITIS & INFECTION CONTROL PROGRAM<br/>Section Dashboard</h2>
+    <img src="" id="rightLogo" />
   </header>
 
-  <section style="text-align: center;">
+  <section>
     <h3 id="welcomeText">Welcome, Section Incharge</h3>
+
     <a href="store.html"><button>📦 Manage My Section</button></a>
-    <a href="generate_voucher.html"><button>📑 Generate Voucher</button></a>
-    <a href="change_password.html"><button>🔑 Change Password</button></a>
-    <a href="login.html"><button>🔓 Logout</button></a>
+    <a href="generate_voucher.html"><button>🧾 Generate Voucher</button></a>
+    <a href="change_password.html"><button>🔐 Change Password</button></a>
+    <a href="login.html" onclick="logout()"><button>🚪 Logout</button></a>
   </section>
 
   <script>
@@ -30,10 +61,17 @@
     if (leftLogo) document.getElementById('leftLogo').src = leftLogo;
     if (rightLogo) document.getElementById('rightLogo').src = rightLogo;
 
-    // Greet by section name
-    const user = JSON.parse(localStorage.getItem('currentUser'));
+    // Welcome user by role and section
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
     if (user) {
-      document.getElementById('welcomeText').textContent = `Welcome, ${user.role} - ${user.section}`;
+      document.getElementById('welcomeText').textContent = `Welcome, ${user.role} (${user.section})`;
+    } else {
+      alert("User not logged in!");
+      window.location.href = "login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem('loggedInUser');
     }
   </script>
 </body>
