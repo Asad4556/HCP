@@ -1,1 +1,112 @@
-<h2>Store Management</h2>
+<!-- store.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Store Management - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h2>Store Management</h2>
+  </header>
+
+  <section>
+    <h3>Add New Item</h3>
+    <form id="addItemForm">
+      <input type="text" id="itemName" placeholder="Item Name" required />
+      <input type="number" id="itemQty" placeholder="Quantity" required />
+      <button type="submit">➕ Save Item</button>
+    </form>
+
+    <h3>Item In/Out/Transfer</h3>
+    <form id="updateItemForm">
+      <select id="itemSelect"></select>
+      <input type="number" id="qtyChange" placeholder="Qty (±)" required />
+      <select id="action">
+        <option value="in">IN</option>
+        <option value="out">OUT</option>
+        <option value="transfer">TRANSFER</option>
+      </select>
+      <button type="submit">🔁 Update</button>
+    </form>
+
+    <h3>📦 Store Inventory</h3>
+    <table border="1" id="itemTable">
+      <thead>
+        <tr>
+          <th>Sr#</th>
+          <th>Item Name</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <script>
+    const itemForm = document.getElementById('addItemForm');
+    const updateForm = document.getElementById('updateItemForm');
+    const itemTable = document.querySelector('#itemTable tbody');
+    const itemSelect = document.getElementById('itemSelect');
+
+    function getItems() {
+      return JSON.parse(localStorage.getItem('storeItems')) || [];
+    }
+
+    function saveItems(items) {
+      localStorage.setItem('storeItems', JSON.stringify(items));
+    }
+
+    function renderItems() {
+      const items = getItems();
+      itemTable.innerHTML = '';
+      itemSelect.innerHTML = '';
+      items.forEach((item, index) => {
+        itemTable.innerHTML += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${item.name}</td>
+            <td>${item.qty}</td>
+          </tr>`;
+        itemSelect.innerHTML += `<option value="${item.name}">${item.name}</option>`;
+      });
+    }
+
+    itemForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const items = getItems();
+      const name = document.getElementById('itemName').value;
+      const qty = parseInt(document.getElementById('itemQty').value);
+      items.push({ name, qty });
+      saveItems(items);
+      itemForm.reset();
+      renderItems();
+    });
+
+    updateForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const items = getItems();
+      const selectedName = itemSelect.value;
+      const qtyChange = parseInt(document.getElementById('qtyChange').value);
+      const action = document.getElementById('action').value;
+
+      const item = items.find(i => i.name === selectedName);
+      if (!item) return;
+
+      if (action === 'in') {
+        item.qty += qtyChange;
+      } else if (action === 'out') {
+        item.qty -= qtyChange;
+      } else if (action === 'transfer') {
+        item.qty -= qtyChange; // treat transfer as out
+      }
+
+      saveItems(items);
+      renderItems();
+    });
+
+    renderItems();
+  </script>
+</body>
+</html>
