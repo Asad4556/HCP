@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reception Records - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form, table {
+      max-width: 700px;
+      margin: 0 auto 30px;
+      background: #2e2e3f;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 8px 4px 16px;
+      border-radius: 6px;
+      border: none;
+      width: calc(50% - 20px);
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #2e2e3f;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+    th {
+      background: #444;
+    }
+  </style>
+</head>
+<body>
+  <h2>Reception Visitor Records</h2>
+
+  <form id="visitorForm">
+    <input type="text" id="visitorName" placeholder="Visitor Name" required />
+    <input type="text" id="visitorCNIC" placeholder="CNIC (xxxxx-xxxxxxx-x)" required pattern="\d{5}-\d{7}-\d" />
+    <input type="tel" id="visitorPhone" placeholder="Phone Number" required />
+    <button type="submit">Add Visitor</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Sr#</th>
+        <th>Name</th>
+        <th>CNIC</th>
+        <th>Phone</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="visitorTable"></tbody>
+  </table>
+
+  <script>
+    let visitors = JSON.parse(localStorage.getItem('receptionVisitors')) || [];
+
+    function showVisitors() {
+      const tbody = document.getElementById('visitorTable');
+      tbody.innerHTML = '';
+      visitors.forEach((v, i) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${v.name}</td>
+            <td>${v.cnic}</td>
+            <td>${v.phone}</td>
+            <td><button onclick="deleteVisitor(${i})">🗑️ Delete</button></td>
+          </tr>
+        `;
+      });
+    }
+
+    document.getElementById('visitorForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('visitorName').value.trim();
+      const cnic = document.getElementById('visitorCNIC').value.trim();
+      const phone = document.getElementById('visitorPhone').value.trim();
+
+      if (!name || !cnic || !phone) {
+        alert('Please fill all fields!');
+        return;
+      }
+
+      visitors.push({ name, cnic, phone });
+      localStorage.setItem('receptionVisitors', JSON.stringify(visitors));
+
+      this.reset();
+      showVisitors();
+    });
+
+    function deleteVisitor(index) {
+      if(confirm('Are you sure to delete this visitor?')) {
+        visitors.splice(index, 1);
+        localStorage.setItem('receptionVisitors', JSON.stringify(visitors));
+        showVisitors();
+      }
+    }
+
+    showVisitors();
+  </script>
+</body>
+</html>
