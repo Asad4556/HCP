@@ -1,95 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Super Admin Login - HCP</title>
+  <meta charset="UTF-8" />
+  <title>🔐 Login - HCP</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .login-container {
-      max-width: 400px;
-      margin: 100px auto;
-      padding: 30px;
-      background-color: #2e2e3f;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    }
-    .login-container input,
-    .login-container button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: none;
-    }
-    .toggle-btn {
-      background-color: #555;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      margin-left: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    .links {
-      display: flex;
-      justify-content: space-between;
-    }
-    .links a {
-      color: #00d4ff;
-      font-size: 0.9rem;
-    }
-  </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>🔐 Super Admin Login</h2>
-    <input type="text" id="cnic" placeholder="Enter CNIC" required />
-    <div style="position: relative;">
+  <div class="login-box">
+    <h2>🔐 Login Portal</h2>
+    <form id="loginForm">
+      <select id="role" required>
+        <option value="">Select Role</option>
+        <option value="Super Admin">Super Admin</option>
+        <option value="Store Incharge">Store Incharge</option>
+        <option value="Section Head">Section Head</option>
+      </select>
+
+      <input type="text" id="cnic" placeholder="Enter CNIC" required />
       <input type="password" id="password" placeholder="Enter Password" required />
-      <button type="button" class="toggle-btn" onclick="togglePasswordVisibility('password')">👁️</button>
-    </div>
-    <button onclick="loginUser()">🔓 Login</button>
-    <div class="links">
-      <a href="change_password.html">Change Password</a>
-      <a href="">Forgot Password?</a>
-    </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" onclick="togglePassword()" /> Show Password
+      </div>
+
+      <button type="submit">🔓 Login</button>
+    </form>
   </div>
 
   <script>
-    function togglePasswordVisibility(id) {
-      const input = document.getElementById(id);
-      input.type = input.type === "password" ? "text" : "password";
+    function togglePassword() {
+      const pwd = document.getElementById("password");
+      pwd.type = pwd.type === "password" ? "text" : "password";
     }
 
-    function loginUser() {
-      const cnic = document.getElementById("cnic").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const users = JSON.parse(localStorage.getItem("users")) || [];
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const cnic = document.getElementById("cnic").value;
+      const pass = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
 
-      const user = users.find(u => u.cnic === cnic && u.password === password && u.role.toLowerCase() === "super admin");
-
-      if (user) {
-        localStorage.setItem("currentUser", JSON.stringify(user));
-        alert("✅ Login successful!");
-        window.location.href = "super_admin_dashboard.html";
-      } else {
-        alert("❌ Invalid CNIC or Password for Super Admin");
+      if (role === "Super Admin") {
+        if (cnic === "34501-8971113-7" && pass === "Asad@2723") {
+          window.location.href = "dashboard.html";
+        } else {
+          alert("❌ Invalid Super Admin credentials");
+        }
+        return;
       }
-    }
 
-    // Save default Super Admin if not exists
-    const defaultAdmin = {
-      name: "Asad",
-      cnic: "34501-8971113-7",
-      password: "Asad@2723",
-      role: "Super Admin",
-      section: "Admin"
-    };
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    if (!users.find(u => u.cnic === defaultAdmin.cnic)) {
-      users.push(defaultAdmin);
-      localStorage.setItem("users", JSON.stringify(users));
-    }
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const found = users.find(u => u.cnic === cnic && u.password === pass && u.role === role);
+
+      if (found) {
+        if (role === "Store Incharge") window.location.href = "store_dashboard.html";
+        else if (role === "Section Head") window.location.href = "section_dashboard.html";
+        else alert("✅ Login successful but role page not found");
+      } else {
+        alert("❌ User not found or incorrect details");
+      }
+    });
   </script>
 </body>
 </html>
