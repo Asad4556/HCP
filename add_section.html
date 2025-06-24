@@ -1,1 +1,136 @@
-<!-- Add Section -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Add New Section - HCP Store</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2f;
+      color: #ddd;
+      margin: 0; padding: 20px;
+    }
+    h1 {
+      color: #00aaff;
+    }
+    form {
+      background: #2c2c3e;
+      padding: 15px;
+      border-radius: 6px;
+      max-width: 400px;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 4px;
+      background: #12131a;
+      color: #ddd;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 15px;
+      background: #00aaff;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #007acc;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+      max-width: 400px;
+    }
+    li {
+      background: #2c2c3e;
+      margin-bottom: 8px;
+      padding: 12px;
+      border-radius: 6px;
+    }
+    li strong {
+      color: #00aaff;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Add New Section</h1>
+
+  <form id="sectionForm">
+    <label for="sectionName">Section Name:</label>
+    <input type="text" id="sectionName" placeholder="e.g., HR, Finance" required />
+
+    <label for="sectionDesc">Description:</label>
+    <textarea id="sectionDesc" rows="3" placeholder="Describe this section..." required></textarea>
+
+    <button type="submit">Add Section</button>
+  </form>
+
+  <h2>Existing Sections</h2>
+  <ul id="sectionsList">
+    <!-- Added sections will appear here -->
+  </ul>
+
+  <script>
+    let sections = [];
+
+    // Load from localStorage if any
+    window.onload = () => {
+      const saved = localStorage.getItem('hcpSections');
+      if (saved) {
+        sections = JSON.parse(saved);
+        renderSections();
+      }
+    };
+
+    // Save to localStorage
+    function saveSections() {
+      localStorage.setItem('hcpSections', JSON.stringify(sections));
+    }
+
+    // Render sections list
+    function renderSections() {
+      const ul = document.getElementById('sectionsList');
+      ul.innerHTML = '';
+      sections.forEach((sec, idx) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${sec.name}</strong><br>${sec.description}`;
+        ul.appendChild(li);
+      });
+    }
+
+    // Handle form submit
+    document.getElementById('sectionForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('sectionName').value.trim();
+      const description = document.getElementById('sectionDesc').value.trim();
+
+      if (!name || !description) {
+        alert('Please fill all fields');
+        return;
+      }
+
+      // Add new section
+      sections.push({ name, description });
+      saveSections();
+      renderSections();
+
+      // Reset form
+      e.target.reset();
+    });
+  </script>
+
+</body>
+</html>
