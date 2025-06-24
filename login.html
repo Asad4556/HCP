@@ -3,28 +3,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - HCP System</title>
+  <title>Login - HCP</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="login-container">
-    <h2>HEPATITIS & INFECTION CONTROL PROGRAM</h2>
-    <h3>Login Panel</h3>
+  <header>
+    <h2>🔐 Login to HCP System</h2>
+  </header>
+
+  <section>
     <form id="loginForm">
-      <input type="text" id="cnic" placeholder="Enter CNIC (e.g. 12345-6789012-3)" required /><br />
+      <input type="text" id="cnic" placeholder="Enter CNIC" required />
       <input type="password" id="password" placeholder="Enter Password" required />
-      <label><input type="checkbox" id="showPassword" /> Show Password</label><br />
-      <button type="submit">🔐 Login</button>
-      <p><a href="change_password.html">Change Password?</a></p>
+      <label><input type="checkbox" id="showPassword" /> Show Password</label>
+      <button type="submit">➡️ Login</button>
     </form>
     <p id="loginMessage"></p>
-  </div>
+  </section>
 
   <script>
     document.getElementById('showPassword').addEventListener('change', function () {
-      const pwd = document.getElementById('password');
-      pwd.type = this.checked ? 'text' : 'password';
+      const passField = document.getElementById('password');
+      passField.type = this.checked ? 'text' : 'password';
     });
 
     document.getElementById('loginForm').addEventListener('submit', function (e) {
@@ -33,17 +33,19 @@
       const password = document.getElementById('password').value;
 
       const users = JSON.parse(localStorage.getItem('users')) || [];
+
       const user = users.find(u => u.cnic === cnic && u.password === password);
 
       if (user) {
-        localStorage.setItem('loggedInUser', JSON.stringify(user));
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        document.getElementById('loginMessage').textContent = '✅ Login successful!';
         if (user.role === 'Super Admin') {
           window.location.href = 'super_admin_dashboard.html';
         } else {
           window.location.href = 'section_dashboard.html';
         }
       } else {
-        document.getElementById('loginMessage').textContent = 'Invalid CNIC or Password';
+        document.getElementById('loginMessage').textContent = '❌ Invalid CNIC or Password.';
       }
     });
   </script>
