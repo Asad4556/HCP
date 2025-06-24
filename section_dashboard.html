@@ -1,1 +1,40 @@
-<h2>Section Dashboard</h2>
+<!-- section_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Section Dashboard - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <img src="" id="leftLogo" width="90" />
+      <h2>HEPATITIS & INFECTION CONTROL PROGRAM<br/>Section Panel</h2>
+      <img src="" id="rightLogo" width="90" />
+    </div>
+  </header>
+
+  <section style="text-align: center;">
+    <h3 id="welcomeText">Welcome, Section Incharge</h3>
+    <a href="store.html"><button>📦 Manage My Section</button></a>
+    <a href="generate_voucher.html"><button>📑 Generate Voucher</button></a>
+    <a href="change_password.html"><button>🔑 Change Password</button></a>
+    <a href="login.html"><button>🔓 Logout</button></a>
+  </section>
+
+  <script>
+    // Load logos
+    const leftLogo = localStorage.getItem('govtLogo');
+    const rightLogo = localStorage.getItem('hcpLogo');
+    if (leftLogo) document.getElementById('leftLogo').src = leftLogo;
+    if (rightLogo) document.getElementById('rightLogo').src = rightLogo;
+
+    // Greet by section name
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (user) {
+      document.getElementById('welcomeText').textContent = `Welcome, ${user.role} - ${user.section}`;
+    }
+  </script>
+</body>
+</html>
