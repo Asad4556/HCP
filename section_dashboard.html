@@ -1,26 +1,51 @@
-<!-- store_dashboard.html -->
+<!-- section_dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>📦 Store Dashboard – HCP</title>
+  <meta charset="UTF-8" />
+  <title>📁 Section Dashboard – HCP</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #1e1e2f; color: white; }
-    .button { display: block; background: #3e3e5f; padding: 12px; margin: 10px 0; border-radius: 8px; text-align: center; text-decoration: none; color: white; font-weight: bold; }
-    .button:hover { background: #5e5e9f; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e2f;
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 30px;
+    }
+    .button {
+      display: block;
+      width: 300px;
+      margin: 15px auto;
+      padding: 15px;
+      background-color: #3e3e5f;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .button:hover {
+      background-color: #5e5e9f;
+    }
   </style>
 </head>
 <body>
-  <h2>📦 Welcome to Store Incharge Dashboard</h2>
 
-  <a href="voucher_generate.html" class="button">🧾 Generate Voucher</a>
-  <a href="voucher_format.html" class="button">🗂️ Create Voucher Format</a>
-  <a href="stock_in.html" class="button">📥 Stock In</a>
-  <a href="stock_out.html" class="button">📤 Stock Out</a>
-  <a href="stock_transfer.html" class="button">🔁 Transfer Stock</a>
-  <a href="manage_stock.html" class="button">📊 Manage Stock</a>
-  <a href="view_report.html" class="button">📋 View Report</a>
-  <a href="index.html" class="button">🔓 Logout</a>
+  <h2>📁 Welcome to Section Dashboard</h2>
+
+  <a class="button" href="voucher_generate.html">🧾 Generate Voucher</a>
+  <a class="button" href="stock_in.html">📥 Stock In</a>
+  <a class="button" href="stock_out.html">📤 Stock Out</a>
+  <a class="button" href="stock_transfer.html">🔁 Transfer Stock</a>
+  <a class="button" href="manage_stock.html">📦 Manage Stock</a>
+  <a class="button" href="view_report.html">📊 View Report</a>
+  <a class="button" href="index.html">🔓 Logout</a>
+
 </body>
 </html>
