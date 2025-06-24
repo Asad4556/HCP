@@ -3,31 +3,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Super Admin Dashboard</title>
+  <title>Super Admin Dashboard - HCP</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h2>HEPATITIS & INFECTION CONTROL PROGRAM</h2>
-    <h3>Super Admin Panel</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <img src="" id="leftLogo" width="90" />
+      <h2>HEPATITIS & INFECTION CONTROL PROGRAM<br/>Super Admin Panel</h2>
+      <img src="" id="rightLogo" width="90" />
+    </div>
   </header>
-  <section>
-    <button onclick="location.href='store.html'">🧾 Store Management</button>
-    <button onclick="location.href='create_voucher_format.html'">📋 Create Voucher Format</button>
-    <button onclick="location.href='generate_voucher.html'">📝 Generate Voucher</button>
-    <button onclick="location.href='upload_signature_stamp.html'">📤 Upload Signatures & Stamp</button>
-    <button onclick="location.href='upload_header_logos.html'">📤 Upload Header Logos</button>
-    <button onclick="location.href='create_user.html'">👤 Add New User</button>
-    <button onclick="location.href='manage_users.html'">👥 Manage Users</button>
-    <button onclick="location.href='view_report.html'">📊 View Reports</button>
-    <button onclick="logout()">🔓 Logout</button>
+
+  <section style="text-align: center;">
+    <a href="store.html"><button>🧾 Store Management</button></a>
+    <a href="create_voucher_format.html"><button>📋 Create Voucher Format</button></a>
+    <a href="generate_voucher.html"><button>📝 Generate Voucher</button></a>
+    <a href="upload_signature_stamp.html"><button>📤 Upload Signature & Stamp</button></a>
+    <a href="upload_header_logos.html"><button>🖼️ Upload Header Logos</button></a>
+    <a href="create_user.html"><button>👥 Add New User</button></a>
+    <a href="view_report.html"><button>📊 View Reports</button></a>
+    <a href="change_password.html"><button>🔑 Change Password</button></a>
+    <a href="login.html"><button>🔓 Logout</button></a>
   </section>
 
   <script>
-    function logout() {
-      localStorage.removeItem('loggedInUser');
-      window.location.href = 'login.html';
-    }
+    // Load saved header logos
+    const leftLogo = localStorage.getItem('govtLogo');
+    const rightLogo = localStorage.getItem('hcpLogo');
+    if (leftLogo) document.getElementById('leftLogo').src = leftLogo;
+    if (rightLogo) document.getElementById('rightLogo').src = rightLogo;
   </script>
 </body>
 </html>
