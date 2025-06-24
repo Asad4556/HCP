@@ -1,189 +1,112 @@
-<!-- File: manage_users.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Manage Users - HCP</title>
+  <title>👥 Manage Users - HCP</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #1e1e2f;
-      color: #ddd;
-      margin: 0; padding: 20px;
-    }
-    h1 {
-      color: #00aaff;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background: #2c2c3e;
-    }
-    th, td {
-      padding: 12px;
-      border: 1px solid #444;
-      text-align: left;
-    }
-    th {
-      background: #007acc;
-    }
-    tr:hover {
-      background: #33334d;
-    }
-    button {
-      background: #00aaff;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    button:hover {
-      background: #007acc;
-    }
-    form {
-      margin-top: 20px;
-      background: #2c2c3e;
-      padding: 15px;
-      border-radius: 6px;
-      max-width: 600px;
-    }
-    form input {
-      padding: 8px;
-      margin: 6px 0;
-      width: 100%;
-      border: none;
-      border-radius: 4px;
-    }
-    form label {
-      display: block;
-      margin-top: 10px;
-    }
+    body { font-family: 'Segoe UI', sans-serif; background: #1e1e2f; color: white; padding: 30px; }
+    input, select, button { margin: 8px 0; padding: 10px; width: 100%; border-radius: 5px; border: none; }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; background: #2e2e3f; }
+    th, td { padding: 10px; border: 1px solid #444; text-align: center; }
+    button { background: linear-gradient(90deg, #00d4ff, #00ff88); color: black; font-weight: bold; }
+    button:hover { background: linear-gradient(90deg, #00ff88, #00d4ff); }
   </style>
 </head>
 <body>
 
-<h1>👥 Manage HCP Users</h1>
+  <h2>👤 Add New User</h2>
 
-<table id="usersTable">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>CNIC</th>
-      <th>Role</th>
-      <th>Section</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+  <input type="text" id="name" placeholder="Full Name" />
+  <input type="text" id="cnic" placeholder="CNIC (xxxxx-xxxxxxx-x)" />
+  
+  <select id="role">
+    <option value="">-- Select Role --</option>
+    <option value="Store Incharge">Store Incharge</option>
+    <option value="Finance Incharge">Finance Incharge</option>
+    <option value="Reception Incharge">Reception Incharge</option>
+    <option value="Section Holder">Section Holder</option>
+    <option value="Super Admin">Super Admin</option>
+  </select>
 
-<h2>Add / Edit User</h2>
-<form id="userForm">
-  <input type="hidden" id="editIndex" />
-  <label>Name:</label>
-  <input type="text" id="name" required />
+  <input type="text" id="section" placeholder="Section Name" />
+  <input type="text" id="password" placeholder="Password" />
 
-  <label>CNIC (xxxxx-xxxxxxx-x):</label>
-  <input type="text" id="cnic" required />
+  <button onclick="addUser()">➕ Add User</button>
 
-  <label>Password:</label>
-  <input type="password" id="password" required />
+  <h3>📋 User List</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Sr#</th>
+        <th>Name</th>
+        <th>CNIC</th>
+        <th>Role</th>
+        <th>Section</th>
+        <th>Password</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
 
-  <label>Role (e.g., Admin, Store Incharge):</label>
-  <input type="text" id="role" required />
+  <script>
+    function loadUsers() {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const table = document.getElementById("userTable");
+      table.innerHTML = "";
 
-  <label>Section (e.g., Store, Reception):</label>
-  <input type="text" id="section" required />
-
-  <button type="submit">💾 Save User</button>
-  <button type="button" id="cancelEdit" style="background:#ff4444; display:none;">Cancel</button>
-</form>
-
-<script>
-  const tableBody = document.querySelector("#usersTable tbody");
-  const form = document.getElementById("userForm");
-  const cancelBtn = document.getElementById("cancelEdit");
-
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-
-  function renderUsers() {
-    tableBody.innerHTML = "";
-    users.forEach((u, i) => {
-      tableBody.innerHTML += `
-        <tr>
+      users.forEach((u, i) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
           <td>${i + 1}</td>
           <td>${u.name}</td>
           <td>${u.cnic}</td>
           <td>${u.role}</td>
           <td>${u.section}</td>
-          <td>
-            <button onclick="editUser(${i})">✏️ Edit</button>
-            <button onclick="deleteUser(${i})" style="background:#ff4444;">🗑️ Delete</button>
-          </td>
-        </tr>
-      `;
-    });
-  }
-
-  function saveUsers() {
-    localStorage.setItem("users", JSON.stringify(users));
-  }
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const user = {
-      name: document.getElementById("name").value.trim(),
-      cnic: document.getElementById("cnic").value.trim(),
-      password: document.getElementById("password").value.trim(),
-      role: document.getElementById("role").value.trim(),
-      section: document.getElementById("section").value.trim()
-    };
-
-    const editIndex = document.getElementById("editIndex").value;
-    if (editIndex !== "") {
-      users[editIndex] = user;
-      cancelBtn.style.display = "none";
-    } else {
-      users.push(user);
+          <td>${u.password}</td>
+          <td><button onclick="deleteUser('${u.cnic}')">🗑️ Delete</button></td>
+        `;
+        table.appendChild(row);
+      });
     }
 
-    saveUsers();
-    renderUsers();
-    form.reset();
-    document.getElementById("editIndex").value = "";
-  });
+    function addUser() {
+      const name = document.getElementById("name").value.trim();
+      const cnic = document.getElementById("cnic").value.trim();
+      const role = document.getElementById("role").value;
+      const section = document.getElementById("section").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-  function editUser(index) {
-    const u = users[index];
-    document.getElementById("name").value = u.name;
-    document.getElementById("cnic").value = u.cnic;
-    document.getElementById("password").value = u.password;
-    document.getElementById("role").value = u.role;
-    document.getElementById("section").value = u.section;
-    document.getElementById("editIndex").value = index;
-    cancelBtn.style.display = "inline-block";
-  }
+      if (!name || !cnic || !role || !section || !password) {
+        alert("⚠️ Please fill all fields.");
+        return;
+      }
 
-  cancelBtn.addEventListener("click", () => {
-    form.reset();
-    document.getElementById("editIndex").value = "";
-    cancelBtn.style.display = "none";
-  });
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+      if (users.some(u => u.cnic === cnic)) {
+        alert("❌ User with this CNIC already exists.");
+        return;
+      }
 
-  function deleteUser(index) {
-    if (confirm("Are you sure you want to delete this user?")) {
-      users.splice(index, 1);
-      saveUsers();
-      renderUsers();
+      users.push({ name, cnic, role, section, password });
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("✅ User added successfully!");
+      document.querySelectorAll("input").forEach(i => i.value = '');
+      document.getElementById("role").value = '';
+      loadUsers();
     }
-  }
 
-  renderUsers();
-</script>
+    function deleteUser(cnic) {
+      if (confirm("Are you sure to delete this user?")) {
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        users = users.filter(u => u.cnic !== cnic);
+        localStorage.setItem("users", JSON.stringify(users));
+        loadUsers();
+      }
+    }
 
+    loadUsers();
+  </script>
 </body>
 </html>
