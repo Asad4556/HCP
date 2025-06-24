@@ -1,47 +1,113 @@
+<!-- voucher_generate.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Create Voucher – HCP</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; }
-    input, select, button { margin: 8px 0; padding: 8px; width: 100%; }
-    .form-section { max-width: 500px; margin: auto; }
-  </style>
+  <meta charset="UTF-8" />
+  <title>🧾 Generate Voucher - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
+  <header>
+    <h2>🧾 Generate Voucher</h2>
+  </header>
 
-  <h2>🧾 Create Voucher</h2>
+  <section>
+    <form id="voucherForm">
+      <label>Choose Format:</label>
+      <select id="formatDropdown" required></select>
 
-  <div class="form-section">
-    <label>Item Name:</label>
-    <input type="text" id="itemName" />
+      <label>Enter Details:</label>
+      <textarea id="voucherDetails" placeholder="Enter voucher data..." rows="6" required></textarea>
 
-    <label>Quantity:</label>
-    <input type="number" id="quantity" />
+      <button type="submit">📥 Generate</button>
+    </form>
 
-    <label>📎 Attach Supporting File:</label>
-    <input type="file" id="attachment" accept=".pdf,.jpg,.png,.jpeg,.doc,.docx" />
-
-    <br><br>
-    <button onclick="saveVoucher()">💾 Save Voucher</button>
-  </div>
+    <hr />
+    <div id="outputArea" style="display:none; border: 1px solid gray; padding: 20px; background: #f9f9f9; position: relative;">
+      <img id="watermarkLogo" src="" style="position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); opacity:0.07; width:300px;" />
+      <div id="headerArea" style="display: flex; justify-content: space-between; align-items: center;">
+        <img id="govtLogo" width="80" />
+        <h3>HEPATITIS & INFECTION CONTROL PROGRAM</h3>
+        <img id="hcpLogo" width="80" />
+      </div>
+      <hr />
+      <h4>Voucher Format: <span id="formatTitle"></span></h4>
+      <p><strong>Date:</strong> <span id="todayDate"></span></p>
+      <div id="voucherText"></div>
+      <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+        <div>
+          <p>Signature:</p>
+          <img id="sigImage" width="150" />
+        </div>
+        <div>
+          <p>Stamp:</p>
+          <img id="stampImage" width="150" />
+        </div>
+        <div>
+          <p>QR Code:</p>
+          <canvas id="qrCodeCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <script>
-    function saveVoucher() {
-      const item = document.getElementById("itemName").value;
-      const qty = document.getElementById("quantity").value;
-      const file = document.getElementById("attachment").files[0];
+    const formatDropdown = document.getElementById('formatDropdown');
+    const voucherForm = document.getElementById('voucherForm');
+    const outputArea = document.getElementById('outputArea');
 
-      if (!item || !qty) {
-        alert("Please fill all required fields.");
-        return;
-      }
-
-      alert("Voucher saved successfully ✅");
-      // Optional: save data or show preview
+    function loadFormats() {
+      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
+      formatDropdown.innerHTML = '<option value="">--Select Format--</option>';
+      formats.forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = f.name;
+        opt.textContent = f.name;
+        formatDropdown.appendChild(opt);
+      });
     }
-  </script>
 
+    voucherForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const format = formatDropdown.value;
+      const details = document.getElementById('voucherDetails').value;
+
+      if (!format || !details) return;
+
+      document.getElementById('formatTitle').textContent = format;
+      document.getElementById('voucherText').textContent = details;
+      document.getElementById('todayDate').textContent = new Date().toLocaleDateString();
+
+      // Watermark
+      document.getElementById('watermarkLogo').src = localStorage.getItem('hcpLogo') || '';
+
+      // Logos
+      document.getElementById('govtLogo').src = localStorage.getItem('govtLogo') || '';
+      document.getElementById('hcpLogo').src = localStorage.getItem('hcpLogo') || '';
+
+      // Stamp & Signature
+      document.getElementById('sigImage').src = localStorage.getItem('signatureImage') || '';
+      document.getElementById('stampImage').src = localStorage.getItem('stampImage') || '';
+
+      // QR Code
+      QRCode.toCanvas(document.getElementById('qrCodeCanvas'), details + ' | Format: ' + format + ' | ' + new Date().toLocaleDateString(), function (error) {
+        if (error) console.error(error);
+      });
+
+      // Save to report
+      let reports = JSON.parse(localStorage.getItem('reportData')) || [];
+      reports.push({
+        section: 'Voucher',
+        date: new Date().toISOString().slice(0, 10),
+        data: `Voucher Created [${format}] – ${details}`
+      });
+      localStorage.setItem('reportData', JSON.stringify(reports));
+
+      outputArea.style.display = 'block';
+    });
+
+    loadFormats();
+  </script>
 </body>
 </html>
