@@ -2,36 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🔐 HCP Login</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Login - HCP</title>
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background: #2e2e3f;
+      padding: 30px;
+      border-radius: 10px;
+      width: 350px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: none;
+      font-size: 1rem;
+    }
+    button {
+      background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
+    }
+  </style>
 </head>
 <body>
-  <div class="login-box">
-    <h2 style="text-align: center;">👤 Login Panel - HCP</h2>
-    <input type="text" id="loginCNIC" placeholder="Enter CNIC (e.g. 35202-1234567-1)" required />
-    <input type="password" id="loginPassword" placeholder="Enter Password" required />
-    
-    <div class="checkbox-row">
-      <input type="checkbox" onclick="togglePasswordVisibility('loginPassword')" />
-      <label>Show Password</label>
-    </div>
-
-    <button onclick="handleLogin()">🔓 Login</button>
+  <div class="login-container">
+    <h2>Login - HCP</h2>
+    <form id="loginForm">
+      <label for="cnic">CNIC:</label>
+      <input type="text" id="cnic" placeholder="34501-1234567-8" required />
+      
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Password" required />
+      
+      <label for="loginType">Login As:</label>
+      <select id="loginType" required>
+        <option value="">-- Select Role --</option>
+        <option value="superadmin">Super Admin</option>
+        <option value="sectionhead">Section Head</option>
+        <option value="worker">Worker</option>
+      </select>
+      
+      <button type="submit">Login</button>
+    </form>
   </div>
 
-  <script src="script.js"></script>
   <script>
-    function handleLogin() {
-      const cnic = document.getElementById("loginCNIC").value.trim();
-      const password = document.getElementById("loginPassword").value.trim();
+    document.getElementById('loginForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const cnic = document.getElementById('cnic').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const loginType = document.getElementById('loginType').value;
 
-      if (!cnic || !password) {
-        alert("⚠️ Please enter CNIC and password!");
+      if(!cnic || !password || !loginType){
+        alert("تمام فیلڈز پر کریں");
         return;
       }
 
-      loginUser(cnic, password);
-    }
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+
+      // سپر ایڈمن کا پہلے سے سیٹ کیا ہوا یوزر (مثال)
+      const superAdminUser = {
+        cnic: "34501-8971113-7",
+        password: "Asad@2723",
+        role: "superadmin",
+        section: "all"
+      };
+
+      // اگر سپر ایڈمن لاگ ان کر رہا ہے تو چیک کریں
+      if(loginType === "superadmin"){
+        if(cnic === superAdminUser.cnic && password === superAdminUser.password){
+          localStorage.setItem('currentUser', JSON.stringify(superAdminUser));
+          window.location.href = "super_admin_dashboard.html";
+          return;
+        } else {
+          alert("سپراڈمن CNIC یا پاسورڈ غلط ہے");
+          return;
+        }
+      }
+
+      // ورکر اور سیکشن ہیڈ کے لیے یوزرز لوکل اسٹوریج میں چیک کریں
+      const user = users.find(u => u.cnic === cnic && u.password === password && u.role.toLowerCase() === loginType);
+
+      if(user){
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        // سیکشن ہیڈ اور ورکر دونوں کو ایک ہی ڈیش بورڈ پر بھیجیں
+        window.location.href = "section_dashboard.html";
+      } else {
+        alert("CNIC یا پاسورڈ غلط ہے");
+      }
+    });
   </script>
 </body>
 </html>
