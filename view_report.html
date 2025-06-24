@@ -3,27 +3,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>View Reports - HCP</title>
+  <title>📊 View Reports - HCP</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h2>📊 View Reports</h2>
+    <h2>📊 View Section Reports</h2>
   </header>
 
   <section>
-    <label>Filter by Date:</label>
-    <input type="date" id="filterDate" />
-    <button onclick="filterReports()">🔍 Filter</button>
+    <div>
+      <label for="sectionFilter">Select Section:</label>
+      <select id="sectionFilter">
+        <option value="">All Sections</option>
+      </select>
+    </div>
 
-    <h3>📁 Report List</h3>
+    <div>
+      <label for="dateFilter">Filter by Date:</label>
+      <input type="date" id="dateFilter" />
+    </div>
+
+    <button onclick="filterData()">🔍 Filter</button>
+
+    <h3>📋 Report Data</h3>
     <table border="1" id="reportTable">
       <thead>
         <tr>
           <th>Sr#</th>
           <th>Section</th>
-          <th>Description</th>
           <th>Date</th>
+          <th>Data</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -31,44 +41,53 @@
   </section>
 
   <script>
-    function getReports() {
-      return JSON.parse(localStorage.getItem('reports')) || [];
+    const reportTable = document.getElementById('reportTable').querySelector('tbody');
+    const sectionFilter = document.getElementById('sectionFilter');
+
+    // Dummy sample data for testing
+    if (!localStorage.getItem('reportData')) {
+      const demoData = [
+        { section: 'Store', date: '2025-06-18', data: 'Item In: Gloves - 100' },
+        { section: 'Store', date: '2025-06-19', data: 'Item Out: Masks - 50' },
+        { section: 'Admin', date: '2025-06-18', data: 'Letter Issued: NOC to Mr. Ali' }
+      ];
+      localStorage.setItem('reportData', JSON.stringify(demoData));
     }
 
-    function renderReports(reports) {
-      const tbody = document.querySelector('#reportTable tbody');
-      tbody.innerHTML = '';
-      reports.forEach((r, i) => {
-        tbody.innerHTML += `
+    function loadSections() {
+      const data = JSON.parse(localStorage.getItem('reportData')) || [];
+      const sections = [...new Set(data.map(d => d.section))];
+      sectionFilter.innerHTML = '<option value="">All Sections</option>';
+      sections.forEach(sec => {
+        sectionFilter.innerHTML += `<option value="${sec}">${sec}</option>`;
+      });
+    }
+
+    function filterData() {
+      const section = document.getElementById('sectionFilter').value;
+      const date = document.getElementById('dateFilter').value;
+      const data = JSON.parse(localStorage.getItem('reportData')) || [];
+
+      const filtered = data.filter(d => {
+        return (section === '' || d.section === section) &&
+               (date === '' || d.date === date);
+      });
+
+      reportTable.innerHTML = '';
+      filtered.forEach((item, index) => {
+        reportTable.innerHTML += `
           <tr>
-            <td>${i + 1}</td>
-            <td>${r.section}</td>
-            <td>${r.desc}</td>
-            <td>${r.date}</td>
+            <td>${index + 1}</td>
+            <td>${item.section}</td>
+            <td>${item.date}</td>
+            <td>${item.data}</td>
           </tr>
         `;
       });
     }
 
-    function filterReports() {
-      const date = document.getElementById('filterDate').value;
-      const allReports = getReports();
-      const filtered = date
-        ? allReports.filter(r => r.date === date)
-        : allReports;
-      renderReports(filtered);
-    }
-
-    // Sample Data (for demo only — you can remove it)
-    if (!localStorage.getItem('reports')) {
-      const sample = [
-        { section: 'Store', desc: 'Added Medicines', date: '2025-06-19' },
-        { section: 'Admin', desc: 'Generated NOC', date: '2025-06-18' }
-      ];
-      localStorage.setItem('reports', JSON.stringify(sample));
-    }
-
-    filterReports();
+    loadSections();
+    filterData();
   </script>
 </body>
 </html>
