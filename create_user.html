@@ -1,1 +1,40 @@
-<h2>Create User Page</h2>
+<!-- create_user.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create User - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h2>Add New User</h2>
+  </header>
+  <section>
+    <form id="userForm">
+      <input type="text" id="name" placeholder="Name" required />
+      <input type="text" id="cnic" placeholder="CNIC" required />
+      <input type="text" id="role" placeholder="Role (e.g. Store Incharge)" required />
+      <input type="text" id="section" placeholder="Section Name" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">➕ Add User</button>
+    </form>
+
+    <h3>👥 Current Users</h3>
+    <table border="1" id="userTable">
+      <thead>
+        <tr>
+          <th>Sr#</th>
+          <th>Name</th>
+          <th>CNIC</th>
+          <th>Role</th>
+          <th>Section</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <script>
+    const userForm = document.getElementById('userForm');
