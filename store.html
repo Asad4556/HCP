@@ -1,95 +1,138 @@
-<!-- store.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Store Management - HCP</title>
+  <title>🧾 Store Management - HCP</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+    h2 { text-align: center; margin-bottom: 20px; }
+    form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    input, button {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88);
+      font-weight: bold;
+      color: black;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #2e2e3f;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h2>🧾 Store Management</h2>
-  </header>
 
-  <section>
-    <form id="itemForm">
-      <input type="text" id="itemName" placeholder="Item Name" required />
-      <input type="number" id="itemQty" placeholder="Initial Quantity" required />
-      <button type="submit">➕ Add Item</button>
-    </form>
+  <h2>📦 Store Management Panel</h2>
 
-    <h3>📦 Current Store Items</h3>
-    <table border="1" id="storeTable">
-      <thead>
-        <tr>
-          <th>Sr#</th>
-          <th>Item Name</th>
-          <th>Qty</th>
-          <th>IN</th>
-          <th>OUT</th>
-          <th>Transfer</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
+  <form id="itemForm">
+    <input type="text" id="itemName" placeholder="Item Name" required />
+    <input type="number" id="itemQty" placeholder="Quantity" required />
+    <button type="submit">➕ Add Item</button>
+  </form>
+
+  <h3>📋 Current Store Items</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Sr#</th>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>IN</th>
+        <th>OUT</th>
+        <th>TRANSFER</th>
+      </tr>
+    </thead>
+    <tbody id="storeTable"></tbody>
+  </table>
 
   <script>
-    const itemForm = document.getElementById('itemForm');
-    const storeTable = document.getElementById('storeTable').querySelector('tbody');
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
+    const storeKey = `storeItems_${user?.section || 'general'}`;
+    const storeTable = document.getElementById('storeTable');
+    const form = document.getElementById('itemForm');
 
-    function getStore() {
-      return JSON.parse(localStorage.getItem('storeItems')) || [];
+    function getItems() {
+      return JSON.parse(localStorage.getItem(storeKey)) || [];
     }
 
-    function saveStore(data) {
-      localStorage.setItem('storeItems', JSON.stringify(data));
+    function saveItems(items) {
+      localStorage.setItem(storeKey, JSON.stringify(items));
     }
 
-    function renderStore() {
-      const items = getStore();
+    function renderItems() {
+      const items = getItems();
       storeTable.innerHTML = '';
-      items.forEach((item, index) => {
+      items.forEach((item, i) => {
         storeTable.innerHTML += `
           <tr>
-            <td>${index + 1}</td>
+            <td>${i + 1}</td>
             <td>${item.name}</td>
             <td>${item.qty}</td>
-            <td><button onclick="adjustQty(${index}, 'in')">IN</button></td>
-            <td><button onclick="adjustQty(${index}, 'out')">OUT</button></td>
-            <td><button onclick="adjustQty(${index}, 'transfer')">Transfer</button></td>
+            <td><button onclick="adjustQty(${i}, 'in')">IN</button></td>
+            <td><button onclick="adjustQty(${i}, 'out')">OUT</button></td>
+            <td><button onclick="adjustQty(${i}, 'transfer')">TRANSFER</button></td>
           </tr>
         `;
       });
     }
 
     function adjustQty(index, type) {
-      const qty = prompt(`Enter quantity to ${type.toUpperCase()}:`);
-      if (qty && !isNaN(qty)) {
-        const items = getStore();
-        let newQty = parseInt(qty);
-        if (type === 'in') items[index].qty += newQty;
-        if (type === 'out') items[index].qty -= newQty;
-        if (type === 'transfer') items[index].qty -= newQty;
+      const qty = parseInt(prompt(`Enter quantity to ${type.toUpperCase()}:`));
+      if (isNaN(qty) || qty <= 0) return alert("Invalid quantity!");
 
-        saveStore(items);
-        renderStore();
+      const items = getItems();
+      if (type === 'in') items[index].qty += qty;
+      else if (['out', 'transfer'].includes(type)) {
+        if (items[index].qty < qty) return alert("Not enough quantity!");
+        items[index].qty -= qty;
       }
+
+      saveItems(items);
+      renderItems();
     }
 
-    itemForm.addEventListener('submit', function (e) {
+    form.addEventListener('submit', e => {
       e.preventDefault();
-      const name = document.getElementById('itemName').value;
+      const name = document.getElementById('itemName').value.trim();
       const qty = parseInt(document.getElementById('itemQty').value);
 
-      const items = getStore();
+      if (!name || isNaN(qty) || qty <= 0) return alert("Enter valid item and quantity.");
+
+      const items = getItems();
       items.push({ name, qty });
-      saveStore(items);
-      itemForm.reset();
-      renderStore();
+      saveItems(items);
+      renderItems();
+      form.reset();
     });
 
-    renderStore();
+    if (!user) {
+      alert("Unauthorized access!");
+      window.location.href = "login.html";
+    } else {
+      renderItems();
+    }
   </script>
 </body>
 </html>
