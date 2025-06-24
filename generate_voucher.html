@@ -1,1 +1,50 @@
-<h2>Generate Voucher</h2>
+<!-- generate_voucher.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Generate Voucher - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h2>📝 Generate Voucher</h2>
+  </header>
+
+  <section>
+    <form id="voucherForm">
+      <input type="text" id="voucherFor" placeholder="Voucher For" required />
+      <input type="text" id="details" placeholder="Details" required />
+      <input type="date" id="date" required />
+      <input type="text" id="reference" placeholder="Reference #" required />
+      <button type="submit">✅ Generate</button>
+    </form>
+
+    <div id="voucherOutput" style="margin-top: 20px;"></div>
+  </section>
+
+  <script>
+    document.getElementById('voucherForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const forWho = document.getElementById('voucherFor').value;
+      const details = document.getElementById('details').value;
+      const date = document.getElementById('date').value;
+      const reference = document.getElementById('reference').value;
+
+      const html = `
+        <div style="border:1px solid #000;padding:20px;background:#f9f9f9;">
+          <h2>HCP Voucher</h2>
+          <p><strong>To:</strong> ${forWho}</p>
+          <p><strong>Details:</strong> ${details}</p>
+          <p><strong>Date:</strong> ${date}</p>
+          <p><strong>Ref#:</strong> ${reference}</p>
+          <hr />
+          <p>Signature: __________________________</p>
+          <p>Stamp: ______________________________</p>
+        </div>
+      `;
+      document.getElementById('voucherOutput').innerHTML = html;
+    });
+  </script>
+</body>
+</html>
