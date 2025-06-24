@@ -1,89 +1,100 @@
-/* style.css */
+/* style.css – 9-color dark theme for HCP */
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
   background: #121212;
-  color: #ffffff;
-  padding: 20px;
+  color: #f0f0f0;
 }
 
+/* Header */
 header {
-  text-align: center;
-  background: linear-gradient(90deg, #4caf50, #009688, #3f51b5, #9c27b0);
-  padding: 15px;
-  color: white;
-  border-radius: 12px;
-  box-shadow: 0 0 12px #000;
-}
-
-h2, h3 {
-  margin: 10px 0;
-}
-
-form, section {
-  background-color: #1e1e1e;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  color: #fff;
   padding: 20px;
-  border-radius: 12px;
-  margin: 20px auto;
-  max-width: 600px;
-  box-shadow: 0 0 8px rgba(255,255,255,0.1);
-}
-
-input, select, button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-}
-
-input[type="text"], input[type="password"], input[type="date"], input[type="number"] {
-  background-color: #2e2e2e;
-  color: white;
-}
-
-input[type="file"] {
-  background: #2b2b2b;
-  color: #ddd;
-}
-
-button {
-  background: linear-gradient(to right, #ff5722, #ff9800, #ffc107);
-  color: #000;
+  text-align: center;
+  font-size: 1.5em;
   font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Buttons */
+button {
+  background: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
 }
-
 button:hover {
-  background: linear-gradient(to right, #ffc107, #ff9800, #ff5722);
+  background: #45a049;
 }
 
+/* Inputs and Select */
+input, textarea, select {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  border: 1px solid #444;
+  padding: 10px;
+  margin: 5px 0 15px;
+  width: 100%;
+  border-radius: 5px;
+}
+input::placeholder, textarea::placeholder {
+  color: #aaa;
+}
+
+/* Tables */
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #252525;
-  color: white;
-  margin-top: 20px;
-  border-radius: 10px;
-  overflow: hidden;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
 }
-
 table th, table td {
   border: 1px solid #444;
   padding: 10px;
-  text-align: center;
+  text-align: left;
 }
-
 table th {
-  background-color: #333;
+  background-color: #2d2d2d;
+}
+table tr:nth-child(even) {
+  background-color: #2b2b2b;
 }
 
-#voucherOutput {
-  background: #2a2a2a;
+/* Sections */
+section {
+  max-width: 800px;
+  margin: 30px auto;
   padding: 20px;
+  background: #1a1a1a;
   border-radius: 10px;
-  border: 1px solid #444;
-  color: #eee;
+  box-shadow: 0 0 15px #00000050;
+}
+
+/* Links */
+a {
+  color: #00bcd4;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+::-webkit-scrollbar-thumb {
+  background: #555;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #888;
 }
