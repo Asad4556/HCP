@@ -6,108 +6,51 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      background-color: #121212;
-      color: #fff;
+      background: #121212;
+      color: white;
       font-family: 'Segoe UI', sans-serif;
-      margin: 0;
       padding: 20px;
     }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
     h1 {
-      background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88);
+      font-size: 2rem;
+      background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88, #ffcc00, #ff6699);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      font-weight: 900;
+      text-align: center;
     }
-    nav button {
-      background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
-      border: none;
+    button {
+      margin-top: 30px;
+      background: #ff5555;
       color: white;
       padding: 10px 20px;
-      margin: 5px;
-      border-radius: 7px;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      transition: background 0.3s;
-    }
-    nav button:hover {
-      background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Welcome, Super Admin</h1>
-    <button onclick="logout()">Logout 🔓</button>
-  </header>
 
-  <nav>
-    <button onclick="openSection('hr')">👥 HR Section</button>
-    <button onclick="openSection('finance')">💰 Finance Section</button>
-    <button onclick="openSection('store')">📦 Store Section</button>
-    <button onclick="openSection('reception')">📞 Reception Section</button>
-    <button onclick="openSection('admin')">🛠️ Admin Section</button>
-    <button onclick="openSection('reports')">📊 Reports</button>
-    <button onclick="openSection('uploadLogos')">🖼️ Upload Logos</button>
-    <button onclick="openSection('uploadStamp')">✍️ Upload Stamp & Signature</button>
-    <button onclick="openSection('voucher')">🧾 Voucher Formats & Generate</button>
-  </nav>
+  <h1>Welcome Super Admin! 🎉</h1>
 
-  <main id="contentArea" style="margin-top: 30px;">
-    <p>Select a section above to manage.</p>
-  </main>
+  <p style="text-align:center;">Full access to all sections and modules.</p>
+
+  <button onclick="logout()">Logout</button>
 
   <script>
-    function logout(){
+    // Check login
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user || user.role !== 'Super Admin') {
+      alert('Unauthorized! Please login as Super Admin.');
+      window.location.href = 'login.html';
+    }
+
+    function logout() {
       localStorage.removeItem('currentUser');
-      window.location.href = "login.html";
-    }
-
-    function openSection(section){
-      switch(section){
-        case 'hr':
-          window.location.href = "hr.html";
-          break;
-        case 'finance':
-          window.location.href = "finance.html";
-          break;
-        case 'store':
-          window.location.href = "store.html";
-          break;
-        case 'reception':
-          window.location.href = "reception.html";
-          break;
-        case 'admin':
-          window.location.href = "admin.html";
-          break;
-        case 'reports':
-          window.location.href = "view_report.html";
-          break;
-        case 'uploadLogos':
-          window.location.href = "upload_header_logos.html";
-          break;
-        case 'uploadStamp':
-          window.location.href = "upload_stamp_signature.html";
-          break;
-        case 'voucher':
-          window.location.href = "voucher_format.html";
-          break;
-        default:
-          alert("Invalid section");
-      }
-    }
-
-    // Verify login on load
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if(!currentUser || currentUser.role !== 'superadmin'){
-      alert('Access denied! Login as Super Admin.');
       window.location.href = 'login.html';
     }
   </script>
+
 </body>
 </html>
