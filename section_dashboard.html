@@ -1,81 +1,26 @@
+<!-- store_dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Section Dashboard - HCP</title>
+  <meta charset="UTF-8">
+  <title>📦 Store Dashboard – HCP</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      background-color: #1e1e2f;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      padding: 20px;
-      text-align: center;
-    }
-    h2 {
-      margin-bottom: 20px;
-    }
-    button {
-      background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
-      border: none;
-      color: white;
-      padding: 15px 25px;
-      margin: 10px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
-    }
-    .header-logos {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-    .header-logos img {
-      width: 90px;
-      height: auto;
-    }
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #1e1e2f; color: white; }
+    .button { display: block; background: #3e3e5f; padding: 12px; margin: 10px 0; border-radius: 8px; text-align: center; text-decoration: none; color: white; font-weight: bold; }
+    .button:hover { background: #5e5e9f; }
   </style>
 </head>
 <body>
+  <h2>📦 Welcome to Store Incharge Dashboard</h2>
 
-  <div class="header-logos">
-    <img src="" id="leftLogo" alt="Govt Logo" />
-    <h2>HEPATITIS & INFECTION CONTROL PROGRAM<br />Section Panel</h2>
-    <img src="" id="rightLogo" alt="HCP Logo" />
-  </div>
-
-  <h3 id="welcomeText">Welcome, Section Incharge</h3>
-
-  <button onclick="location.href='store.html'">📦 Manage My Section</button>
-  <button onclick="location.href='generate_voucher.html'">📑 Generate Voucher</button>
-  <button onclick="location.href='change_password.html'">🔑 Change Password</button>
-  <button onclick="logout()">🔓 Logout</button>
-
-  <script>
-    const leftLogo = localStorage.getItem('govtLogo');
-    const rightLogo = localStorage.getItem('hcpLogo');
-    if (leftLogo) document.getElementById('leftLogo').src = leftLogo;
-    if (rightLogo) document.getElementById('rightLogo').src = rightLogo;
-
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    if (user && user.role === 'Section Head') {
-      document.getElementById('welcomeText').textContent = `Welcome, ${user.role} - ${user.section}`;
-    } else {
-      alert('Unauthorized! Please login as Section Head.');
-      window.location.href = 'login.html';
-    }
-
-    function logout() {
-      localStorage.removeItem('currentUser');
-      window.location.href = 'login.html';
-    }
-  </script>
-
+  <a href="voucher_generate.html" class="button">🧾 Generate Voucher</a>
+  <a href="voucher_format.html" class="button">🗂️ Create Voucher Format</a>
+  <a href="stock_in.html" class="button">📥 Stock In</a>
+  <a href="stock_out.html" class="button">📤 Stock Out</a>
+  <a href="stock_transfer.html" class="button">🔁 Transfer Stock</a>
+  <a href="manage_stock.html" class="button">📊 Manage Stock</a>
+  <a href="view_report.html" class="button">📋 View Report</a>
+  <a href="index.html" class="button">🔓 Logout</a>
 </body>
 </html>
