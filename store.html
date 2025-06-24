@@ -1,33 +1,41 @@
+<!-- store.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🧾 HCP Store Management</title>
+  <title>Store Management - HCP</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    if (!user || (user.role !== "Store Incharge" && user.role !== "Super Admin")) {
+      alert("❌ Unauthorized access!");
+      window.location.href = "login.html";
+    }
+  </script>
+
   <header>
-    <h2>📦 HCP Store Management</h2>
+    <h2>🧾 Store Management</h2>
   </header>
 
   <section>
     <form id="itemForm">
       <input type="text" id="itemName" placeholder="Item Name" required />
       <input type="number" id="itemQty" placeholder="Initial Quantity" required />
-      <button type="submit">➕ Add New Stock</button>
+      <button type="submit">➕ Add Item</button>
     </form>
 
-    <h3>📋 Stock List</h3>
+    <h3>📦 Current Store Items</h3>
     <table border="1" id="storeTable">
       <thead>
         <tr>
           <th>Sr#</th>
           <th>Item Name</th>
           <th>Qty</th>
-          <th>➕ IN</th>
-          <th>➖ OUT</th>
-          <th>🔁 TRANSFER</th>
-          <th>❌ DELETE</th>
+          <th>IN</th>
+          <th>OUT</th>
+          <th>Transfer</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -57,8 +65,7 @@
             <td>${item.qty}</td>
             <td><button onclick="adjustQty(${index}, 'in')">IN</button></td>
             <td><button onclick="adjustQty(${index}, 'out')">OUT</button></td>
-            <td><button onclick="adjustQty(${index}, 'transfer')">TRANSFER</button></td>
-            <td><button onclick="deleteItem(${index})">❌</button></td>
+            <td><button onclick="adjustQty(${index}, 'transfer')">Transfer</button></td>
           </tr>
         `;
       });
@@ -73,24 +80,6 @@
         if (type === 'out') items[index].qty -= newQty;
         if (type === 'transfer') items[index].qty -= newQty;
 
-        // Save to report
-        let reports = JSON.parse(localStorage.getItem('reportData')) || [];
-        reports.push({
-          section: 'Store',
-          date: new Date().toISOString().slice(0, 10),
-          data: `${type.toUpperCase()} - ${items[index].name} (${qty})`
-        });
-        localStorage.setItem('reportData', JSON.stringify(reports));
-
-        saveStore(items);
-        renderStore();
-      }
-    }
-
-    function deleteItem(index) {
-      if (confirm("Are you sure to delete this item?")) {
-        const items = getStore();
-        items.splice(index, 1);
         saveStore(items);
         renderStore();
       }
