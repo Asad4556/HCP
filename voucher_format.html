@@ -1,45 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
   <meta charset="UTF-8">
-  <title>✉️ Upload Voucher Format - HCP</title>
+  <title>📤 ووچر فارمیٹ اپلوڈ کریں - HCP</title>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #f4f4f4; }
-    h2 { color: #333; }
-    .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input, button { width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; }
-    iframe { width: 100%; height: 400px; border: 1px solid #ccc; margin-top: 20px; }
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f0f0f0; }
+    h2 { text-align: center; }
+    .form-section, .list-section {
+      background: white; padding: 20px; margin: 20px auto;
+      max-width: 600px; border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input[type="file"], button {
+      padding: 10px; width: 100%; margin: 10px 0;
+    }
+    ul { list-style: none; padding: 0; }
+    li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px; background: #fafafa; margin-bottom: 5px;
+      border: 1px solid #ccc; border-radius: 5px;
+    }
+    iframe { width: 100%; height: 500px; border: none; margin-top: 20px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>✉️ Upload Voucher Format (PDF, Word, Excel)</h2>
-    <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.xls,.xlsx" />
-    <button onclick="printVoucher()">⎙️ Print Voucher</button>
-    <iframe id="preview" style="display:none;"></iframe>
+
+  <h2>📤 ووچر فارمیٹ اپلوڈ کریں</h2>
+
+  <div class="form-section">
+    <form id="uploadForm">
+      <label>📎 فائل منتخب کریں (PDF, Word, Excel)</label>
+      <input type="file" id="voucherFile" accept=".pdf,.doc,.docx,.xls,.xlsx" required />
+      <button type="submit">💾 محفوظ کریں</button>
+    </form>
+  </div>
+
+  <div class="list-section">
+    <h3>📂 اپلوڈ شدہ فارمیٹس</h3>
+    <ul id="formatList"></ul>
+    <iframe id="previewFrame" style="display:none;"></iframe>
   </div>
 
   <script>
-    const fileInput = document.getElementById("fileInput");
-    const preview = document.getElementById("preview");
+    const uploadForm = document.getElementById('uploadForm');
+    const formatList = document.getElementById('formatList');
+    const previewFrame = document.getElementById('previewFrame');
 
-    fileInput.addEventListener("change", () => {
+    function loadFormats() {
+      const saved = JSON.parse(localStorage.getItem('uploadedFormats')) || [];
+      formatList.innerHTML = '';
+      saved.forEach((f, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${f.name}</span>
+          <div>
+            <button onclick="previewFormat('${f.url}')">🔍</button>
+            <button onclick="printFormat('${f.url}')">🖨️</button>
+          </div>
+        `;
+        formatList.appendChild(li);
+      });
+    }
+
+    function previewFormat(url) {
+      previewFrame.src = url;
+      previewFrame.style.display = 'block';
+    }
+
+    function printFormat(url) {
+      const win = window.open(url, '_blank');
+      win.focus();
+      win.print();
+    }
+
+    uploadForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('voucherFile');
       const file = fileInput.files[0];
-      if (file) {
-        const fileURL = URL.createObjectURL(file);
-        preview.src = fileURL;
-        preview.style.display = "block";
-      }
+
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const uploaded = JSON.parse(localStorage.getItem('uploadedFormats')) || [];
+        uploaded.push({ name: file.name, url: reader.result });
+        localStorage.setItem('uploadedFormats', JSON.stringify(uploaded));
+        loadFormats();
+        alert("✅ فائل کامیابی سے محفوظ ہو گئی");
+        fileInput.value = '';
+      };
+
+      reader.readAsDataURL(file);
     });
 
-    function printVoucher() {
-      if (preview.src) {
-        preview.contentWindow.focus();
-        preview.contentWindow.print();
-      } else {
-        alert("⚠️ Please upload a file first.");
-      }
-    }
+    loadFormats();
   </script>
+
 </body>
 </html>
