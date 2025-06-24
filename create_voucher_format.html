@@ -1,1 +1,65 @@
-<h2>Create Voucher Format</h2>
+<!-- create_voucher_format.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Voucher Format - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h2>📋 Create Voucher Format</h2>
+  </header>
+
+  <section>
+    <form id="formatForm">
+      <input type="text" id="formatName" placeholder="Format Name (e.g., Medicine Issue)" required />
+      <textarea id="formatTemplate" placeholder="Enter format details (e.g. fields, layout, etc.)" rows="6" required></textarea>
+      <button type="submit">💾 Save Format</button>
+    </form>
+
+    <hr />
+    <h3>📄 Saved Formats</h3>
+    <ul id="formatList"></ul>
+  </section>
+
+  <script>
+    const formatForm = document.getElementById('formatForm');
+    const formatList = document.getElementById('formatList');
+
+    function loadFormats() {
+      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
+      formatList.innerHTML = '';
+      formats.forEach((f, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `🔹 <b>${f.name}</b> <button onclick="deleteFormat(${i})">❌ Delete</button>`;
+        formatList.appendChild(li);
+      });
+    }
+
+    function deleteFormat(index) {
+      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
+      formats.splice(index, 1);
+      localStorage.setItem('voucherFormats', JSON.stringify(formats));
+      loadFormats();
+    }
+
+    formatForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('formatName').value.trim();
+      const template = document.getElementById('formatTemplate').value.trim();
+
+      if (!name || !template) return;
+
+      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
+      formats.push({ name, template });
+      localStorage.setItem('voucherFormats', JSON.stringify(formats));
+
+      formatForm.reset();
+      loadFormats();
+    });
+
+    loadFormats();
+  </script>
+</body>
+</html>
