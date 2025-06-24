@@ -20,16 +20,18 @@
     h2 {
       text-align: center;
       flex-grow: 1;
+      line-height: 1.2;
     }
     button {
       background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
       border: none;
       color: white;
-      padding: 10px 15px;
-      margin: 5px;
+      padding: 12px 20px;
+      margin: 8px;
       border-radius: 7px;
       cursor: pointer;
       font-weight: bold;
+      font-size: 1rem;
       transition: background 0.3s;
     }
     button:hover {
@@ -54,6 +56,7 @@
   <section class="buttons-container">
     <h3 id="welcomeText">Welcome, Receptionist</h3>
 
+    <!-- آپ اپنی ریسیپشن کی ضروری فائلز کے مطابق لنکس بدل سکتے ہیں -->
     <button onclick="location.href='reception_records.html'">📋 Manage Reception Records</button>
     <button onclick="location.href='change_password.html'">🔑 Change Password</button>
     <button onclick="logout()">🔓 Logout</button>
@@ -63,20 +66,20 @@
     // لوگوز لوڈ کریں
     const leftLogo = localStorage.getItem('govtLogo');
     const rightLogo = localStorage.getItem('hcpLogo');
-    if(leftLogo) document.getElementById('leftLogo').src = leftLogo;
-    if(rightLogo) document.getElementById('rightLogo').src = rightLogo;
+    if (leftLogo) document.getElementById('leftLogo').src = leftLogo;
+    if (rightLogo) document.getElementById('rightLogo').src = rightLogo;
 
-    // یوزر کی معلومات لوکل اسٹوریج سے لائیں اور ویلکم ٹیکسٹ سیٹ کریں
+    // یوزر ڈیٹا لوکل اسٹوریج سے حاصل کریں
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if(currentUser){
+    if (currentUser) {
       document.getElementById('welcomeText').textContent = `Welcome, ${currentUser.role} - ${currentUser.section}`;
     } else {
       alert('Access denied! Please login.');
-      window.location.href = 'login.html';
+      window.location.href = 'login.html'; // اگر یوزر لاگ ان نہ ہو تو لاگ ان پیج پر بھیج دیں
     }
 
     // لاگ آوٹ فنکشن
-    function logout(){
+    function logout() {
       localStorage.removeItem('currentUser');
       window.location.href = 'login.html';
     }
