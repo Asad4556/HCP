@@ -21,22 +21,22 @@
       margin: 10px 0;
       padding: 8px;
       width: 100%;
-      border-radius: 5px;
       border: none;
+      border-radius: 5px;
     }
     table {
       width: 100%;
       margin-top: 20px;
       border-collapse: collapse;
-      background: #1a1a2a;
+      background: #1e1e2f;
     }
     th, td {
-      padding: 10px;
-      border: 1px solid #444;
+      border: 1px solid #555;
+      padding: 8px;
       text-align: center;
     }
     th {
-      background-color: #333;
+      background: #333;
     }
   </style>
 </head>
@@ -57,22 +57,32 @@
     <button onclick="filterData()">🔍 Filter</button>
 
     <h3>📋 Report Data</h3>
-    <table>
+    <table id="reportTable">
       <thead>
         <tr>
           <th>Sr#</th>
           <th>Section</th>
           <th>Date</th>
-          <th>Details</th>
+          <th>Data</th>
         </tr>
       </thead>
-      <tbody id="reportTable"></tbody>
+      <tbody></tbody>
     </table>
   </section>
 
   <script>
-    const reportTable = document.getElementById('reportTable');
+    const reportTable = document.getElementById('reportTable').querySelector('tbody');
     const sectionFilter = document.getElementById('sectionFilter');
+
+    // Demo data if not saved
+    if (!localStorage.getItem('reportData')) {
+      const demoData = [
+        { section: 'Store', date: '2025-06-18', data: 'Item In: Gloves - 100' },
+        { section: 'Store', date: '2025-06-19', data: 'Item Out: Masks - 50' },
+        { section: 'Admin', date: '2025-06-18', data: 'Letter Issued: NOC to Mr. Ali' }
+      ];
+      localStorage.setItem('reportData', JSON.stringify(demoData));
+    }
 
     function loadSections() {
       const data = JSON.parse(localStorage.getItem('reportData')) || [];
@@ -89,8 +99,8 @@
       const data = JSON.parse(localStorage.getItem('reportData')) || [];
 
       const filtered = data.filter(d => {
-        return (!section || d.section === section) &&
-               (!date || d.date === date);
+        return (section === '' || d.section === section) &&
+               (date === '' || d.date === date);
       });
 
       reportTable.innerHTML = '';
@@ -106,7 +116,6 @@
       });
     }
 
-    // Load on page load
     loadSections();
     filterData();
   </script>
