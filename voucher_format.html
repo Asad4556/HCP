@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>📋 Create Voucher Format - HCP</title>
+  <title>Create Voucher Format - HCP</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -23,8 +23,6 @@
 
   <script>
     const user = JSON.parse(localStorage.getItem('currentUser'));
-
-    // Only super admin can access this
     if (!user || user.role !== 'super admin') {
       alert("🚫 Unauthorized Access!");
       window.location.href = "login.html";
