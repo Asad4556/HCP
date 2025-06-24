@@ -3,101 +3,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Store Management - HCP</title>
+  <title>📦 Store Management - HCP</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .action-btn {
+      background: linear-gradient(45deg, #007bff, #00ff88);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    .action-btn:hover {
+      background: linear-gradient(45deg, #00ff88, #007bff);
+    }
+  </style>
 </head>
 <body>
-  <script>
-    const user = JSON.parse(localStorage.getItem("currentUser"));
-    if (!user || (user.role !== "Store Incharge" && user.role !== "Super Admin")) {
-      alert("❌ Unauthorized access!");
-      window.location.href = "login.html";
-    }
-  </script>
-
-  <header>
-    <h2>🧾 Store Management</h2>
+  <header style="text-align:center;">
+    <h2>📦 Store Management Dashboard</h2>
   </header>
 
-  <section>
-    <form id="itemForm">
-      <input type="text" id="itemName" placeholder="Item Name" required />
-      <input type="number" id="itemQty" placeholder="Initial Quantity" required />
-      <button type="submit">➕ Add Item</button>
-    </form>
-
-    <h3>📦 Current Store Items</h3>
-    <table border="1" id="storeTable">
-      <thead>
-        <tr>
-          <th>Sr#</th>
-          <th>Item Name</th>
-          <th>Qty</th>
-          <th>IN</th>
-          <th>OUT</th>
-          <th>Transfer</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <section style="text-align: center;">
+    <button class="action-btn" onclick="location.href='add_stock.html'">➕ Add New Stock</button>
+    <button class="action-btn" onclick="location.href='manage_stock.html'">📋 Manage Stock</button>
+    <button class="action-btn" onclick="location.href='voucher_generate.html'">🧾 Generate Voucher</button>
+    <button class="action-btn" onclick="location.href='voucher_format.html'">📂 Upload/Manage Voucher Format</button>
+    <button class="action-btn" onclick="location.href='super_admin_dashboard.html'">🔙 Back to Dashboard</button>
   </section>
 
-  <script>
-    const itemForm = document.getElementById('itemForm');
-    const storeTable = document.getElementById('storeTable').querySelector('tbody');
-
-    function getStore() {
-      return JSON.parse(localStorage.getItem('storeItems')) || [];
-    }
-
-    function saveStore(data) {
-      localStorage.setItem('storeItems', JSON.stringify(data));
-    }
-
-    function renderStore() {
-      const items = getStore();
-      storeTable.innerHTML = '';
-      items.forEach((item, index) => {
-        storeTable.innerHTML += `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${item.name}</td>
-            <td>${item.qty}</td>
-            <td><button onclick="adjustQty(${index}, 'in')">IN</button></td>
-            <td><button onclick="adjustQty(${index}, 'out')">OUT</button></td>
-            <td><button onclick="adjustQty(${index}, 'transfer')">Transfer</button></td>
-          </tr>
-        `;
-      });
-    }
-
-    function adjustQty(index, type) {
-      const qty = prompt(`Enter quantity to ${type.toUpperCase()}:`);
-      if (qty && !isNaN(qty)) {
-        const items = getStore();
-        let newQty = parseInt(qty);
-        if (type === 'in') items[index].qty += newQty;
-        if (type === 'out') items[index].qty -= newQty;
-        if (type === 'transfer') items[index].qty -= newQty;
-
-        saveStore(items);
-        renderStore();
-      }
-    }
-
-    itemForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const name = document.getElementById('itemName').value;
-      const qty = parseInt(document.getElementById('itemQty').value);
-
-      const items = getStore();
-      items.push({ name, qty });
-      saveStore(items);
-      itemForm.reset();
-      renderStore();
-    });
-
-    renderStore();
-  </script>
 </body>
 </html>
