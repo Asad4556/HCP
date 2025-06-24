@@ -3,51 +3,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login - HCP</title>
+  <title>🔐 HCP Login</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .login-box {
+      width: 350px;
+      margin: 100px auto;
+      padding: 25px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: #f9f9f9;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .login-box input, .login-box button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h2>🔐 Login to HCP System</h2>
-  </header>
-
-  <section>
-    <form id="loginForm">
-      <input type="text" id="cnic" placeholder="Enter CNIC" required />
-      <input type="password" id="password" placeholder="Enter Password" required />
-      <label><input type="checkbox" id="showPassword" /> Show Password</label>
-      <button type="submit">➡️ Login</button>
-    </form>
-    <p id="loginMessage"></p>
-  </section>
+  <div class="login-box">
+    <h2 style="text-align:center;">🔐 HCP Secure Login</h2>
+    <input type="text" id="cnic" placeholder="Enter CNIC (xxxxx-xxxxxxx-x)" required />
+    <input type="password" id="password" placeholder="Enter Password" required />
+    <input type="checkbox" onclick="togglePassword()"> Show Password
+    <button onclick="loginUser()">🔓 Login</button>
+    <p style="text-align:center; margin-top:10px;">
+      <a href="change_password.html">🔁 Change Password</a>
+    </p>
+  </div>
 
   <script>
-    document.getElementById('showPassword').addEventListener('change', function () {
-      const passField = document.getElementById('password');
-      passField.type = this.checked ? 'text' : 'password';
-    });
+    function togglePassword() {
+      const pw = document.getElementById("password");
+      pw.type = pw.type === "password" ? "text" : "password";
+    }
 
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const cnic = document.getElementById('cnic').value;
-      const password = document.getElementById('password').value;
-
+    function loginUser() {
+      const cnic = document.getElementById("cnic").value.trim();
+      const password = document.getElementById("password").value.trim();
       const users = JSON.parse(localStorage.getItem('users')) || [];
 
-      const user = users.find(u => u.cnic === cnic && u.password === password);
+      const match = users.find(u => u.cnic === cnic && u.password === password);
 
-      if (user) {
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        document.getElementById('loginMessage').textContent = '✅ Login successful!';
-        if (user.role === 'Super Admin') {
-          window.location.href = 'super_admin_dashboard.html';
+      if (match) {
+        alert(`Welcome ${match.name}! Redirecting...`);
+        localStorage.setItem('loggedInUser', JSON.stringify(match));
+        if (match.role.toLowerCase().includes("admin")) {
+          window.location.href = "super_admin_dashboard.html";
         } else {
-          window.location.href = 'section_dashboard.html';
+          window.location.href = "section_dashboard.html";
         }
       } else {
-        document.getElementById('loginMessage').textContent = '❌ Invalid CNIC or Password.';
+        alert("❌ Invalid CNIC or Password!");
       }
-    });
+    }
   </script>
 </body>
 </html>
