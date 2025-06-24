@@ -1,4 +1,3 @@
-<!-- voucher_generate.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,51 +5,105 @@
   <title>🧾 Generate Voucher - HCP</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+    form, #outputArea {
+      background: #2e2e3f;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    textarea, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    #outputArea {
+      background: #fff;
+      color: black;
+      position: relative;
+    }
+    #outputArea img, canvas {
+      max-width: 150px;
+    }
+    #watermarkLogo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.07;
+      width: 300px;
+      z-index: 0;
+    }
+    #headerArea {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #headerArea h3 {
+      text-align: center;
+      flex: 1;
+    }
+    .footer-signatures {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+    .footer-signatures div {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h2>🧾 Generate Voucher</h2>
-  </header>
+  <h2>🧾 Generate Voucher</h2>
 
-  <section>
-    <form id="voucherForm">
-      <label>Choose Format:</label>
-      <select id="formatDropdown" required></select>
+  <form id="voucherForm">
+    <label>Choose Format:</label>
+    <select id="formatDropdown" required></select>
 
-      <label>Enter Details:</label>
-      <textarea id="voucherDetails" placeholder="Enter voucher data..." rows="6" required></textarea>
+    <label>Enter Voucher Details:</label>
+    <textarea id="voucherDetails" placeholder="Write voucher content..." rows="6" required></textarea>
 
-      <button type="submit">📥 Generate</button>
-    </form>
+    <button type="submit">📥 Generate</button>
+  </form>
+
+  <div id="outputArea" style="display: none;">
+    <img id="watermarkLogo" />
+
+    <div id="headerArea">
+      <img id="govtLogo" />
+      <h3>HEPATITIS & INFECTION CONTROL PROGRAM</h3>
+      <img id="hcpLogo" />
+    </div>
 
     <hr />
-    <div id="outputArea" style="display:none; border: 1px solid gray; padding: 20px; background: #f9f9f9; position: relative;">
-      <img id="watermarkLogo" src="" style="position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); opacity:0.07; width:300px;" />
-      <div id="headerArea" style="display: flex; justify-content: space-between; align-items: center;">
-        <img id="govtLogo" width="80" />
-        <h3>HEPATITIS & INFECTION CONTROL PROGRAM</h3>
-        <img id="hcpLogo" width="80" />
+    <p><strong>Format:</strong> <span id="formatTitle"></span></p>
+    <p><strong>Date:</strong> <span id="todayDate"></span></p>
+    <p><strong>Details:</strong></p>
+    <div id="voucherText"></div>
+
+    <div class="footer-signatures">
+      <div>
+        <p>Signature</p>
+        <img id="sigImage" />
       </div>
-      <hr />
-      <h4>Voucher Format: <span id="formatTitle"></span></h4>
-      <p><strong>Date:</strong> <span id="todayDate"></span></p>
-      <div id="voucherText"></div>
-      <div style="display: flex; justify-content: space-between; margin-top: 40px;">
-        <div>
-          <p>Signature:</p>
-          <img id="sigImage" width="150" />
-        </div>
-        <div>
-          <p>Stamp:</p>
-          <img id="stampImage" width="150" />
-        </div>
-        <div>
-          <p>QR Code:</p>
-          <canvas id="qrCodeCanvas"></canvas>
-        </div>
+      <div>
+        <p>Stamp</p>
+        <img id="stampImage" />
+      </div>
+      <div>
+        <p>QR Code</p>
+        <canvas id="qrCodeCanvas"></canvas>
       </div>
     </div>
-  </section>
+  </div>
 
   <script>
     const formatDropdown = document.getElementById('formatDropdown');
@@ -59,7 +112,7 @@
 
     function loadFormats() {
       const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
-      formatDropdown.innerHTML = '<option value="">--Select Format--</option>';
+      formatDropdown.innerHTML = '<option value="">-- Select Format --</option>';
       formats.forEach(f => {
         const opt = document.createElement('option');
         opt.value = f.name;
@@ -72,35 +125,29 @@
       e.preventDefault();
       const format = formatDropdown.value;
       const details = document.getElementById('voucherDetails').value;
+      const today = new Date().toLocaleDateString();
 
-      if (!format || !details) return;
+      if (!format || !details) return alert("All fields required!");
 
       document.getElementById('formatTitle').textContent = format;
       document.getElementById('voucherText').textContent = details;
-      document.getElementById('todayDate').textContent = new Date().toLocaleDateString();
+      document.getElementById('todayDate').textContent = today;
 
-      // Watermark
-      document.getElementById('watermarkLogo').src = localStorage.getItem('hcpLogo') || '';
-
-      // Logos
       document.getElementById('govtLogo').src = localStorage.getItem('govtLogo') || '';
       document.getElementById('hcpLogo').src = localStorage.getItem('hcpLogo') || '';
-
-      // Stamp & Signature
+      document.getElementById('watermarkLogo').src = localStorage.getItem('hcpLogo') || '';
       document.getElementById('sigImage').src = localStorage.getItem('signatureImage') || '';
       document.getElementById('stampImage').src = localStorage.getItem('stampImage') || '';
 
-      // QR Code
-      QRCode.toCanvas(document.getElementById('qrCodeCanvas'), details + ' | Format: ' + format + ' | ' + new Date().toLocaleDateString(), function (error) {
-        if (error) console.error(error);
+      QRCode.toCanvas(document.getElementById('qrCodeCanvas'), `${format} | ${details} | ${today}`, function (err) {
+        if (err) console.error(err);
       });
 
-      // Save to report
       let reports = JSON.parse(localStorage.getItem('reportData')) || [];
       reports.push({
         section: 'Voucher',
-        date: new Date().toISOString().slice(0, 10),
-        data: `Voucher Created [${format}] – ${details}`
+        date: new Date().toISOString().split('T')[0],
+        data: `Voucher Generated [${format}] - ${details}`
       });
       localStorage.setItem('reportData', JSON.stringify(reports));
 
