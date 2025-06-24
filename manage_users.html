@@ -1,14 +1,20 @@
+<!-- File: manage_users.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Manage Users – HCP</title>
+  <meta charset="UTF-8" />
+  <title>Manage Store Incharges – HCP</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #1e1e2f; color: white; }
-    input, select, button {
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      background: #1e1e2f;
+      color: white;
+    }
+    input, button {
       margin: 6px 0;
-      padding: 8px;
+      padding: 10px;
       width: 100%;
       border-radius: 5px;
       border: none;
@@ -20,7 +26,7 @@
     }
     th, td {
       border: 1px solid #555;
-      padding: 8px;
+      padding: 10px;
       text-align: center;
       background-color: #2e2e3f;
     }
@@ -31,13 +37,12 @@
 </head>
 <body>
 
-  <h2>👤 Add New Store Incharge</h2>
+  <h2>👤 Add Store Incharge</h2>
 
   <input type="text" id="name" placeholder="Name" />
   <input type="text" id="cnic" placeholder="CNIC" />
-  <input type="text" id="section" placeholder="Store Name" />
   <input type="password" id="password" placeholder="Password" />
-  <button onclick="addUser()">➕ Add User</button>
+  <button onclick="addUser()">➕ Add Incharge</button>
 
   <h3>👥 Current Store Incharges</h3>
   <table>
@@ -46,7 +51,6 @@
         <th>Sr#</th>
         <th>Name</th>
         <th>CNIC</th>
-        <th>Section</th>
         <th>Password</th>
         <th>Delete</th>
       </tr>
@@ -66,7 +70,6 @@
             <td>${index + 1}</td>
             <td>${user.name}</td>
             <td>${user.cnic}</td>
-            <td>${user.section}</td>
             <td>${user.password}</td>
             <td><button onclick="deleteUser(${index})">🗑️</button></td>
           </tr>
@@ -77,15 +80,14 @@
     function addUser() {
       const name = document.getElementById("name").value;
       const cnic = document.getElementById("cnic").value;
-      const section = document.getElementById("section").value;
       const password = document.getElementById("password").value;
 
-      if (!name || !cnic || !section || !password) {
+      if (!name || !cnic || !password) {
         alert("⚠️ Please fill all fields");
         return;
       }
 
-      users.push({ name, cnic, role: "store incharge", section, password });
+      users.push({ name, cnic, password, role: "store incharge" });
       localStorage.setItem("users", JSON.stringify(users));
       showUsers();
       alert("✅ Store Incharge added successfully");
