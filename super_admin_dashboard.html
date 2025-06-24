@@ -4,37 +4,110 @@
   <meta charset="UTF-8" />
   <title>Super Admin Dashboard - HCP</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 900;
+    }
+    nav button {
+      background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    nav button:hover {
+      background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
+    }
+  </style>
 </head>
 <body>
   <header>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <img src="" id="leftLogo" width="90" />
-      <h2>Super Admin Panel - HCP</h2>
-      <img src="" id="rightLogo" width="90" />
-    </div>
+    <h1>Welcome, Super Admin</h1>
+    <button onclick="logout()">Logout 🔓</button>
   </header>
 
-  <section style="text-align: center;">
-    <h3 id="welcomeText">Welcome, Super Admin</h3>
+  <nav>
+    <button onclick="openSection('hr')">👥 HR Section</button>
+    <button onclick="openSection('finance')">💰 Finance Section</button>
+    <button onclick="openSection('store')">📦 Store Section</button>
+    <button onclick="openSection('reception')">📞 Reception Section</button>
+    <button onclick="openSection('admin')">🛠️ Admin Section</button>
+    <button onclick="openSection('reports')">📊 Reports</button>
+    <button onclick="openSection('uploadLogos')">🖼️ Upload Logos</button>
+    <button onclick="openSection('uploadStamp')">✍️ Upload Stamp & Signature</button>
+    <button onclick="openSection('voucher')">🧾 Voucher Formats & Generate</button>
+  </nav>
 
-    <a href="manage_users.html"><button>👤 Manage Users</button></a>
-    <a href="upload_header_logos.html"><button>🖼️ Upload Logos</button></a>
-    <a href="upload_stamp_signature.html"><button>✍️ Stamp & Signature</button></a>
-    <a href="view_report.html"><button>📊 View Reports</button></a>
-    <a href="voucher_format.html"><button>🗂️ Create Voucher Format</button></a>
-    <a href="voucher_generate.html"><button>📄 Generate Voucher</button></a>
-    <a href="login.html"><button>🔓 Logout</button></a>
-  </section>
+  <main id="contentArea" style="margin-top: 30px;">
+    <p>Select a section above to manage.</p>
+  </main>
 
   <script>
-    const user = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!user || user.role !== "Super Admin") {
+    function logout(){
+      localStorage.removeItem('currentUser');
       window.location.href = "login.html";
     }
 
-    // Load header logos
-    document.getElementById("leftLogo").src = localStorage.getItem("govtLogo") || '';
-    document.getElementById("rightLogo").src = localStorage.getItem("hcpLogo") || '';
+    function openSection(section){
+      switch(section){
+        case 'hr':
+          window.location.href = "hr.html";
+          break;
+        case 'finance':
+          window.location.href = "finance.html";
+          break;
+        case 'store':
+          window.location.href = "store.html";
+          break;
+        case 'reception':
+          window.location.href = "reception.html";
+          break;
+        case 'admin':
+          window.location.href = "admin.html";
+          break;
+        case 'reports':
+          window.location.href = "view_report.html";
+          break;
+        case 'uploadLogos':
+          window.location.href = "upload_header_logos.html";
+          break;
+        case 'uploadStamp':
+          window.location.href = "upload_stamp_signature.html";
+          break;
+        case 'voucher':
+          window.location.href = "voucher_format.html";
+          break;
+        default:
+          alert("Invalid section");
+      }
+    }
+
+    // Verify login on load
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(!currentUser || currentUser.role !== 'superadmin'){
+      alert('Access denied! Login as Super Admin.');
+      window.location.href = 'login.html';
+    }
   </script>
 </body>
 </html>
