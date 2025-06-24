@@ -1,112 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>👥 Manage Users - HCP</title>
+  <meta charset="UTF-8">
+  <title>Manage Users – HCP</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #1e1e2f; color: white; padding: 30px; }
-    input, select, button { margin: 8px 0; padding: 10px; width: 100%; border-radius: 5px; border: none; }
-    table { width: 100%; margin-top: 20px; border-collapse: collapse; background: #2e2e3f; }
-    th, td { padding: 10px; border: 1px solid #444; text-align: center; }
-    button { background: linear-gradient(90deg, #00d4ff, #00ff88); color: black; font-weight: bold; }
-    button:hover { background: linear-gradient(90deg, #00ff88, #00d4ff); }
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #1e1e2f; color: white; }
+    input, select, button {
+      margin: 6px 0;
+      padding: 8px;
+      width: 100%;
+      border-radius: 5px;
+      border: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #555;
+      padding: 8px;
+      text-align: center;
+      background-color: #2e2e3f;
+    }
+    th {
+      background-color: #3e3e5f;
+    }
   </style>
 </head>
 <body>
 
-  <h2>👤 Add New User</h2>
+  <h2>👤 Add New Store Incharge</h2>
 
-  <input type="text" id="name" placeholder="Full Name" />
-  <input type="text" id="cnic" placeholder="CNIC (xxxxx-xxxxxxx-x)" />
-  
-  <select id="role">
-    <option value="">-- Select Role --</option>
-    <option value="Store Incharge">Store Incharge</option>
-    <option value="Finance Incharge">Finance Incharge</option>
-    <option value="Reception Incharge">Reception Incharge</option>
-    <option value="Section Holder">Section Holder</option>
-    <option value="Super Admin">Super Admin</option>
-  </select>
-
-  <input type="text" id="section" placeholder="Section Name" />
-  <input type="text" id="password" placeholder="Password" />
-
+  <input type="text" id="name" placeholder="Name" />
+  <input type="text" id="cnic" placeholder="CNIC" />
+  <input type="text" id="section" placeholder="Store Name" />
+  <input type="password" id="password" placeholder="Password" />
   <button onclick="addUser()">➕ Add User</button>
 
-  <h3>📋 User List</h3>
+  <h3>👥 Current Store Incharges</h3>
   <table>
     <thead>
       <tr>
         <th>Sr#</th>
         <th>Name</th>
         <th>CNIC</th>
-        <th>Role</th>
         <th>Section</th>
         <th>Password</th>
-        <th>Action</th>
+        <th>Delete</th>
       </tr>
     </thead>
-    <tbody id="userTable"></tbody>
+    <tbody id="user-list"></tbody>
   </table>
 
   <script>
-    function loadUsers() {
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      const table = document.getElementById("userTable");
-      table.innerHTML = "";
+    let users = JSON.parse(localStorage.getItem("users")) || [];
 
-      users.forEach((u, i) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${i + 1}</td>
-          <td>${u.name}</td>
-          <td>${u.cnic}</td>
-          <td>${u.role}</td>
-          <td>${u.section}</td>
-          <td>${u.password}</td>
-          <td><button onclick="deleteUser('${u.cnic}')">🗑️ Delete</button></td>
+    function showUsers() {
+      const tbody = document.getElementById("user-list");
+      tbody.innerHTML = "";
+      users.forEach((user, index) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${user.name}</td>
+            <td>${user.cnic}</td>
+            <td>${user.section}</td>
+            <td>${user.password}</td>
+            <td><button onclick="deleteUser(${index})">🗑️</button></td>
+          </tr>
         `;
-        table.appendChild(row);
       });
     }
 
     function addUser() {
-      const name = document.getElementById("name").value.trim();
-      const cnic = document.getElementById("cnic").value.trim();
-      const role = document.getElementById("role").value;
-      const section = document.getElementById("section").value.trim();
-      const password = document.getElementById("password").value.trim();
+      const name = document.getElementById("name").value;
+      const cnic = document.getElementById("cnic").value;
+      const section = document.getElementById("section").value;
+      const password = document.getElementById("password").value;
 
-      if (!name || !cnic || !role || !section || !password) {
-        alert("⚠️ Please fill all fields.");
+      if (!name || !cnic || !section || !password) {
+        alert("⚠️ Please fill all fields");
         return;
       }
 
-      let users = JSON.parse(localStorage.getItem("users")) || [];
-      if (users.some(u => u.cnic === cnic)) {
-        alert("❌ User with this CNIC already exists.");
-        return;
-      }
-
-      users.push({ name, cnic, role, section, password });
+      users.push({ name, cnic, role: "store incharge", section, password });
       localStorage.setItem("users", JSON.stringify(users));
-      alert("✅ User added successfully!");
-      document.querySelectorAll("input").forEach(i => i.value = '');
-      document.getElementById("role").value = '';
-      loadUsers();
+      showUsers();
+      alert("✅ Store Incharge added successfully");
     }
 
-    function deleteUser(cnic) {
-      if (confirm("Are you sure to delete this user?")) {
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        users = users.filter(u => u.cnic !== cnic);
+    function deleteUser(index) {
+      if (confirm("❌ Delete this user?")) {
+        users.splice(index, 1);
         localStorage.setItem("users", JSON.stringify(users));
-        loadUsers();
+        showUsers();
       }
     }
 
-    loadUsers();
+    showUsers();
   </script>
 </body>
 </html>
