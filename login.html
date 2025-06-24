@@ -1,64 +1,102 @@
+<!-- File: login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🔐 Login - HCP</title>
+  <title>HCP Login Portal</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1e1e2f;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    .login-box {
+      background: #2e2e3f;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .login-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: none;
+    }
+    .login-box button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
+
+  <h2>🔐 HCP Multi-Login Portal</h2>
+
+  <!-- Super Admin Login -->
   <div class="login-box">
-    <h2>🔐 Login Portal</h2>
-    <form id="loginForm">
-      <select id="role" required>
-        <option value="">Select Role</option>
-        <option value="Super Admin">Super Admin</option>
-        <option value="Store Incharge">Store Incharge</option>
-        <option value="Section Head">Section Head</option>
-      </select>
+    <h3>Super Admin Login</h3>
+    <input type="text" id="adminCnic" placeholder="CNIC" />
+    <input type="password" id="adminPassword" placeholder="Password" />
+    <button onclick="superAdminLogin()">Login</button>
+  </div>
 
-      <input type="text" id="cnic" placeholder="Enter CNIC" required />
-      <input type="password" id="password" placeholder="Enter Password" required />
-
-      <div class="checkbox-row">
-        <input type="checkbox" onclick="togglePassword()" /> Show Password
-      </div>
-
-      <button type="submit">🔓 Login</button>
-    </form>
+  <!-- Store Incharge Login -->
+  <div class="login-box">
+    <h3>Store Incharge Login</h3>
+    <input type="text" id="storeCnic" placeholder="CNIC" />
+    <input type="password" id="storePassword" placeholder="Password" />
+    <button onclick="storeLogin()">Login</button>
   </div>
 
   <script>
-    function togglePassword() {
-      const pwd = document.getElementById("password");
-      pwd.type = pwd.type === "password" ? "text" : "password";
+    // Super Admin Fixed Login
+    function superAdminLogin() {
+      const cnic = document.getElementById("adminCnic").value;
+      const password = document.getElementById("adminPassword").value;
+
+      if (cnic === "34501-8971113-7" && password === "Asad@2723") {
+        window.location.href = "super_admin_dashboard.html";
+      } else {
+        alert("❌ Invalid Super Admin credentials!");
+      }
     }
 
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const cnic = document.getElementById("cnic").value;
-      const pass = document.getElementById("password").value;
-      const role = document.getElementById("role").value;
-
-      if (role === "Super Admin") {
-        if (cnic === "34501-8971113-7" && pass === "Asad@2723") {
-          window.location.href = "dashboard.html";
-        } else {
-          alert("❌ Invalid Super Admin credentials");
-        }
-        return;
-      }
-
+    // Store Incharge Login From localStorage
+    function storeLogin() {
+      const cnic = document.getElementById("storeCnic").value;
+      const password = document.getElementById("storePassword").value;
       const users = JSON.parse(localStorage.getItem("users")) || [];
-      const found = users.find(u => u.cnic === cnic && u.password === pass && u.role === role);
 
-      if (found) {
-        if (role === "Store Incharge") window.location.href = "store_dashboard.html";
-        else if (role === "Section Head") window.location.href = "section_dashboard.html";
-        else alert("✅ Login successful but role page not found");
+      const match = users.find(
+        (u) => u.cnic === cnic && u.password === password && u.role === "store incharge"
+      );
+
+      if (match) {
+        localStorage.setItem("loggedInStore", JSON.stringify(match));
+        window.location.href = "store_dashboard.html";
       } else {
-        alert("❌ User not found or incorrect details");
+        alert("❌ Invalid Store Incharge credentials!");
       }
-    });
+    }
   </script>
 </body>
 </html>
