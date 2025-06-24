@@ -2,7 +2,7 @@
 <html lang="ur">
 <head>
   <meta charset="UTF-8" />
-  <title>📋 Super Admin Dashboard – HCP</title>
+  <title>🌟 Super Admin Dashboard – HCP</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
@@ -19,33 +19,31 @@
 
     .button-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 20px;
-      max-width: 900px;
+      max-width: 1000px;
       margin: auto;
     }
 
     .dash-button {
-      background: linear-gradient(135deg, #007bff, #00d4ff);
-      border: none;
-      color: white;
-      padding: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      border-radius: 50px;
       font-size: 16px;
-      border-radius: 20px;
-      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(135deg, #007bff, #00d4ff);
       transition: 0.3s;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
     .dash-button:hover {
       transform: scale(1.05);
       background: linear-gradient(135deg, #00ff88, #00d4ff);
-    }
-
-    .dash-button a {
-      color: white;
-      text-decoration: none;
-      display: block;
     }
   </style>
 </head>
@@ -54,14 +52,14 @@
   <h2>🌟 Super Admin Dashboard – HCP</h2>
 
   <div class="button-grid">
-    <button class="dash-button"><a href="upload_voucher_format.html">📤 Upload Voucher Format</a></button>
-    <button class="dash-button"><a href="voucher_generate.html">🧾 Generate Voucher</a></button>
-    <button class="dash-button"><a href="view_report.html">📊 View Reports</a></button>
-    <button class="dash-button"><a href="manage_users.html">👤 Manage Users</a></button>
-    <button class="dash-button"><a href="upload_stamp_signature.html">✍️ Upload Stamp/Signature</a></button>
-    <button class="dash-button"><a href="upload_header_logos.html">🖼️ Header Logos</a></button>
-    <button class="dash-button"><a href="store.html">🏪 Store Section</a></button>
-    <button class="dash-button"><a href="index.html">🚪 Logout</a></button>
+    <a class="dash-button" href="upload_voucher_format.html">📤 Upload Voucher Format</a>
+    <a class="dash-button" href="voucher_generate.html">🧾 Generate Voucher</a>
+    <a class="dash-button" href="view_report.html">📊 View Reports</a>
+    <a class="dash-button" href="manage_users.html">👤 Manage Users</a>
+    <a class="dash-button" href="upload_stamp_signature.html">✍️ Upload Stamp/Signature</a>
+    <a class="dash-button" href="upload_header_logos.html">🖼️ Header Logos</a>
+    <a class="dash-button" href="store.html">🏪 Store Section</a>
+    <a class="dash-button" href="index.html">🚪 Logout</a>
   </div>
 
 </body>
