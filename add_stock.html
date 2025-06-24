@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add New Stock - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h2>➕ Add New Stock</h2>
+
+  <form id="stockForm">
+    <input type="text" id="itemName" placeholder="Item Name" required />
+    <input type="number" id="itemQty" placeholder="Initial Quantity" required />
+    <button type="submit">💾 Save Item</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('stockForm');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('itemName').value;
+      const qty = parseInt(document.getElementById('itemQty').value);
+
+      let stock = JSON.parse(localStorage.getItem('storeItems')) || [];
+      stock.push({ name, qty });
+      localStorage.setItem('storeItems', JSON.stringify(stock));
+
+      alert('✔️ Item added successfully!');
+      form.reset();
+    });
+  </script>
+</body>
+</html>
