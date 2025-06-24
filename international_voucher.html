@@ -1,1 +1,56 @@
-<!-- Intl Voucher -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🌐 International Voucher - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h2>🌐 Generate International Voucher</h2>
+  </header>
+
+  <section>
+    <label>Select Intl Voucher Format:</label>
+    <select id="intlFormatSelect"></select>
+
+    <label>Enter Details:</label>
+    <textarea id="intlDetails" rows="6" placeholder="International details..."></textarea>
+
+    <button onclick="generateIntlVoucher()">🌍 Generate Intl Voucher</button>
+
+    <div id="intlVoucherOutput"></div>
+  </section>
+
+  <script>
+    const select = document.getElementById('intlFormatSelect');
+    const output = document.getElementById('intlVoucherOutput');
+
+    function loadIntlFormats() {
+      const intlFormats = JSON.parse(localStorage.getItem('intlVoucherFormats')) || [];
+      intlFormats.forEach((f, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = f.name;
+        select.appendChild(opt);
+      });
+    }
+
+    function generateIntlVoucher() {
+      const formats = JSON.parse(localStorage.getItem('intlVoucherFormats')) || [];
+      const selected = select.value;
+      const format = formats[selected];
+      const details = document.getElementById('intlDetails').value;
+
+      if (!format) return;
+
+      output.innerHTML = `
+        <h3>${format.name}</h3>
+        <pre>${format.template}\n\n${details}</pre>
+      `;
+    }
+
+    loadIntlFormats();
+  </script>
+</body>
+</html>
