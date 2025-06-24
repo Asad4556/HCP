@@ -10,6 +10,7 @@
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
       padding: 20px;
+      text-align: center;
     }
     header {
       display: flex;
@@ -18,9 +19,13 @@
       margin-bottom: 30px;
     }
     h2 {
-      text-align: center;
       flex-grow: 1;
       line-height: 1.2;
+      margin: 0;
+    }
+    img.logo {
+      width: 90px;
+      height: auto;
     }
     button {
       background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
@@ -37,47 +42,8 @@
     button:hover {
       background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
     }
-    .buttons-container {
-      text-align: center;
-    }
-    img.logo {
-      width: 90px;
-      height: auto;
-    }
   </style>
 </head>
 <body>
   <header>
-    <img src="" id="leftLogo" alt="Govt Logo" class="logo" />
-    <h2>HEPATITIS & INFECTION CONTROL PROGRAM<br/>Reception Panel</h2>
-    <img src="" id="rightLogo" alt="HCP Logo" class="logo" />
-  </header>
-
-  <section class="buttons-container">
-    <h3 id="welcomeText">Welcome, Receptionist</h3>
-    <button onclick="location.href='reception_records.html'">📋 Manage Reception Records</button>
-    <button onclick="location.href='change_password.html'">🔑 Change Password</button>
-    <button onclick="logout()">🔓 Logout</button>
-  </section>
-
-  <script>
-    const leftLogo = localStorage.getItem('govtLogo');
-    const rightLogo = localStorage.getItem('hcpLogo');
-    if (leftLogo) document.getElementById('leftLogo').src = leftLogo;
-    if (rightLogo) document.getElementById('rightLogo').src = rightLogo;
-
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
-      document.getElementById('welcomeText').textContent = `Welcome, ${currentUser.role} - ${currentUser.section}`;
-    } else {
-      alert('Access denied! Please login.');
-      window.location.href = 'login.html';
-    }
-
-    function logout() {
-      localStorage.removeItem('currentUser');
-      window.location.href = 'login.html';
-    }
-  </script>
-</body>
-</html>
+    <img src="" id="leftLogo"
