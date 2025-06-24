@@ -1,1 +1,33 @@
-<h2>Super Admin Dashboard</h2>
+<!-- super_admin_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Super Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h2>HEPATITIS & INFECTION CONTROL PROGRAM</h2>
+    <h3>Super Admin Panel</h3>
+  </header>
+  <section>
+    <button onclick="location.href='store.html'">🧾 Store Management</button>
+    <button onclick="location.href='create_voucher_format.html'">📋 Create Voucher Format</button>
+    <button onclick="location.href='generate_voucher.html'">📝 Generate Voucher</button>
+    <button onclick="location.href='upload_signature_stamp.html'">📤 Upload Signatures & Stamp</button>
+    <button onclick="location.href='upload_header_logos.html'">📤 Upload Header Logos</button>
+    <button onclick="location.href='create_user.html'">👤 Add New User</button>
+    <button onclick="location.href='manage_users.html'">👥 Manage Users</button>
+    <button onclick="location.href='view_report.html'">📊 View Reports</button>
+    <button onclick="logout()">🔓 Logout</button>
+  </section>
+
+  <script>
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
