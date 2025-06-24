@@ -1,56 +1,54 @@
-<!-- File: voucher_format.html -->
+<!-- voucher_format.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Voucher Format Builder – Save HCP</title>
+  <meta charset="UTF-8" />
+  <title>Create Voucher Format - HCP</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="dashboard-container">
-    <h1>🧾 Voucher Format Builder</h1>
+  <header>
+    <h2>📋 Create Voucher Format</h2>
+  </header>
+
+  <section>
     <form id="formatForm">
-      <input type="text" placeholder="Field Name (e.g. Patient Name)" required />
-      <button type="submit">Add Field</button>
+      <input type="text" id="formatName" placeholder="Format Name (e.g. Purchase, Medicine, Asset)" required />
+      <textarea id="formatTemplate" placeholder="Write format layout here..." rows="8" required></textarea>
+      <button type="submit">💾 Save Format</button>
     </form>
 
-    <h3>📝 Current Format Fields:</h3>
-    <ul id="fieldList"></ul>
-
-    <button onclick="saveFormat()">💾 Save Format</button>
-  </div>
+    <h3>🗂️ Saved Formats</h3>
+    <ul id="formatList"></ul>
+  </section>
 
   <script>
-    let formatFields = JSON.parse(localStorage.getItem("voucherFormat")) || [];
-    const fieldList = document.getElementById("fieldList");
+    const formatForm = document.getElementById('formatForm');
+    const formatList = document.getElementById('formatList');
 
-    function renderFields() {
-      fieldList.innerHTML = "";
-      formatFields.forEach((field, i) => {
-        fieldList.innerHTML += `
-          <li>
-            ${field}
-            <button onclick="removeField(${i})">❌</button>
-          </li>`;
+    function loadFormats() {
+      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
+      formatList.innerHTML = '';
+      formats.forEach((f, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${index + 1}. ${f.name}</strong> - ${f.template.slice(0, 50)}...`;
+        formatList.appendChild(li);
       });
     }
 
-    function removeField(index) {
-      formatFields.splice(index, 1);
-      renderFields();
-    }
-
-    document.getElementById("formatForm").addEventListener("submit", function (e) {
+    formatForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      const field = this.querySelector("input").value.trim();
-      if (field) {
-        formatFields.push(field);
-        renderFields();
-        this.reset();
-      }
+      const name = document.getElementById('formatName').value;
+      const template = document.getElementById('formatTemplate').value;
+
+      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
+      formats.push({ name, template });
+      localStorage.setItem('voucherFormats', JSON.stringify(formats));
+      formatForm.reset();
+      loadFormats();
     });
 
-    function saveFormat() {
-      localStorage.setItem("voucherFormat", JSON.stringify(formatFields));
-      alert("Voucher
+    loadFormats();
+  </script>
+</body>
+</html>
