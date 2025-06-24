@@ -1,2 +1,89 @@
 <!DOCTYPE html>
-<html><head><meta http-equiv="refresh" content="0; URL=login.html"></head><body></body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HCP Store - Home</title>
+  <style>
+    body {
+      margin: 0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #12131a;
+      color: #ddd;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #1f2235;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 {
+      margin: 0;
+      color: #00aaff;
+    }
+    nav a {
+      color: #00aaff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #0090dd;
+    }
+    main {
+      flex-grow: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    main h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    main p {
+      max-width: 600px;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      color: #bbb;
+    }
+    footer {
+      background-color: #1f2235;
+      color: #555;
+      text-align: center;
+      padding: 15px 10px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>HCP Store</h1>
+    <nav>
+      <a href="manage_users.html">Manage Users</a>
+      <a href="#">Inventory</a>
+      <a href="#">Reports</a>
+      <a href="#">Settings</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Welcome to the Hepatitis & Infection Control Program Store</h2>
+    <p>
+      Manage your users, inventory, and reports easily from this dashboard. 
+      Use the navigation links above to get started.
+    </p>
+  </main>
+
+  <footer>
+    &copy; 2025 Hepatitis & Infection Control Program, Punjab
+  </footer>
+</body>
+</html>
