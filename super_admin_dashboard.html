@@ -1,75 +1,35 @@
+<!-- super_admin_dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Super Admin Dashboard - HCP</title>
+  <meta charset="UTF-8" />
+  <title>Super Admin Dashboard</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #1e1e2f;
-      color: white;
-      margin: 0;
-      padding: 20px;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header img {
-      width: 80px;
-    }
-    nav {
-      margin-top: 30px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-    nav a {
-      background: #2e2e3f;
-      padding: 20px;
-      border-radius: 10px;
-      color: white;
-      text-decoration: none;
-      text-align: center;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    nav a:hover {
-      background: #3e3e5f;
-    }
-  </style>
 </head>
 <body>
-  <header>
-    <img src="" id="leftLogo" />
-    <h2>Super Admin Dashboard - HCP</h2>
-    <img src="" id="rightLogo" />
-  </header>
-
-  <nav>
-    <a href="manage_users.html">👥 Manage Users</a>
-    <a href="store.html">📦 Manage Store</a>
-    <a href="voucher_format.html">📋 Create Voucher Format</a>
-    <a href="voucher_generate.html">🧾 Generate Voucher</a>
-    <a href="view_report.html">📊 View Reports</a>
-    <a href="upload_header_logos.html">🖼️ Upload Logos</a>
-    <a href="upload_signature_stamp.html">✍️ Upload Signature & Stamp</a>
-    <a href="login.html">🔒 Logout</a>
-  </nav>
-
   <script>
-    const leftLogo = localStorage.getItem('govtLogo');
-    const rightLogo = localStorage.getItem('hcpLogo');
-    if (leftLogo) document.getElementById('leftLogo').src = leftLogo;
-    if (rightLogo) document.getElementById('rightLogo').src = rightLogo;
-
-    const user = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!user || user.role.toLowerCase() !== "super admin") {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    if (!user || user.role !== "Super Admin") {
       alert("❌ Unauthorized access!");
       window.location.href = "login.html";
     }
   </script>
+
+  <header>
+    <h2>🎛️ Super Admin Panel</h2>
+  </header>
+
+  <section>
+    <ul>
+      <li><a href="manage_users.html">👥 Manage Users</a></li>
+      <li><a href="store.html">📦 Store Module</a></li>
+      <li><a href="voucher_generate.html">🧾 Generate Voucher</a></li>
+      <li><a href="voucher_format.html">🗂️ Create Voucher Format</a></li>
+      <li><a href="view_report.html">📊 View Reports</a></li>
+      <li><a href="upload_signature_stamp.html">🖊️ Upload Stamp/Signature</a></li>
+      <li><a href="upload_header_logos.html">🖼️ Upload Header Logos</a></li>
+      <li><a href="login.html">🔓 Logout</a></li>
+    </ul>
+  </section>
 </body>
 </html>
