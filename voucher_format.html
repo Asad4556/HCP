@@ -1,26 +1,48 @@
-<!-- voucher_format.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Create Voucher Format - HCP</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+    form, ul {
+      background: #2e2e3f;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    li {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #444;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h2>📋 Create Voucher Format</h2>
-  </header>
+  <h2>🗂️ Create Voucher Format</h2>
 
-  <section>
-    <form id="formatForm">
-      <input type="text" id="formatName" placeholder="Format Name (e.g. Purchase, Medicine, Asset)" required />
-      <textarea id="formatTemplate" placeholder="Write format layout here..." rows="8" required></textarea>
-      <button type="submit">💾 Save Format</button>
-    </form>
+  <form id="formatForm">
+    <input type="text" id="formatName" placeholder="Format Name (e.g. Purchase, Medicine, Asset)" required />
+    <textarea id="formatTemplate" placeholder="Write format layout here..." rows="8" required></textarea>
+    <button type="submit">💾 Save Format</button>
+  </form>
 
-    <h3>🗂️ Saved Formats</h3>
-    <ul id="formatList"></ul>
-  </section>
+  <h3>📁 Saved Formats</h3>
+  <ul id="formatList"></ul>
 
   <script>
     const formatForm = document.getElementById('formatForm');
@@ -31,21 +53,25 @@
       formatList.innerHTML = '';
       formats.forEach((f, index) => {
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${index + 1}. ${f.name}</strong> - ${f.template.slice(0, 50)}...`;
+        li.innerHTML = `<strong>${index + 1}. ${f.name}</strong><br/>${f.template.slice(0, 100)}...`;
         formatList.appendChild(li);
       });
     }
 
     formatForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      const name = document.getElementById('formatName').value;
-      const template = document.getElementById('formatTemplate').value;
+      const name = document.getElementById('formatName').value.trim();
+      const template = document.getElementById('formatTemplate').value.trim();
+
+      if (!name || !template) return alert("All fields required!");
 
       const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
       formats.push({ name, template });
       localStorage.setItem('voucherFormats', JSON.stringify(formats));
+
       formatForm.reset();
       loadFormats();
+      alert("✅ Format saved successfully");
     });
 
     loadFormats();
