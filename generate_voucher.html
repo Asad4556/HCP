@@ -12,39 +12,61 @@
   </header>
 
   <section>
-    <form id="voucherForm">
-      <input type="text" id="voucherFor" placeholder="Voucher For" required />
-      <input type="text" id="details" placeholder="Details" required />
-      <input type="date" id="date" required />
-      <input type="text" id="reference" placeholder="Reference #" required />
-      <button type="submit">✅ Generate</button>
-    </form>
+    <label>Select Voucher Format:</label>
+    <select id="formatSelect"></select>
 
-    <div id="voucherOutput" style="margin-top: 20px;"></div>
+    <label>Enter Description/Details:</label>
+    <textarea id="details" placeholder="Enter data to fill into format..." rows="6"></textarea>
+
+    <button onclick="generateVoucher()">🧾 Generate</button>
+
+    <div id="voucherOutput"></div>
   </section>
 
   <script>
-    document.getElementById('voucherForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const forWho = document.getElementById('voucherFor').value;
-      const details = document.getElementById('details').value;
-      const date = document.getElementById('date').value;
-      const reference = document.getElementById('reference').value;
+    const formatSelect = document.getElementById('formatSelect');
+    const voucherOutput = document.getElementById('voucherOutput');
 
-      const html = `
-        <div style="border:1px solid #000;padding:20px;background:#f9f9f9;">
-          <h2>HCP Voucher</h2>
-          <p><strong>To:</strong> ${forWho}</p>
-          <p><strong>Details:</strong> ${details}</p>
-          <p><strong>Date:</strong> ${date}</p>
-          <p><strong>Ref#:</strong> ${reference}</p>
-          <hr />
-          <p>Signature: __________________________</p>
-          <p>Stamp: ______________________________</p>
+    function loadFormats() {
+      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
+      formats.forEach((f, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = f.name;
+        formatSelect.appendChild(opt);
+      });
+    }
+
+    function generateVoucher() {
+      const selected = formatSelect.value;
+      const details = document.getElementById('details').value;
+      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
+      const format = formats[selected];
+      if (!format) return;
+
+      // Add Header Logos
+      const govtLogo = localStorage.getItem('govtLogo');
+      const hcpLogo = localStorage.getItem('hcpLogo');
+      const signature = localStorage.getItem('signatureImage');
+      const stamp = localStorage.getItem('stampImage');
+
+      voucherOutput.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <img src="${govtLogo}" width="90" />
+          <h3>HEPATITIS & INFECTION CONTROL PROGRAM</h3>
+          <img src="${hcpLogo}" width="90" />
+        </div>
+        <hr />
+        <pre style="white-space: pre-wrap; font-size: 16px;">${format.template}\n\n${details}</pre>
+        <hr />
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <img src="${signature}" width="120" />
+          <img src="${stamp}" width="120" />
         </div>
       `;
-      document.getElementById('voucherOutput').innerHTML = html;
-    });
+    }
+
+    loadFormats();
   </script>
 </body>
 </html>
