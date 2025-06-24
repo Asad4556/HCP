@@ -2,119 +2,159 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login - HCP</title>
+  <title>HCP Login</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       background-color: #1e1e2f;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
     }
     .login-box {
-      background: #2e2e3f;
-      padding: 30px;
+      width: 350px;
+      margin: 100px auto;
+      padding: 25px;
       border-radius: 10px;
-      width: 320px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    }
-    h2 {
-      margin-bottom: 20px;
+      background: #2e2e3f;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
       text-align: center;
     }
-    input, select, button {
+    input {
       width: 100%;
       padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 6px;
+      margin-bottom: 12px;
       border: none;
-      font-size: 1rem;
+      border-radius: 5px;
+      font-size: 16px;
     }
     button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
       background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
-      color: #fff;
+      color: white;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s;
-      border: none;
+      font-size: 16px;
     }
     button:hover {
       background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
     }
-    .error {
-      color: #ff5555;
-      text-align: center;
-      margin-bottom: 10px;
+    .password-container {
+      position: relative;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    .password-container input {
+      width: 100%;
+      padding-right: 40px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 14px;
+      color: #aaa;
+      user-select: none;
+    }
+    .change-pass-link {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #00aaff;
+      cursor: pointer;
+      text-decoration: underline;
+      text-align: right;
     }
   </style>
 </head>
 <body>
-
   <div class="login-box">
     <h2>HCP Login</h2>
-    <div class="error" id="errorMsg"></div>
-    <select id="roleSelect" required>
-      <option value="">Select Role</option>
-      <option value="Super Admin">Super Admin</option>
-      <option value="Section Head">Section Head</option>
-      <option value="Receptionist">Receptionist</option>
-    </select>
-    <input type="text" id="cnicInput" placeholder="Enter CNIC (xxxxx-xxxxxxx-x)" required pattern="\d{5}-\d{7}-\d" />
-    <input type="password" id="passwordInput" placeholder="Enter Password" required />
-    <button id="loginBtn">Login</button>
+    <input type="text" id="cnic" placeholder="Enter CNIC (e.g. 34501-8971113-7)" autocomplete="off" />
+    
+    <div class="password-container">
+      <input type="password" id="password" placeholder="Enter Password" autocomplete="off" />
+      <span class="toggle-password" onclick="togglePassword()">Show</span>
+    </div>
+
+    <button onclick="loginUser()">Login</button>
+
+    <span class="change-pass-link" onclick="goToChangePassword()">Change Password</span>
   </div>
 
   <script>
-    const users = [
-      { role: 'Super Admin', cnic: '34501-8971113-7', password: 'Asad@2723', section: 'Admin' },
-      { role: 'Section Head', cnic: '12345-6789012-3', password: 'Section@123', section: 'Store' },
-      { role: 'Receptionist', cnic: '54321-0987654-1', password: 'Reception@123', section: 'Reception' }
-    ];
-
-    const loginBtn = document.getElementById('loginBtn');
-    const errorMsg = document.getElementById('errorMsg');
-
-    loginBtn.addEventListener('click', () => {
-      const role = document.getElementById('roleSelect').value;
-      const cnic = document.getElementById('cnicInput').value.trim();
-      const password = document.getElementById('passwordInput').value;
-
-      errorMsg.textContent = '';
-
-      if (!role || !cnic || !password) {
-        errorMsg.textContent = 'Please fill all fields correctly.';
-        return;
-      }
-
-      // Validate CNIC pattern
-      const cnicPattern = /^\d{5}-\d{7}-\d$/;
-      if (!cnicPattern.test(cnic)) {
-        errorMsg.textContent = 'Invalid CNIC format.';
-        return;
-      }
-
-      // Check user
-      const user = users.find(u => u.role === role && u.cnic === cnic && u.password === password);
-      if (user) {
-        // Save user in localStorage for session
-        localStorage.setItem('currentUser', JSON.stringify(user));
-
-        // Redirect based on role
-        if (user.role === 'Super Admin') {
-          window.location.href = 'super_admin_dashboard.html';
-        } else if (user.role === 'Section Head') {
-          window.location.href = 'section_dashboard.html';
-        } else if (user.role === 'Receptionist') {
-          window.location.href = 'reception_dashboard.html';
-        }
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleBtn = document.querySelector('.toggle-password');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.textContent = 'Hide';
       } else {
-        errorMsg.textContent = 'Incorrect CNIC, Password, or Role.';
+        passwordInput.type = 'password';
+        toggleBtn.textContent = 'Show';
       }
-    });
-  </script>
+    }
 
+    function goToChangePassword() {
+      window.location.href = 'change_password.html';
+    }
+
+    function loginUser() {
+      const cnic = document.getElementById('cnic').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!cnic || !password) {
+        alert('Please enter CNIC and Password');
+        return;
+      }
+
+      // Hardcoded Super Admin credentials
+      const superAdmin = {
+        cnic: '34501-8971113-7',
+        password: 'Asad@2723',
+        role: 'Super Admin',
+        section: 'All Sections'
+      };
+
+      // Check if Super Admin login
+      if (cnic === superAdmin.cnic && password === superAdmin.password) {
+        localStorage.setItem('currentUser', JSON.stringify(superAdmin));
+        alert("Welcome Super Admin");
+        window.location.href = 'super_admin_dashboard.html';
+        return;
+      }
+
+      // Check other users stored in localStorage
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+      const user = users.find(u => u.cnic === cnic && u.password === password);
+
+      if (!user) {
+        alert('❌ Invalid CNIC or Password');
+        return;
+      }
+
+      localStorage.setItem('currentUser', JSON.stringify(user));
+
+      // Redirect based on role
+      const role = user.role.toLowerCase();
+      if (role === 'super admin') {
+        window.location.href = 'super_admin_dashboard.html';
+      } else if (role === 'section head') {
+        window.location.href = 'section_dashboard.html';
+      } else if (role === 'store incharge') {
+        window.location.href = 'store.html';
+      } else if (role === 'reception incharge') {
+        window.location.href = 'reception.html';
+      } else {
+        alert('User role not recognized!');
+      }
+    }
+  </script>
 </body>
 </html>
