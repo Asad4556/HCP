@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reception Dashboard - HCP</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    h2 {
+      text-align: center;
+      flex-grow: 1;
+    }
+    button {
+      background: linear-gradient(90deg, #007bff, #00d4ff, #00ff88);
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #00ff88, #00d4ff, #007bff);
+    }
+    .buttons-container {
+      text-align: center;
+    }
+    img.logo {
+      width: 90px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="" id="leftLogo" alt="Govt Logo" class="logo" />
+    <h2>HEPATITIS & INFECTION CONTROL PROGRAM<br/>Reception Panel</h2>
+    <img src="" id="rightLogo" alt="HCP Logo" class="logo" />
+  </header>
+
+  <section class="buttons-container">
+    <h3 id="welcomeText">Welcome, Receptionist</h3>
+
+    <button onclick="location.href='reception_records.html'">📋 Manage Reception Records</button>
+    <button onclick="location.href='change_password.html'">🔑 Change Password</button>
+    <button onclick="logout()">🔓 Logout</button>
+  </section>
+
+  <script>
+    // لوگوز لوڈ کریں
+    const leftLogo = localStorage.getItem('govtLogo');
+    const rightLogo = localStorage.getItem('hcpLogo');
+    if(leftLogo) document.getElementById('leftLogo').src = leftLogo;
+    if(rightLogo) document.getElementById('rightLogo').src = rightLogo;
+
+    // یوزر کی معلومات لوکل اسٹوریج سے لائیں اور ویلکم ٹیکسٹ سیٹ کریں
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if(currentUser){
+      document.getElementById('welcomeText').textContent = `Welcome, ${currentUser.role} - ${currentUser.section}`;
+    } else {
+      alert('Access denied! Please login.');
+      window.location.href = 'login.html';
+    }
+
+    // لاگ آوٹ فنکشن
+    function logout(){
+      localStorage.removeItem('currentUser');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
