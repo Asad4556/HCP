@@ -1,43 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Super Admin Dashboard - HCP</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #1e1e2f; color: white; text-align: center; padding: 40px; }
-    h2 { margin-bottom: 30px; }
-    .btn-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 500px; margin: 0 auto; }
-    button {
-      padding: 15px;
-      background: linear-gradient(to right, #007bff, #00ffcc);
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e2f;
       color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      margin: 0;
+      padding: 20px;
     }
-    button:hover {
-      background: linear-gradient(to left, #00ffcc, #007bff);
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header img {
+      width: 80px;
+    }
+    nav {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    nav a {
+      background: #2e2e3f;
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    nav a:hover {
+      background: #3e3e5f;
     }
   </style>
 </head>
 <body>
-  <h2>Welcome Super Admin 🎩 – HEPATITIS & INFECTION CONTROL PROGRAM</h2>
-  
-  <div class="btn-group">
-    <a href="manage_users.html"><button>👥 Manage Users</button></a>
-    <a href="upload_header_logos.html"><button>🖼️ Upload Header Logos</button></a>
-    <a href="upload_signature_stamp.html"><button>✍️ Upload Signature & Stamp</button></a>
-    <a href="voucher_format.html"><button>📋 Create Voucher Format</button></a>
-    <a href="voucher_generate.html"><button>🧾 Generate Voucher</button></a>
-    <a href="view_report.html"><button>📊 View Reports</button></a>
-    <a href="hr.html"><button>👨‍💼 HR Section</button></a>
-    <a href="finance.html"><button>💰 Finance Section</button></a>
-    <a href="store.html"><button>📦 Store Section</button></a>
-    <a href="reception.html"><button>🛎️ Reception Section</button></a>
-    <a href="admin.html"><button>📁 Admin Section</button></a>
-    <a href="login.html"><button>🚪 Logout</button></a>
-  </div>
+  <header>
+    <img src="" id="leftLogo" />
+    <h2>Super Admin Dashboard - HCP</h2>
+    <img src="" id="rightLogo" />
+  </header>
+
+  <nav>
+    <a href="manage_users.html">👥 Manage Users</a>
+    <a href="store.html">📦 Manage Store</a>
+    <a href="voucher_format.html">📋 Create Voucher Format</a>
+    <a href="voucher_generate.html">🧾 Generate Voucher</a>
+    <a href="view_report.html">📊 View Reports</a>
+    <a href="upload_header_logos.html">🖼️ Upload Logos</a>
+    <a href="upload_signature_stamp.html">✍️ Upload Signature & Stamp</a>
+    <a href="login.html">🔒 Logout</a>
+  </nav>
+
+  <script>
+    const leftLogo = localStorage.getItem('govtLogo');
+    const rightLogo = localStorage.getItem('hcpLogo');
+    if (leftLogo) document.getElementById('leftLogo').src = leftLogo;
+    if (rightLogo) document.getElementById('rightLogo').src = rightLogo;
+
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!user || user.role.toLowerCase() !== "super admin") {
+      alert("❌ Unauthorized access!");
+      window.location.href = "login.html";
+    }
+  </script>
 </body>
 </html>
