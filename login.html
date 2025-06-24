@@ -1,2 +1,51 @@
+<!-- login.html -->
 <!DOCTYPE html>
-<html><head><title>Login</title></head><body><h2>Login Page</h2></body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - HCP System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="login-container">
+    <h2>HEPATITIS & INFECTION CONTROL PROGRAM</h2>
+    <h3>Login Panel</h3>
+    <form id="loginForm">
+      <input type="text" id="cnic" placeholder="Enter CNIC (e.g. 12345-6789012-3)" required /><br />
+      <input type="password" id="password" placeholder="Enter Password" required />
+      <label><input type="checkbox" id="showPassword" /> Show Password</label><br />
+      <button type="submit">🔐 Login</button>
+      <p><a href="change_password.html">Change Password?</a></p>
+    </form>
+    <p id="loginMessage"></p>
+  </div>
+
+  <script>
+    document.getElementById('showPassword').addEventListener('change', function () {
+      const pwd = document.getElementById('password');
+      pwd.type = this.checked ? 'text' : 'password';
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const cnic = document.getElementById('cnic').value;
+      const password = document.getElementById('password').value;
+
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      const user = users.find(u => u.cnic === cnic && u.password === password);
+
+      if (user) {
+        localStorage.setItem('loggedInUser', JSON.stringify(user));
+        if (user.role === 'Super Admin') {
+          window.location.href = 'super_admin_dashboard.html';
+        } else {
+          window.location.href = 'section_dashboard.html';
+        }
+      } else {
+        document.getElementById('loginMessage').textContent = 'Invalid CNIC or Password';
+      }
+    });
+  </script>
+</body>
+</html>
