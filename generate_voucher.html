@@ -32,14 +32,15 @@
   </section>
 
   <script>
+    const formatSelect = document.getElementById("formatSelect");
+    const filePreview = document.getElementById("filePreview");
+    const voucherForm = document.getElementById("voucherForm");
+
+    // لوکل اسٹوریج سے فارمیٹس لانا
     const formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
     const formatNames = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
 
-    const formatSelect = document.getElementById("formatSelect");
-    const preview = document.getElementById("filePreview");
-    const form = document.getElementById("voucherForm");
-
-    // ڈراپ ڈاؤن میں تمام فارمیٹ دکھائیں
+    // Drop-down میں تمام فارمیٹس ڈالنا
     formatNames.forEach(name => {
       const format = formats[name];
       if (format) {
@@ -48,28 +49,28 @@
       }
     });
 
-    // فارمیٹ سلیکشن پر preview دکھائیں
+    // فارمیٹ سلیکٹ ہونے پر Preview دکھانا
     formatSelect.addEventListener("change", () => {
       const selected = formatSelect.value;
       const format = formats[selected];
 
       if (format) {
-        preview.innerHTML = `
+        filePreview.innerHTML = `
           <b>📎 ${format.fileLabel}</b><br>
           🧾 <i>${format.fileName}</i><br>
           <a href="${format.fileData}" target="_blank" download="${format.fileName}">⬇️ فائل ڈاؤنلوڈ کریں</a>
         `;
-        form.style.display = "block";
+        voucherForm.style.display = "block";
       } else {
-        preview.innerHTML = "";
-        form.style.display = "none";
+        filePreview.innerHTML = "";
+        voucherForm.style.display = "none";
       }
     });
 
-    // فارم سبمٹ
-    form.addEventListener("submit", function (e) {
+    // فارم ڈیٹا سبمٹ کرنا
+    voucherForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      const voucherEntry = {
+      const entry = {
         format: formatSelect.value,
         recipient: document.getElementById("recipient").value,
         date: document.getElementById("date").value,
@@ -78,14 +79,14 @@
       };
 
       let history = JSON.parse(localStorage.getItem("voucherHistory") || "[]");
-      history.push(voucherEntry);
+      history.push(entry);
       localStorage.setItem("voucherHistory", JSON.stringify(history));
 
-      alert("✅ ووچر کامیابی سے محفوظ ہو گیا");
-      form.reset();
-      preview.innerHTML = "";
-      form.style.display = "none";
+      alert("✅ ووچر محفوظ ہو گیا");
+      voucherForm.reset();
       formatSelect.selectedIndex = 0;
+      filePreview.innerHTML = "";
+      voucherForm.style.display = "none";
     });
   </script>
 </body>
