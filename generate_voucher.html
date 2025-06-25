@@ -1,72 +1,73 @@
 <!-- generate_voucher.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
   <meta charset="UTF-8" />
-  <title>Generate Voucher - HCP</title>
+  <title>🧾 ووچر بنائیں</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h2>📝 Generate Voucher</h2>
-  </header>
-
   <section>
-    <label>Select Voucher Format:</label>
-    <select id="formatSelect"></select>
+    <h2>🧾 ووچر جنریٹ کریں</h2>
 
-    <label>Enter Description/Details:</label>
-    <textarea id="details" placeholder="Enter data to fill into format..." rows="6"></textarea>
+    <label>فارمیٹ منتخب کریں:</label>
+    <select id="formatSelect">
+      <option value="">-- ووچر منتخب کریں --</option>
+    </select>
 
-    <button onclick="generateVoucher()">🧾 Generate</button>
+    <form id="voucherForm" style="display:none;">
+      <label>ہیڈنگ:</label>
+      <input type="text" id="heading" readonly />
 
-    <div id="voucherOutput"></div>
+      <label>تفصیل:</label>
+      <textarea id="body" rows="6"></textarea>
+
+      <label>وصول کنندہ کا نام:</label>
+      <input type="text" id="recipient" required />
+
+      <label>تاریخ:</label>
+      <input type="date" id="date" required />
+
+      <button type="submit">✅ ووچر بنائیں</button>
+    </form>
   </section>
 
   <script>
-    const formatSelect = document.getElementById('formatSelect');
-    const voucherOutput = document.getElementById('voucherOutput');
+    const formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
+    const names = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
 
-    function loadFormats() {
-      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
-      formats.forEach((f, i) => {
-        const opt = document.createElement('option');
-        opt.value = i;
-        opt.textContent = f.name;
-        formatSelect.appendChild(opt);
-      });
-    }
+    const select = document.getElementById("formatSelect");
+    const headingInput = document.getElementById("heading");
+    const bodyInput = document.getElementById("body");
+    const form = document.getElementById("voucherForm");
 
-    function generateVoucher() {
-      const selected = formatSelect.value;
-      const details = document.getElementById('details').value;
-      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
-      const format = formats[selected];
-      if (!format) return;
+    // Format Name Dropdown Populate
+    names.forEach(name => {
+      if (formats[name]) {
+        select.innerHTML += `<option value="${name}">${name}</option>`;
+      }
+    });
 
-      // Add Header Logos
-      const govtLogo = localStorage.getItem('govtLogo');
-      const hcpLogo = localStorage.getItem('hcpLogo');
-      const signature = localStorage.getItem('signatureImage');
-      const stamp = localStorage.getItem('stampImage');
+    // Show Form When Format Selected
+    select.addEventListener("change", function () {
+      const selected = this.value;
+      if (formats[selected]) {
+        headingInput.value = formats[selected].heading;
+        bodyInput.value = formats[selected].body;
+        form.style.display = "block";
+      } else {
+        form.style.display = "none";
+      }
+    });
 
-      voucherOutput.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <img src="${govtLogo}" width="90" />
-          <h3>HEPATITIS & INFECTION CONTROL PROGRAM</h3>
-          <img src="${hcpLogo}" width="90" />
-        </div>
-        <hr />
-        <pre style="white-space: pre-wrap; font-size: 16px;">${format.template}\n\n${details}</pre>
-        <hr />
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <img src="${signature}" width="120" />
-          <img src="${stamp}" width="120" />
-        </div>
-      `;
-    }
-
-    loadFormats();
+    // Submit Form (Just shows message for now)
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      alert("✅ ووچر کامیابی سے بنایا گیا (نوٹ: صرف فرنٹ اینڈ ڈیمو ہے)");
+      form.reset();
+      select.selectedIndex = 0;
+      form.style.display = "none";
+    });
   </script>
 </body>
 </html>
