@@ -3,29 +3,29 @@
 <html lang="ur">
 <head>
   <meta charset="UTF-8">
-  <title>🧾 ووچر جنریٹ کریں</title>
+  <title>🧾 ووچر بنائیں</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <section>
-    <h2>🧾 ووچر بنائیں</h2>
+    <h2>🧾 ووچر فارمیٹ منتخب کریں</h2>
 
-    <label>ووچر فارمیٹ منتخب کریں:</label>
+    <label>ووچر منتخب کریں:</label>
     <select id="formatSelect">
-      <option value="">-- ووچر منتخب کریں --</option>
+      <option value="">-- کوئی ایک ووچر منتخب کریں --</option>
     </select>
 
-    <div id="filePreview" style="margin-top: 10px;"></div>
+    <div id="filePreview" style="margin-top: 15px;"></div>
 
-    <form id="voucherForm" style="display:none;">
+    <form id="voucherForm" style="display: none;">
       <label>وصول کنندہ کا نام:</label>
-      <input type="text" id="recipient" required />
+      <input type="text" id="recipient" required>
 
       <label>تاریخ:</label>
-      <input type="date" id="date" required />
+      <input type="date" id="date" required>
 
-      <label>تفصیلات / ریمارکس:</label>
-      <textarea id="remarks" rows="5" required></textarea>
+      <label>تفصیل / ریمارکس:</label>
+      <textarea id="remarks" rows="4" required></textarea>
 
       <button type="submit">✅ ووچر بنائیں</button>
     </form>
@@ -33,32 +33,31 @@
 
   <script>
     const formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
-    const names = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
+    const formatNames = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
 
-    const select = document.getElementById("formatSelect");
+    const formatSelect = document.getElementById("formatSelect");
     const preview = document.getElementById("filePreview");
     const form = document.getElementById("voucherForm");
 
-    // 🟢 ڈراپ ڈاؤن کو فارمیٹس سے بھریں
-    names.forEach(name => {
-      if (formats[name]) {
-        const label = formats[name].fileLabel || name;
-        select.innerHTML += `<option value="${name}">${label} (${name})</option>`;
+    // ڈراپ ڈاؤن میں تمام فارمیٹ دکھائیں
+    formatNames.forEach(name => {
+      const format = formats[name];
+      if (format) {
+        const label = format.fileLabel || name;
+        formatSelect.innerHTML += `<option value="${name}">${label} (${name})</option>`;
       }
     });
 
-    // 🔄 فارمیٹ کے انتخاب پر فائل شو کریں
-    select.addEventListener("change", function () {
-      const selected = this.value;
-      if (formats[selected]) {
-        const file = formats[selected].fileData;
-        const fileName = formats[selected].fileName;
-        const label = formats[selected].fileLabel;
+    // فارمیٹ سلیکشن پر preview دکھائیں
+    formatSelect.addEventListener("change", () => {
+      const selected = formatSelect.value;
+      const format = formats[selected];
 
+      if (format) {
         preview.innerHTML = `
-          <strong>📎 ${label}</strong><br>
-          🧾 <em>${fileName}</em><br>
-          <a href="${file}" download="${fileName}" target="_blank">⬇️ فائل ڈاؤنلوڈ کریں</a>
+          <b>📎 ${format.fileLabel}</b><br>
+          🧾 <i>${format.fileName}</i><br>
+          <a href="${format.fileData}" target="_blank" download="${format.fileName}">⬇️ فائل ڈاؤنلوڈ کریں</a>
         `;
         form.style.display = "block";
       } else {
@@ -67,14 +66,26 @@
       }
     });
 
-    // 📝 ووچر جمع کریں
+    // فارم سبمٹ
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      const voucherEntry = {
+        format: formatSelect.value,
+        recipient: document.getElementById("recipient").value,
+        date: document.getElementById("date").value,
+        remarks: document.getElementById("remarks").value,
+        createdBy: JSON.parse(localStorage.getItem("currentUser"))?.cnic || "unknown"
+      };
+
+      let history = JSON.parse(localStorage.getItem("voucherHistory") || "[]");
+      history.push(voucherEntry);
+      localStorage.setItem("voucherHistory", JSON.stringify(history));
+
       alert("✅ ووچر کامیابی سے محفوظ ہو گیا");
       form.reset();
-      select.selectedIndex = 0;
-      form.style.display = "none";
       preview.innerHTML = "";
+      form.style.display = "none";
+      formatSelect.selectedIndex = 0;
     });
   </script>
 </body>
