@@ -3,31 +3,56 @@
 <html lang="ur">
 <head>
   <meta charset="UTF-8">
-  <title>سٹاک ٹرانسفر</title>
+  <title>🔁 اسٹاک ٹرانسفر</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <section>
-    <h2>🔁 سٹاک ٹرانسفر فارم</h2>
-    <form action="#" method="post">
+    <h2>🔁 اسٹاک ٹرانسفر فارم</h2>
+    <form id="transferForm">
       <label>آئٹم کا نام:</label>
-      <input type="text" name="item_name" required>
+      <input type="text" name="item_name" required />
 
       <label>مقدار:</label>
-      <input type="number" name="quantity" required>
+      <input type="number" name="quantity" required />
 
       <label>فرام شعبہ:</label>
-      <input type="text" name="from_section" required>
+      <input type="text" name="from_section" required />
 
       <label>ٹو شعبہ:</label>
-      <input type="text" name="to_section" required>
+      <input type="text" name="to_section" required />
 
       <label>تاریخ:</label>
-      <input type="date" name="date" required>
+      <input type="date" name="date" required />
 
-      <button type="submit">ٹرانسفر کریں</button>
-      <button type="reset">منسوخ کریں</button>
+      <button type="submit">🔁 ٹرانسفر کریں</button>
     </form>
   </section>
+
+  <script>
+    document.getElementById("transferForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      if (!user) return alert("❌ لاگ ان کریں");
+
+      const form = e.target;
+      const entry = {
+        item: form.item_name.value,
+        qty: form.quantity.value,
+        from: form.from_section.value,
+        to: form.to_section.value,
+        date: form.date.value,
+        type: "transfer"
+      };
+
+      const data = JSON.parse(localStorage.getItem("userStockData") || "{}");
+      if (!data[user.username]) data[user.username] = [];
+      data[user.username].push(entry);
+      localStorage.setItem("userStockData", JSON.stringify(data));
+
+      alert("✅ ٹرانسفر کامیاب");
+      form.reset();
+    });
+  </script>
 </body>
 </html>
