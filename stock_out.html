@@ -3,65 +3,48 @@
 <html lang="ur">
 <head>
   <meta charset="UTF-8">
-  <title>📤 اسٹاک آؤٹ</title>
+  <title>📤 اسٹاک آؤٹ</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <section>
-    <h2>📤 اسٹاک آؤٹ فارم</h2>
+    <h2>📤 اسٹاک آؤٹ فارم</h2>
     <form id="stockOutForm">
       <label>آئٹم کا نام:</label>
-      <input type="text" name="item" required>
-      
+      <input type="text" name="item_name" required />
+
       <label>مقدار:</label>
-      <input type="number" name="qty" required>
+      <input type="number" name="quantity" required />
 
-      <button type="submit">آؤٹ کریں</button>
+      <label>تاریخ:</label>
+      <input type="date" name="date" required />
+
+      <button type="submit">📤 آؤٹ کریں</button>
     </form>
-
-    <h3>📉 موجودہ اسٹاک</h3>
-    <table id="outTable">
-      <thead><tr><th>آئٹم</th><th>باقی مقدار</th></tr></thead>
-      <tbody></tbody>
-    </table>
   </section>
 
   <script>
-    const outForm = document.getElementById("stockOutForm");
-    const outTable = document.querySelector("#outTable tbody");
-
-    const stock = JSON.parse(localStorage.getItem("stock") || "{}");
-
-    function saveStock() {
-      localStorage.setItem("stock", JSON.stringify(stock));
-    }
-
-    function renderTable() {
-      outTable.innerHTML = "";
-      for (let item in stock) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${item}</td><td>${stock[item].qty}</td>`;
-        outTable.appendChild(tr);
-      }
-    }
-
-    outForm.addEventListener("submit", e => {
+    document.getElementById("stockOutForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const item = outForm.item.value.trim();
-      const qty = parseInt(outForm.qty.value);
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      if (!user) return alert("❌ لاگ ان کریں");
 
-      if (!stock[item] || stock[item].qty < qty) {
-        alert("مطلوبہ مقدار دستیاب نہیں");
-        return;
-      }
+      const form = e.target;
+      const entry = {
+        item: form.item_name.value,
+        qty: form.quantity.value,
+        date: form.date.value,
+        type: "out"
+      };
 
-      stock[item].qty -= qty;
-      saveStock();
-      renderTable();
-      outForm.reset();
+      const data = JSON.parse(localStorage.getItem("userStockData") || "{}");
+      if (!data[user.username]) data[user.username] = [];
+      data[user.username].push(entry);
+      localStorage.setItem("userStockData", JSON.stringify(data));
+
+      alert("✅ اسٹاک آؤٹ ہو گیا");
+      form.reset();
     });
-
-    renderTable();
   </script>
 </body>
 </html>
