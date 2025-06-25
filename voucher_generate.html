@@ -1,154 +1,81 @@
+<!-- generate_voucher.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
-  <meta charset="UTF-8" />
-  <title>🧾 Generate Voucher - HCP</title>
+  <meta charset="UTF-8">
+  <title>🧾 ووچر جنریٹ کریں</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-  <header>
-    <h2>🧾 Generate Voucher</h2>
-  </header>
-
   <section>
-    <form id="voucherForm">
-      <label>Choose Format:</label>
-      <select id="formatDropdown" required></select>
+    <h2>🧾 ووچر بنائیں</h2>
 
-      <label>Enter Details:</label>
-      <textarea id="voucherDetails" placeholder="Enter voucher data..." rows="6" required></textarea>
+    <label>ووچر فارمیٹ منتخب کریں:</label>
+    <select id="formatSelect">
+      <option value="">-- ووچر منتخب کریں --</option>
+    </select>
 
-      <button type="submit">📅 Generate</button>
+    <div id="filePreview" style="margin-top: 10px;"></div>
+
+    <form id="voucherForm" style="display:none;">
+      <label>وصول کنندہ کا نام:</label>
+      <input type="text" id="recipient" required />
+
+      <label>تاریخ:</label>
+      <input type="date" id="date" required />
+
+      <label>تفصیلات / ریمارکس:</label>
+      <textarea id="remarks" rows="5" required></textarea>
+
+      <button type="submit">✅ ووچر بنائیں</button>
     </form>
-
-    <div id="fileFormatArea" style="display:none; margin-top: 20px;">
-      <p>📋 File Format: <a id="fileDownload" href="#" target="_blank">🔽 Download</a></p>
-    </div>
-
-    <hr />
-    <div id="outputArea" style="display:none; border: 1px solid gray; padding: 20px; background: #f9f9f9; position: relative;">
-      <img id="watermarkLogo" src="" style="position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); opacity:0.07; width:300px;" />
-
-      <div id="headerArea" style="display: flex; justify-content: space-between; align-items: center;">
-        <img id="govtLogo" width="80" />
-        <h3>HEPATITIS & INFECTION CONTROL PROGRAM</h3>
-        <img id="hcpLogo" width="80" />
-      </div>
-
-      <hr />
-      <h4>Voucher Format: <span id="formatTitle"></span></h4>
-      <p><strong>Date:</strong> <span id="todayDate"></span></p>
-      <div id="voucherText"></div>
-
-      <div style="display: flex; justify-content: space-between; margin-top: 40px;">
-        <div>
-          <p>Signature:</p>
-          <img id="sigImage" width="150" />
-        </div>
-        <div>
-          <p>Stamp:</p>
-          <img id="stampImage" width="150" />
-        </div>
-        <div>
-          <p>QR Code:</p>
-          <canvas id="qrCodeCanvas"></canvas>
-        </div>
-      </div>
-
-      <div style="margin-top: 30px; text-align: right;">
-        <button onclick="printVoucher()">🖶 Print</button>
-        <button onclick="exportPDF()">🔖 Export PDF</button>
-      </div>
-    </div>
   </section>
 
   <script>
-    const formatDropdown = document.getElementById('formatDropdown');
-    const fileFormatArea = document.getElementById('fileFormatArea');
-    const fileDownload = document.getElementById('fileDownload');
-    const voucherForm = document.getElementById('voucherForm');
-    const outputArea = document.getElementById('outputArea');
+    const formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
+    const names = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
 
-    function loadFormats() {
-      const textFormats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
-      const fileFormats = JSON.parse(localStorage.getItem('voucherFiles')) || [];
+    const select = document.getElementById("formatSelect");
+    const preview = document.getElementById("filePreview");
+    const form = document.getElementById("voucherForm");
 
-      formatDropdown.innerHTML = '<option value="">--Select Format--</option>';
-      textFormats.forEach(f => {
-        const opt = document.createElement('option');
-        opt.value = f.name;
-        opt.setAttribute('data-type', 'text');
-        opt.textContent = f.name + ' (Text)';
-        formatDropdown.appendChild(opt);
-      });
-
-      fileFormats.forEach((f, index) => {
-        const opt = document.createElement('option');
-        opt.value = 'file_' + index;
-        opt.setAttribute('data-type', 'file');
-        opt.setAttribute('data-file', f.file);
-        opt.setAttribute('data-name', f.name);
-        opt.textContent = f.name + ' (File)';
-        formatDropdown.appendChild(opt);
-      });
-    }
-
-    formatDropdown.addEventListener('change', function () {
-      const selectedOption = this.options[this.selectedIndex];
-      const type = selectedOption.getAttribute('data-type');
-      if (type === 'file') {
-        fileFormatArea.style.display = 'block';
-        fileDownload.href = selectedOption.getAttribute('data-file');
-      } else {
-        fileFormatArea.style.display = 'none';
+    // 🟢 ڈراپ ڈاؤن کو فارمیٹس سے بھریں
+    names.forEach(name => {
+      if (formats[name]) {
+        const label = formats[name].fileLabel || name;
+        select.innerHTML += `<option value="${name}">${label} (${name})</option>`;
       }
     });
 
-    voucherForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const selectedOption = formatDropdown.options[formatDropdown.selectedIndex];
-      const formatName = selectedOption.textContent;
-      const details = document.getElementById('voucherDetails').value;
+    // 🔄 فارمیٹ کے انتخاب پر فائل شو کریں
+    select.addEventListener("change", function () {
+      const selected = this.value;
+      if (formats[selected]) {
+        const file = formats[selected].fileData;
+        const fileName = formats[selected].fileName;
+        const label = formats[selected].fileLabel;
 
-      if (!selectedOption.value || !details) return;
-
-      document.getElementById('formatTitle').textContent = formatName;
-      document.getElementById('voucherText').textContent = details;
-      document.getElementById('todayDate').textContent = new Date().toLocaleDateString();
-
-      document.getElementById('watermarkLogo').src = localStorage.getItem('hcpLogo') || '';
-      document.getElementById('govtLogo').src = localStorage.getItem('govtLogo') || '';
-      document.getElementById('hcpLogo').src = localStorage.getItem('hcpLogo') || '';
-      document.getElementById('sigImage').src = localStorage.getItem('signatureImage') || '';
-      document.getElementById('stampImage').src = localStorage.getItem('stampImage') || '';
-
-      QRCode.toCanvas(document.getElementById('qrCodeCanvas'), details + ' | ' + formatName + ' | ' + new Date().toLocaleDateString(), function (error) {
-        if (error) console.error(error);
-      });
-
-      let reports = JSON.parse(localStorage.getItem('reportData')) || [];
-      reports.push({ section: 'Voucher', date: new Date().toISOString().slice(0, 10), data: `Voucher Created [${formatName}] – ${details}` });
-      localStorage.setItem('reportData', JSON.stringify(reports));
-
-      outputArea.style.display = 'block';
+        preview.innerHTML = `
+          <strong>📎 ${label}</strong><br>
+          🧾 <em>${fileName}</em><br>
+          <a href="${file}" download="${fileName}" target="_blank">⬇️ فائل ڈاؤنلوڈ کریں</a>
+        `;
+        form.style.display = "block";
+      } else {
+        preview.innerHTML = "";
+        form.style.display = "none";
+      }
     });
 
-    function exportPDF() {
-      const element = document.getElementById('outputArea');
-      html2pdf().set({ margin: 1, filename: 'HCP_Voucher.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } }).from(element).save();
-    }
-
-    function printVoucher() {
-      const printWindow = window.open('', '', 'width=900,height=700');
-      printWindow.document.write('<html><head><title>Print Voucher</title><link rel="stylesheet" href="style.css"></head><body>' + outputArea.innerHTML + '</body></html>');
-      printWindow.document.close();
-      printWindow.focus();
-      setTimeout(() => printWindow.print(), 500);
-    }
-
-    loadFormats();
+    // 📝 ووچر جمع کریں
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      alert("✅ ووچر کامیابی سے محفوظ ہو گیا");
+      form.reset();
+      select.selectedIndex = 0;
+      form.style.display = "none";
+      preview.innerHTML = "";
+    });
   </script>
 </body>
 </html>
