@@ -11,13 +11,13 @@
     <h2>🗂️ نیا ووچر فارمیٹ اپلوڈ کریں</h2>
     <form id="formatForm">
       <label>فارمیٹ کا نام:</label>
-      <input type="text" name="name" placeholder="مثال: اسٹور ریلیز ووچر" required />
+      <input type="text" name="name" required placeholder="مثال: Store Format 1" />
 
       <label>تفصیل:</label>
-      <textarea name="description" rows="4" placeholder="ووچر کے استعمال کی وضاحت کریں" required></textarea>
+      <textarea name="description" rows="3" required placeholder="تفصیل لکھیں"></textarea>
 
-      <label>اپلوڈ کی گئی فائل کا واضح نام لکھیں:</label>
-      <input type="text" name="fileLabel" placeholder="مثال: اسٹور ووچر ٹیمپلیٹ" required />
+      <label>فائل لیبل:</label>
+      <input type="text" name="fileLabel" required placeholder="مثال: اسٹور ٹیمپلیٹ" />
 
       <label>فائل منتخب کریں (PDF, Word, Excel):</label>
       <input type="file" name="templateFile" accept=".pdf,.doc,.docx,.xls,.xlsx" required />
@@ -26,8 +26,42 @@
     </form>
   </section>
 
+  <section>
+    <h3>📄 اپلوڈ شدہ ووچر فارمیٹس</h3>
+    <table id="formatList">
+      <thead>
+        <tr>
+          <th>فارمیٹ کا نام</th>
+          <th>فائل لیبل</th>
+          <th>فائل</th>
+          <th>🔁 تبدیلی</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
   <script>
-    document.getElementById("formatForm").addEventListener("submit", async function(e) {
+    const formatForm = document.getElementById("formatForm");
+    const formatList = document.getElementById("formatList").querySelector("tbody");
+
+    function loadFormats() {
+      const formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
+      formatList.innerHTML = "";
+
+      Object.entries(formats).forEach(([key, value]) => {
+        formatList.innerHTML += `
+          <tr>
+            <td>${key}</td>
+            <td>${value.fileLabel}</td>
+            <td><a href="${value.fileData}" download="${value.fileName}">${value.fileName}</a></td>
+            <td><button onclick="editFormat('${key}')">🖊️ Edit</button></td>
+          </tr>
+        `;
+      });
+    }
+
+    formatForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
       const name = this.name.value.trim();
@@ -36,39 +70,51 @@
       const fileInput = this.templateFile;
 
       if (!name || !description || !fileLabel || fileInput.files.length === 0) {
-        alert("تمام فیلڈز مکمل کریں اور ایک فائل اپلوڈ کریں");
+        alert("تمام فیلڈز مکمل کریں");
         return;
       }
 
       const file = fileInput.files[0];
       const reader = new FileReader();
 
-      reader.onload = function() {
-        const fileData = reader.result;
-
+      reader.onload = function () {
         let formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
         formats[name] = {
-          description: description,
-          fileLabel: fileLabel,
+          description,
+          fileLabel,
           fileName: file.name,
-          fileType: file.type,
-          fileData: fileData
+          fileData: reader.result,
+          fileType: file.type
         };
-
         localStorage.setItem("voucherFormats", JSON.stringify(formats));
 
-        let names = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
-        if (!names.includes(name)) {
-          names.push(name);
-          localStorage.setItem("voucherFormatNames", JSON.stringify(names));
+        let formatNames = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
+        if (!formatNames.includes(name)) {
+          formatNames.push(name);
+          localStorage.setItem("voucherFormatNames", JSON.stringify(formatNames));
         }
 
-        alert("✅ ووچر فارمیٹ محفوظ ہو گیا");
-        e.target.reset();
+        alert("✅ فارمیٹ محفوظ ہو گیا");
+        formatForm.reset();
+        loadFormats();
       };
 
       reader.readAsDataURL(file);
     });
+
+    function editFormat(name) {
+      const formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
+      const data = formats[name];
+
+      if (data) {
+        formatForm.name.value = name;
+        formatForm.description.value = data.description;
+        formatForm.fileLabel.value = data.fileLabel;
+        alert("🖊️ اب فائل اپلوڈ کر کے محفوظ کرنے پر یہ فارمیٹ اپڈیٹ ہو جائے گا");
+      }
+    }
+
+    loadFormats();
   </script>
 </body>
 </html>
