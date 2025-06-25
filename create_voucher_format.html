@@ -3,8 +3,8 @@
 <html lang="ur">
 <head>
   <meta charset="UTF-8">
-  <title>🗂️ ووچر فارمیٹ بنائیں</title>
-  <link rel="stylesheet" href="style.css">
+  <title>🗂️ ووچر فارمیٹ اپلوڈ کریں</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <section>
@@ -19,21 +19,51 @@
       <label>تفصیل:</label>
       <textarea name="body" rows="6" required></textarea>
 
+      <label>فائل اپلوڈ کریں (PDF/Word/Image):</label>
+      <input type="file" name="attachment" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+
       <button type="submit">📥 محفوظ کریں</button>
     </form>
   </section>
 
   <script>
-    document.getElementById("formatForm").addEventListener("submit", function(e) {
+    document.getElementById("formatForm").addEventListener("submit", async function (e) {
       e.preventDefault();
+
       const name = this.name.value.trim();
       const heading = this.heading.value;
       const body = this.body.value;
+      const fileInput = this.attachment;
+
+      if (!name || !heading || !body) {
+        alert("تمام فیلڈز مکمل کریں");
+        return;
+      }
+
+      let fileData = null;
+
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        fileData = await new Promise(resolve => {
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+      }
 
       let formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
-      formats[name] = { heading, body };
+      formats[name] = { heading, body, file: fileData };
 
       localStorage.setItem("voucherFormats", JSON.stringify(formats));
+
+      // Add name to list if not exists
+      let names = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
+      if (!names.includes(name)) {
+        names.push(name);
+        localStorage.setItem("voucherFormatNames", JSON.stringify(names));
+      }
+
       alert("✅ ووچر محفوظ ہو گیا");
       this.reset();
     });
