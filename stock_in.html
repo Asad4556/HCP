@@ -3,28 +3,76 @@
 <html lang="ur">
 <head>
   <meta charset="UTF-8">
-  <title>سٹاک ان</title>
+  <title>📥 اسٹاک ان</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <section>
-    <h2>سٹاک ان فارم</h2>
-    <form action="#" method="post">
+    <h2>📥 اسٹاک ان فارم</h2>
+    <form id="stockInForm">
       <label>آئٹم کا نام:</label>
-      <input type="text" name="item_name" required>
-
+      <input type="text" name="item" required>
+      
       <label>مقدار:</label>
-      <input type="number" name="quantity" required>
+      <input type="number" name="qty" required>
 
-      <label>تاریخ:</label>
-      <input type="date" name="date" required>
-
-      <label>شعبہ:</label>
-      <input type="text" name="section" required>
+      <label>Expiry Date:</label>
+      <input type="date" name="expiry">
 
       <button type="submit">محفوظ کریں</button>
-      <button type="reset">منسوخ کریں</button>
     </form>
+
+    <h3>📝 اسٹاک ان لسٹ</h3>
+    <table id="inTable">
+      <thead>
+        <tr><th>آئٹم</th><th>مقدار</th><th>Expiry</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </section>
+
+  <script>
+    const inForm = document.getElementById("stockInForm");
+    const inTable = document.querySelector("#inTable tbody");
+
+    const stock = JSON.parse(localStorage.getItem("stock") || "{}");
+
+    function saveStock() {
+      localStorage.setItem("stock", JSON.stringify(stock));
+    }
+
+    function renderTable() {
+      inTable.innerHTML = "";
+      for (let item in stock) {
+        const tr = document.createElement("tr");
+        const expiry = stock[item].expiry || "-";
+        const highlight = isExpired(expiry) ? 'style="background-color:#ff4444;"' : "";
+        tr.innerHTML = `<td>${item}</td><td>${stock[item].qty}</td><td ${highlight}>${expiry}</td>`;
+        inTable.appendChild(tr);
+      }
+    }
+
+    inForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const item = inForm.item.value.trim();
+      const qty = parseInt(inForm.qty.value);
+      const expiry = inForm.expiry.value;
+
+      if (!stock[item]) stock[item] = { qty: 0, expiry: expiry };
+      stock[item].qty += qty;
+      stock[item].expiry = expiry || stock[item].expiry;
+
+      saveStock();
+      renderTable();
+      inForm.reset();
+    });
+
+    function isExpired(date) {
+      if (!date) return false;
+      return new Date(date) < new Date();
+    }
+
+    renderTable();
+  </script>
 </body>
 </html>
