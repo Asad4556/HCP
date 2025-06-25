@@ -1,0 +1,41 @@
+<!-- edit_voucher_format.html -->
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+  <meta charset="UTF-8">
+  <title>✏️ ووچر فارمیٹ میں ترمیم</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section>
+    <h2>✏️ ووچر فارمیٹ میں ترمیم</h2>
+    <form id="editForm">
+      <label>ووچر ہیڈنگ:</label>
+      <input type="text" name="heading" id="heading" required>
+
+      <label>تفصیل:</label>
+      <textarea name="body" id="body" rows="6" required></textarea>
+
+      <button type="submit">💾 ترمیم محفوظ کریں</button>
+    </form>
+  </section>
+
+  <script>
+    const data = JSON.parse(localStorage.getItem("voucherFormat"));
+    if (data) {
+      document.getElementById("heading").value = data.heading;
+      document.getElementById("body").value = data.body;
+    }
+
+    document.getElementById("editForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const heading = this.heading.value;
+      const body = this.body.value;
+
+      const format = { heading, body };
+      localStorage.setItem("voucherFormat", JSON.stringify(format));
+      alert("✅ تبدیلی محفوظ ہو گئی");
+    });
+  </script>
+</body>
+</html>
