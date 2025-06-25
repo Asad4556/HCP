@@ -1,65 +1,36 @@
 <!-- create_voucher_format.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
-  <meta charset="UTF-8" />
-  <title>Create Voucher Format - HCP</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>🗂️ ووچر فارمیٹ بنائیں</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h2>📋 Create Voucher Format</h2>
-  </header>
-
   <section>
+    <h2>🗂️ نیا ووچر فارمیٹ بنائیں</h2>
     <form id="formatForm">
-      <input type="text" id="formatName" placeholder="Format Name (e.g., Medicine Issue)" required />
-      <textarea id="formatTemplate" placeholder="Enter format details (e.g. fields, layout, etc.)" rows="6" required></textarea>
-      <button type="submit">💾 Save Format</button>
-    </form>
+      <label>ووچر ہیڈنگ:</label>
+      <input type="text" name="heading" required>
 
-    <hr />
-    <h3>📄 Saved Formats</h3>
-    <ul id="formatList"></ul>
+      <label>تفصیل:</label>
+      <textarea name="body" rows="6" required></textarea>
+
+      <button type="submit">📥 محفوظ کریں</button>
+    </form>
   </section>
 
   <script>
-    const formatForm = document.getElementById('formatForm');
-    const formatList = document.getElementById('formatList');
-
-    function loadFormats() {
-      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
-      formatList.innerHTML = '';
-      formats.forEach((f, i) => {
-        const li = document.createElement('li');
-        li.innerHTML = `🔹 <b>${f.name}</b> <button onclick="deleteFormat(${i})">❌ Delete</button>`;
-        formatList.appendChild(li);
-      });
-    }
-
-    function deleteFormat(index) {
-      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
-      formats.splice(index, 1);
-      localStorage.setItem('voucherFormats', JSON.stringify(formats));
-      loadFormats();
-    }
-
-    formatForm.addEventListener('submit', function (e) {
+    document.getElementById("formatForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const name = document.getElementById('formatName').value.trim();
-      const template = document.getElementById('formatTemplate').value.trim();
+      const heading = this.heading.value;
+      const body = this.body.value;
 
-      if (!name || !template) return;
-
-      const formats = JSON.parse(localStorage.getItem('voucherFormats')) || [];
-      formats.push({ name, template });
-      localStorage.setItem('voucherFormats', JSON.stringify(formats));
-
-      formatForm.reset();
-      loadFormats();
+      const format = { heading, body };
+      localStorage.setItem("voucherFormat", JSON.stringify(format));
+      alert("✅ ووچر فارمیٹ محفوظ ہو گیا");
+      this.reset();
     });
-
-    loadFormats();
   </script>
 </body>
 </html>
