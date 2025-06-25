@@ -38,6 +38,10 @@
     th {
       background: #333;
     }
+    .expired {
+      background-color: #8b0000 !important;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -46,24 +50,24 @@
   </header>
 
   <section>
-    <label for="sectionFilter">Select Section:</label>
-    <select id="sectionFilter">
-      <option value="">All Sections</option>
+    <label for="userFilter">Select Store User:</label>
+    <select id="userFilter">
+      <option value="">-- Select User --</option>
     </select>
 
-    <label for="dateFilter">Filter by Date:</label>
-    <input type="date" id="dateFilter" />
+    <button onclick="loadUserReport()">🔍 Load Report</button>
 
-    <button onclick="filterData()">🔍 Filter</button>
-
-    <h3>📋 Report Data</h3>
+    <h3>📋 Stock Activity Report</h3>
     <table id="reportTable">
       <thead>
         <tr>
           <th>Sr#</th>
-          <th>Section</th>
+          <th>Item</th>
+          <th>Quantity</th>
+          <th>MFG Date</th>
+          <th>Expiry</th>
           <th>Date</th>
-          <th>Data</th>
+          <th>Type</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -71,53 +75,68 @@
   </section>
 
   <script>
+    const userFilter = document.getElementById('userFilter');
     const reportTable = document.getElementById('reportTable').querySelector('tbody');
-    const sectionFilter = document.getElementById('sectionFilter');
 
-    // Demo data if not saved
-    if (!localStorage.getItem('reportData')) {
-      const demoData = [
-        { section: 'Store', date: '2025-06-18', data: 'Item In: Gloves - 100' },
-        { section: 'Store', date: '2025-06-19', data: 'Item Out: Masks - 50' },
-        { section: 'Admin', date: '2025-06-18', data: 'Letter Issued: NOC to Mr. Ali' }
-      ];
-      localStorage.setItem('reportData', JSON.stringify(demoData));
+    // Sample data init (only if not set)
+    if (!localStorage.getItem("userStockData")) {
+      const sample = {
+        "store_umar": [
+          {
+            item: "Panadol", qty: 50,
+            mfg: "2025-04-01", expiry: "2025-07-01",
+            date: "2025-06-24", type: "in"
+          },
+          {
+            item: "Panadol", qty: 10,
+            mfg: "2025-04-01", expiry: "2025-07-01",
+            date: "2025-06-25", type: "out"
+          },
+          {
+            item: "Panadol", qty: 5,
+            mfg: "2025-04-01", expiry: "2025-07-01",
+            date: "2025-06-26", type: "transfer"
+          }
+        ]
+      };
+      localStorage.setItem("userStockData", JSON.stringify(sample));
     }
 
-    function loadSections() {
-      const data = JSON.parse(localStorage.getItem('reportData')) || [];
-      const sections = [...new Set(data.map(d => d.section))];
-      sectionFilter.innerHTML = '<option value="">All Sections</option>';
-      sections.forEach(sec => {
-        sectionFilter.innerHTML += `<option value="${sec}">${sec}</option>`;
+    // Load dropdown
+    function loadUsers() {
+      const data = JSON.parse(localStorage.getItem("userStockData") || "{}");
+      userFilter.innerHTML = `<option value="">-- Select User --</option>`;
+      Object.keys(data).forEach(user => {
+        userFilter.innerHTML += `<option value="${user}">${user}</option>`;
       });
     }
 
-    function filterData() {
-      const section = document.getElementById('sectionFilter').value;
-      const date = document.getElementById('dateFilter').value;
-      const data = JSON.parse(localStorage.getItem('reportData')) || [];
+    // Load selected user's report
+    function loadUserReport() {
+      const selectedUser = userFilter.value;
+      const data = JSON.parse(localStorage.getItem("userStockData") || "{}");
 
-      const filtered = data.filter(d => {
-        return (section === '' || d.section === section) &&
-               (date === '' || d.date === date);
-      });
+      reportTable.innerHTML = "";
 
-      reportTable.innerHTML = '';
-      filtered.forEach((item, index) => {
+      if (!selectedUser || !data[selectedUser]) return;
+
+      data[selectedUser].forEach((entry, index) => {
+        const isExpired = entry.expiry && new Date(entry.expiry) < new Date();
         reportTable.innerHTML += `
-          <tr>
+          <tr class="${isExpired ? 'expired' : ''}">
             <td>${index + 1}</td>
-            <td>${item.section}</td>
-            <td>${item.date}</td>
-            <td>${item.data}</td>
+            <td>${entry.item}</td>
+            <td>${entry.qty}</td>
+            <td>${entry.mfg || '-'}</td>
+            <td>${entry.expiry || '-'}</td>
+            <td>${entry.date}</td>
+            <td>${entry.type.toUpperCase()}</td>
           </tr>
         `;
       });
     }
 
-    loadSections();
-    filterData();
+    loadUsers();
   </script>
 </body>
 </html>
