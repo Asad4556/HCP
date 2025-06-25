@@ -10,62 +10,64 @@
   <section>
     <h2>🗂️ نیا ووچر فارمیٹ اپلوڈ کریں</h2>
     <form id="formatForm">
-      <label>ووچر کا نام:</label>
-      <input type="text" name="name" required />
-
-      <label>ہیڈنگ:</label>
-      <input type="text" name="heading" required />
+      <label>فارمیٹ کا نام:</label>
+      <input type="text" name="name" placeholder="مثال: اسٹور ریلیز ووچر" required />
 
       <label>تفصیل:</label>
-      <textarea name="body" rows="6" required></textarea>
+      <textarea name="description" rows="4" placeholder="ووچر کے استعمال کی وضاحت کریں" required></textarea>
 
-      <label>فائل اپلوڈ کریں (PDF/Word/Image):</label>
-      <input type="file" name="attachment" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" />
+      <label>اپلوڈ کی گئی فائل کا واضح نام لکھیں:</label>
+      <input type="text" name="fileLabel" placeholder="مثال: اسٹور ووچر ٹیمپلیٹ" required />
+
+      <label>فائل منتخب کریں (PDF, Word, Excel):</label>
+      <input type="file" name="templateFile" accept=".pdf,.doc,.docx,.xls,.xlsx" required />
 
       <button type="submit">📥 محفوظ کریں</button>
     </form>
   </section>
 
   <script>
-    document.getElementById("formatForm").addEventListener("submit", async function (e) {
+    document.getElementById("formatForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
       const name = this.name.value.trim();
-      const heading = this.heading.value;
-      const body = this.body.value;
-      const fileInput = this.attachment;
+      const description = this.description.value.trim();
+      const fileLabel = this.fileLabel.value.trim();
+      const fileInput = this.templateFile;
 
-      if (!name || !heading || !body) {
-        alert("تمام فیلڈز مکمل کریں");
+      if (!name || !description || !fileLabel || fileInput.files.length === 0) {
+        alert("تمام فیلڈز مکمل کریں اور ایک فائل اپلوڈ کریں");
         return;
       }
 
-      let fileData = null;
+      const file = fileInput.files[0];
+      const reader = new FileReader();
 
-      if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
+      reader.onload = function() {
+        const fileData = reader.result;
 
-        fileData = await new Promise(resolve => {
-          reader.onload = () => resolve(reader.result);
-          reader.readAsDataURL(file);
-        });
-      }
+        let formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
+        formats[name] = {
+          description: description,
+          fileLabel: fileLabel,
+          fileName: file.name,
+          fileType: file.type,
+          fileData: fileData
+        };
 
-      let formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
-      formats[name] = { heading, body, file: fileData };
+        localStorage.setItem("voucherFormats", JSON.stringify(formats));
 
-      localStorage.setItem("voucherFormats", JSON.stringify(formats));
+        let names = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
+        if (!names.includes(name)) {
+          names.push(name);
+          localStorage.setItem("voucherFormatNames", JSON.stringify(names));
+        }
 
-      // Add name to list if not exists
-      let names = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
-      if (!names.includes(name)) {
-        names.push(name);
-        localStorage.setItem("voucherFormatNames", JSON.stringify(names));
-      }
+        alert("✅ ووچر فارمیٹ محفوظ ہو گیا");
+        e.target.reset();
+      };
 
-      alert("✅ ووچر محفوظ ہو گیا");
-      this.reset();
+      reader.readAsDataURL(file);
     });
   </script>
 </body>
