@@ -3,76 +3,56 @@
 <html lang="ur">
 <head>
   <meta charset="UTF-8">
-  <title>📥 اسٹاک ان</title>
+  <title>📥 اسٹاک شامل کریں</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <section>
-    <h2>📥 اسٹاک ان فارم</h2>
+    <h2>📥 اسٹاک اِن فارم</h2>
     <form id="stockInForm">
       <label>آئٹم کا نام:</label>
-      <input type="text" name="item" required>
-      
+      <input type="text" name="item_name" required />
+
       <label>مقدار:</label>
-      <input type="number" name="qty" required>
+      <input type="number" name="quantity" required />
 
-      <label>Expiry Date:</label>
-      <input type="date" name="expiry">
+      <label>تیاری کی تاریخ:</label>
+      <input type="date" name="mfg" />
 
-      <button type="submit">محفوظ کریں</button>
+      <label>خاتمے کی تاریخ:</label>
+      <input type="date" name="expiry" />
+
+      <label>تاریخ:</label>
+      <input type="date" name="date" required />
+
+      <button type="submit">✅ شامل کریں</button>
     </form>
-
-    <h3>📝 اسٹاک ان لسٹ</h3>
-    <table id="inTable">
-      <thead>
-        <tr><th>آئٹم</th><th>مقدار</th><th>Expiry</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
   </section>
 
   <script>
-    const inForm = document.getElementById("stockInForm");
-    const inTable = document.querySelector("#inTable tbody");
-
-    const stock = JSON.parse(localStorage.getItem("stock") || "{}");
-
-    function saveStock() {
-      localStorage.setItem("stock", JSON.stringify(stock));
-    }
-
-    function renderTable() {
-      inTable.innerHTML = "";
-      for (let item in stock) {
-        const tr = document.createElement("tr");
-        const expiry = stock[item].expiry || "-";
-        const highlight = isExpired(expiry) ? 'style="background-color:#ff4444;"' : "";
-        tr.innerHTML = `<td>${item}</td><td>${stock[item].qty}</td><td ${highlight}>${expiry}</td>`;
-        inTable.appendChild(tr);
-      }
-    }
-
-    inForm.addEventListener("submit", e => {
+    document.getElementById("stockInForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const item = inForm.item.value.trim();
-      const qty = parseInt(inForm.qty.value);
-      const expiry = inForm.expiry.value;
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      if (!user) return alert("❌ لاگ ان کریں");
 
-      if (!stock[item]) stock[item] = { qty: 0, expiry: expiry };
-      stock[item].qty += qty;
-      stock[item].expiry = expiry || stock[item].expiry;
+      const form = e.target;
+      const entry = {
+        item: form.item_name.value,
+        qty: form.quantity.value,
+        mfg: form.mfg.value,
+        expiry: form.expiry.value,
+        date: form.date.value,
+        type: "in"
+      };
 
-      saveStock();
-      renderTable();
-      inForm.reset();
+      const data = JSON.parse(localStorage.getItem("userStockData") || "{}");
+      if (!data[user.username]) data[user.username] = [];
+      data[user.username].push(entry);
+      localStorage.setItem("userStockData", JSON.stringify(data));
+
+      alert("✅ اسٹاک شامل ہو گیا");
+      form.reset();
     });
-
-    function isExpired(date) {
-      if (!date) return false;
-      return new Date(date) < new Date();
-    }
-
-    renderTable();
   </script>
 </body>
 </html>
