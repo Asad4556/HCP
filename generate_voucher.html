@@ -1,4 +1,3 @@
-<!-- generate_voucher.html -->
 <!DOCTYPE html>
 <html lang="ur">
 <head>
@@ -36,20 +35,27 @@
     const filePreview = document.getElementById("filePreview");
     const voucherForm = document.getElementById("voucherForm");
 
-    // لوکل اسٹوریج سے فارمیٹس لانا
-    const formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
-    const formatNames = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
+    // 🔍 لوکل اسٹوریج سے فارمیٹس لانا
+    const formatsRaw = localStorage.getItem("voucherFormats");
+    const formatNamesRaw = localStorage.getItem("voucherFormatNames");
 
-    // Drop-down میں تمام فارمیٹس ڈالنا
-    formatNames.forEach(name => {
-      const format = formats[name];
-      if (format) {
-        const label = format.fileLabel || name;
-        formatSelect.innerHTML += `<option value="${name}">${label} (${name})</option>`;
-      }
-    });
+    const formats = formatsRaw ? JSON.parse(formatsRaw) : {};
+    const formatNames = formatNamesRaw ? JSON.parse(formatNamesRaw) : [];
 
-    // فارمیٹ سلیکٹ ہونے پر Preview دکھانا
+    // 🔽 Drop-down میں فارمیٹس دکھانا
+    if (formatNames.length === 0 || Object.keys(formats).length === 0) {
+      formatSelect.innerHTML = '<option value="">❌ کوئی ووچر فارمیٹ موجود نہیں</option>';
+    } else {
+      formatNames.forEach(name => {
+        if (formats[name]) {
+          const label = formats[name].fileLabel || name;
+          const fileName = formats[name].fileName || '';
+          formatSelect.innerHTML += `<option value="${name}">${label} (${fileName})</option>`;
+        }
+      });
+    }
+
+    // ✅ سلیکشن پر Preview + Form show کریں
     formatSelect.addEventListener("change", () => {
       const selected = formatSelect.value;
       const format = formats[selected];
@@ -67,7 +73,7 @@
       }
     });
 
-    // فارم ڈیٹا سبمٹ کرنا
+    // 💾 فارم سبمٹ => ووچر محفوظ کریں
     voucherForm.addEventListener("submit", function (e) {
       e.preventDefault();
       const entry = {
