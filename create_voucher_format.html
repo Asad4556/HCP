@@ -8,10 +8,13 @@
 </head>
 <body>
   <section>
-    <h2>🗂️ نیا ووچر فارمیٹ بنائیں</h2>
+    <h2>🗂️ نیا ووچر فارمیٹ اپلوڈ کریں</h2>
     <form id="formatForm">
-      <label>ووچر ہیڈنگ:</label>
-      <input type="text" name="heading" required>
+      <label>ووچر کا نام:</label>
+      <input type="text" name="name" required />
+
+      <label>ہیڈنگ:</label>
+      <input type="text" name="heading" required />
 
       <label>تفصیل:</label>
       <textarea name="body" rows="6" required></textarea>
@@ -23,12 +26,15 @@
   <script>
     document.getElementById("formatForm").addEventListener("submit", function(e) {
       e.preventDefault();
+      const name = this.name.value.trim();
       const heading = this.heading.value;
       const body = this.body.value;
 
-      const format = { heading, body };
-      localStorage.setItem("voucherFormat", JSON.stringify(format));
-      alert("✅ ووچر فارمیٹ محفوظ ہو گیا");
+      let formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
+      formats[name] = { heading, body };
+
+      localStorage.setItem("voucherFormats", JSON.stringify(formats));
+      alert("✅ ووچر محفوظ ہو گیا");
       this.reset();
     });
   </script>
