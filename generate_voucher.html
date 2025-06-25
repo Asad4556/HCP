@@ -4,6 +4,22 @@
   <meta charset="UTF-8">
   <title>🧾 ووچر بنائیں</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    #historyTable {
+      margin-top: 20px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #historyTable th, #historyTable td {
+      border: 1px solid #444;
+      padding: 8px;
+      text-align: center;
+    }
+    #historyTable th {
+      background: #333;
+      color: #00d4ff;
+    }
+  </style>
 </head>
 <body>
   <section>
@@ -26,36 +42,44 @@
       <label>تفصیل / ریمارکس:</label>
       <textarea id="remarks" rows="4" required></textarea>
 
-      <button type="submit">✅ ووچر بنائیں</button>
+      <button type="submit">✅ ووچر محفوظ کریں</button>
     </form>
+
+    <h3 style="margin-top: 40px;">📜 محفوظ شدہ ووچرز</h3>
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Sr#</th>
+          <th>ووچر</th>
+          <th>وصول کنندہ</th>
+          <th>تاریخ</th>
+          <th>ریمــارکس</th>
+          <th>بنایا</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </section>
 
   <script>
     const formatSelect = document.getElementById("formatSelect");
     const filePreview = document.getElementById("filePreview");
     const voucherForm = document.getElementById("voucherForm");
+    const historyTableBody = document.querySelector("#historyTable tbody");
 
-    // 🔍 لوکل اسٹوریج سے فارمیٹس لانا
-    const formatsRaw = localStorage.getItem("voucherFormats");
-    const formatNamesRaw = localStorage.getItem("voucherFormatNames");
+    const formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
+    const formatNames = JSON.parse(localStorage.getItem("voucherFormatNames") || "[]");
 
-    const formats = formatsRaw ? JSON.parse(formatsRaw) : {};
-    const formatNames = formatNamesRaw ? JSON.parse(formatNamesRaw) : [];
+    // 🧾 ووچر ڈراپ ڈاؤن لوڈ کرنا
+    formatNames.forEach(name => {
+      if (formats[name]) {
+        const label = formats[name].fileLabel || name;
+        const fileName = formats[name].fileName || '';
+        formatSelect.innerHTML += `<option value="${name}">${label} (${fileName})</option>`;
+      }
+    });
 
-    // 🔽 Drop-down میں فارمیٹس دکھانا
-    if (formatNames.length === 0 || Object.keys(formats).length === 0) {
-      formatSelect.innerHTML = '<option value="">❌ کوئی ووچر فارمیٹ موجود نہیں</option>';
-    } else {
-      formatNames.forEach(name => {
-        if (formats[name]) {
-          const label = formats[name].fileLabel || name;
-          const fileName = formats[name].fileName || '';
-          formatSelect.innerHTML += `<option value="${name}">${label} (${fileName})</option>`;
-        }
-      });
-    }
-
-    // ✅ سلیکشن پر Preview + Form show کریں
+    // 🖼 Preview + Form Show
     formatSelect.addEventListener("change", () => {
       const selected = formatSelect.value;
       const format = formats[selected];
@@ -64,24 +88,29 @@
         filePreview.innerHTML = `
           <b>📎 ${format.fileLabel}</b><br>
           🧾 <i>${format.fileName}</i><br>
-          <a href="${format.fileData}" target="_blank" download="${format.fileName}">⬇️ فائل ڈاؤنلوڈ کریں</a>
+          <a href="${format.fileData}" target="_blank" download="${format.fileName}">⬇️ فائل دیکھیں / ڈاؤنلوڈ کریں</a>
         `;
         voucherForm.style.display = "block";
+        loadHistory(selected);
       } else {
         filePreview.innerHTML = "";
         voucherForm.style.display = "none";
+        historyTableBody.innerHTML = "";
       }
     });
 
-    // 💾 فارم سبمٹ => ووچر محفوظ کریں
+    // 💾 ووچر سبمٹ => محفوظ کریں
     voucherForm.addEventListener("submit", function (e) {
       e.preventDefault();
+      const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+      const selected = formatSelect.value;
+
       const entry = {
-        format: formatSelect.value,
+        format: selected,
         recipient: document.getElementById("recipient").value,
         date: document.getElementById("date").value,
         remarks: document.getElementById("remarks").value,
-        createdBy: JSON.parse(localStorage.getItem("currentUser"))?.cnic || "unknown"
+        createdBy: currentUser.cnic || "unknown"
       };
 
       let history = JSON.parse(localStorage.getItem("voucherHistory") || "[]");
@@ -90,10 +119,28 @@
 
       alert("✅ ووچر محفوظ ہو گیا");
       voucherForm.reset();
-      formatSelect.selectedIndex = 0;
-      filePreview.innerHTML = "";
-      voucherForm.style.display = "none";
+      loadHistory(selected);
     });
+
+    // 📜 مخصوص ووچر کی history لوڈ کریں
+    function loadHistory(formatName) {
+      const history = JSON.parse(localStorage.getItem("voucherHistory") || "[]");
+      const filtered = history.filter(h => h.format === formatName);
+
+      historyTableBody.innerHTML = "";
+      filtered.forEach((item, index) => {
+        historyTableBody.innerHTML += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${item.format}</td>
+            <td>${item.recipient}</td>
+            <td>${item.date}</td>
+            <td>${item.remarks}</td>
+            <td>${item.createdBy}</td>
+          </tr>
+        `;
+      });
+    }
   </script>
 </body>
 </html>
