@@ -3,63 +3,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Super Admin Dashboard - HCP</title>
+  <title>🎯 Super Admin Dashboard - HCP</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      background-color: #121212;
+      background-color: #1e1e2f;
       color: white;
       font-family: 'Segoe UI', sans-serif;
-      padding: 30px;
+      padding: 20px;
     }
-
-    h2 {
+    .button {
+      display: block;
+      background: #3e3e5f;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
       text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .dashboard-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-
-    .dashboard-buttons a {
       text-decoration: none;
-    }
-
-    .dashboard-buttons button {
-      background: linear-gradient(135deg, #00bcd4, #4caf50);
       color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 15px 30px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      min-width: 220px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      font-weight: bold;
     }
-
-    .dashboard-buttons button:hover {
-      background: linear-gradient(135deg, #4caf50, #00bcd4);
-      transform: scale(1.05);
+    .button:hover {
+      background: #5e5e9f;
     }
   </style>
 </head>
 <body>
   <h2>🎯 Super Admin Dashboard - HCP</h2>
 
-  <div class="dashboard-buttons">
-    <a href="manage_users.html"><button>👥 Manage Users</button></a>
-    <a href="store.html"><button>📦 Store Module</button></a>
-    <a href="generate_voucher.html"><button>🧾 Generate Voucher</button></a>
-    <a href="voucher_format.html"><button>🗂️ Create Voucher Format</button></a>
-    <a href="view_report.html"><button>📊 View Reports</button></a>
-    <a href="upload_signature_stamp.html"><button>🖊️ Upload Stamp/Signature</button></a>
-    <a href="upload_header_logos.html"><button>🖼️ Upload Header Logos</button></a>
-    <a href="login.html"><button style="background: #e53935;">🔓 Logout</button></a>
-  </div>
+  <a href="create_user.html" class="button">👥 Manage Users</a>
+  <a href="store_dashboard.html" class="button">📦 Store Module</a>
+  <a href="voucher_generate.html" class="button">🧾 Generate Voucher</a>
+  <a href="create_voucher_format.html" class="button">🗂️ Upload Voucher Format</a>
+  <a href="view_report.html" class="button">📊 View Reports</a>
+  <a href="upload_stamp_signature.html" class="button">🖊️ Upload Stamp/Signature</a>
+  <a href="upload_header_logos.html" class="button">🖼️ Upload Header Logos</a>
+  <a href="index.html" class="button">🔓 Logout</a>
 </body>
 </html>
