@@ -1,0 +1,61 @@
+<!-- select_voucher_format.html -->
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+  <meta charset="UTF-8">
+  <title>📋 ووچر منتخب کریں</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section>
+    <h2>📋 ووچر منتخب کریں</h2>
+    <select id="voucherSelect">
+      <option value="">-- ووچر منتخب کریں --</option>
+    </select>
+
+    <form id="editForm" style="display:none;">
+      <label>ہیڈنگ:</label>
+      <input type="text" id="heading" required>
+
+      <label>تفصیل:</label>
+      <textarea id="body" rows="6" required></textarea>
+
+      <button type="submit">💾 محفوظ کریں</button>
+    </form>
+  </section>
+
+  <script>
+    const select = document.getElementById("voucherSelect");
+    const heading = document.getElementById("heading");
+    const body = document.getElementById("body");
+    const form = document.getElementById("editForm");
+
+    const formats = JSON.parse(localStorage.getItem("voucherFormats") || "{}");
+
+    for (let name in formats) {
+      select.innerHTML += `<option value="\${name}">\${name}</option>`;
+    }
+
+    select.addEventListener("change", function() {
+      if (this.value && formats[this.value]) {
+        heading.value = formats[this.value].heading;
+        body.value = formats[this.value].body;
+        form.style.display = "block";
+      } else {
+        form.style.display = "none";
+      }
+    });
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const selected = select.value;
+      formats[selected] = {
+        heading: heading.value,
+        body: body.value
+      };
+      localStorage.setItem("voucherFormats", JSON.stringify(formats));
+      alert("✅ ووچر اپڈیٹ ہو گیا");
+    });
+  </script>
+</body>
+</html>
