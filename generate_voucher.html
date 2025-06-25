@@ -3,12 +3,12 @@
 <html lang="ur">
 <head>
   <meta charset="UTF-8">
-  <title>🧾 ووچر بنائیں</title>
+  <title>🧾 ووچر جنریٹ کریں</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <section>
-    <h2>🧾 ووچر جنریٹ کریں</h2>
+    <h2>🧾 ووچر بنائیں</h2>
 
     <label>ووچر فارمیٹ منتخب کریں:</label>
     <select id="formatSelect">
@@ -25,7 +25,7 @@
       <input type="date" id="date" required />
 
       <label>تفصیلات / ریمارکس:</label>
-      <textarea id="remarks" rows="5"></textarea>
+      <textarea id="remarks" rows="5" required></textarea>
 
       <button type="submit">✅ ووچر بنائیں</button>
     </form>
@@ -39,7 +39,7 @@
     const preview = document.getElementById("filePreview");
     const form = document.getElementById("voucherForm");
 
-    // 🟢 Populate dropdown with format name and file label
+    // 🟢 ڈراپ ڈاؤن کو فارمیٹس سے بھریں
     names.forEach(name => {
       if (formats[name]) {
         const label = formats[name].fileLabel || name;
@@ -47,7 +47,7 @@
       }
     });
 
-    // 🔄 On format change
+    // 🔄 فارمیٹ کے انتخاب پر فائل شو کریں
     select.addEventListener("change", function () {
       const selected = this.value;
       if (formats[selected]) {
@@ -56,9 +56,9 @@
         const label = formats[selected].fileLabel;
 
         preview.innerHTML = `
-          📎 <strong>${label}</strong><br>
+          <strong>📎 ${label}</strong><br>
           🧾 <em>${fileName}</em><br>
-          <a href="${file}" download="${fileName}">⬇️ فائل ڈاؤنلوڈ کریں</a>
+          <a href="${file}" download="${fileName}" target="_blank">⬇️ فائل ڈاؤنلوڈ کریں</a>
         `;
         form.style.display = "block";
       } else {
@@ -67,9 +67,10 @@
       }
     });
 
+    // 📝 ووچر جمع کریں
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      alert("✅ ووچر کامیابی سے محفوظ کر لیا گیا (فرنٹ اینڈ اسٹوریج کے طور پر)");
+      alert("✅ ووچر کامیابی سے محفوظ ہو گیا");
       form.reset();
       select.selectedIndex = 0;
       form.style.display = "none";
